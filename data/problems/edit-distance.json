@@ -1,0 +1,42 @@
+{
+  "frontendId": "72",
+  "questionId": "72",
+  "title": "Edit Distance",
+  "titleCn": "编辑距离",
+  "slug": "edit-distance",
+  "difficulty": "Medium",
+  "topics": [
+    {
+      "name": "String",
+      "cn": "String",
+      "slug": "string"
+    },
+    {
+      "name": "Dynamic Programming",
+      "cn": "Dynamic Programming",
+      "slug": "dynamic-programming"
+    }
+  ],
+  "metaData": {
+    "name": "minDistance",
+    "params": [
+      {
+        "name": "word1",
+        "type": "string"
+      },
+      {
+        "name": "word2",
+        "type": "string"
+      }
+    ],
+    "return": {
+      "type": "integer"
+    }
+  },
+  "codeSnippet": "class Solution {\n    public int minDistance(String word1, String word2) {\n        \n    }\n}",
+  "sampleTestCase": "\"horse\"\n\"ros\"",
+  "exampleTestcases": "\"horse\"\n\"ros\"\n\"intention\"\n\"execution\"",
+  "contentHtml": "<p>给你两个单词&nbsp;<code>word1</code> 和&nbsp;<code>word2</code>， <em>请返回将&nbsp;<code>word1</code>&nbsp;转换成&nbsp;<code>word2</code> 所使用的最少操作数</em> &nbsp;。</p>\n\n<p>你可以对一个单词进行如下三种操作：</p>\n\n<ul>\n\t<li>插入一个字符</li>\n\t<li>删除一个字符</li>\n\t<li>替换一个字符</li>\n</ul>\n\n<p>&nbsp;</p>\n\n<p><strong>示例&nbsp;1：</strong></p>\n\n<pre>\n<strong>输入：</strong>word1 = \"horse\", word2 = \"ros\"\n<strong>输出：</strong>3\n<strong>解释：</strong>\nhorse -&gt; rorse (将 'h' 替换为 'r')\nrorse -&gt; rose (删除 'r')\nrose -&gt; ros (删除 'e')\n</pre>\n\n<p><strong>示例&nbsp;2：</strong></p>\n\n<pre>\n<strong>输入：</strong>word1 = \"intention\", word2 = \"execution\"\n<strong>输出：</strong>5\n<strong>解释：</strong>\nintention -&gt; inention (删除 't')\ninention -&gt; enention (将 'i' 替换为 'e')\nenention -&gt; exention (将 'n' 替换为 'x')\nexention -&gt; exection (将 'n' 替换为 'c')\nexection -&gt; execution (插入 'u')\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>0 &lt;= word1.length, word2.length &lt;= 500</code></li>\n\t<li><code>word1</code> 和 <code>word2</code> 由小写英文字母组成</li>\n</ul>\n",
+  "contentEnHtml": "<p>Given two strings <code>word1</code> and <code>word2</code>, return <em>the minimum number of operations required to convert <code>word1</code> to <code>word2</code></em>.</p>\n\n<p>You have the following three operations permitted on a word:</p>\n\n<ul>\n\t<li>Insert a character</li>\n\t<li>Delete a character</li>\n\t<li>Replace a character</li>\n</ul>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<pre>\n<strong>Input:</strong> word1 = &quot;horse&quot;, word2 = &quot;ros&quot;\n<strong>Output:</strong> 3\n<strong>Explanation:</strong> \nhorse -&gt; rorse (replace &#39;h&#39; with &#39;r&#39;)\nrorse -&gt; rose (remove &#39;r&#39;)\nrose -&gt; ros (remove &#39;e&#39;)\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> word1 = &quot;intention&quot;, word2 = &quot;execution&quot;\n<strong>Output:</strong> 5\n<strong>Explanation:</strong> \nintention -&gt; inention (remove &#39;t&#39;)\ninention -&gt; enention (replace &#39;i&#39; with &#39;e&#39;)\nenention -&gt; exention (replace &#39;n&#39; with &#39;x&#39;)\nexention -&gt; exection (replace &#39;n&#39; with &#39;c&#39;)\nexection -&gt; execution (insert &#39;u&#39;)\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>0 &lt;= word1.length, word2.length &lt;= 500</code></li>\n\t<li><code>word1</code> and <code>word2</code> consist of lowercase English letters.</li>\n</ul>\n",
+  "hints": null
+}

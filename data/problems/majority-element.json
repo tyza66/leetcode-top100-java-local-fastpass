@@ -1,0 +1,58 @@
+{
+  "frontendId": "169",
+  "questionId": "169",
+  "title": "Majority Element",
+  "titleCn": "多数元素",
+  "slug": "majority-element",
+  "difficulty": "Easy",
+  "topics": [
+    {
+      "name": "Array",
+      "cn": "Array",
+      "slug": "array"
+    },
+    {
+      "name": "Hash Table",
+      "cn": "Hash Table",
+      "slug": "hash-table"
+    },
+    {
+      "name": "Divide and Conquer",
+      "cn": "Divide and Conquer",
+      "slug": "divide-and-conquer"
+    },
+    {
+      "name": "Counting",
+      "cn": "Counting",
+      "slug": "counting"
+    },
+    {
+      "name": "Sorting",
+      "cn": "Sorting",
+      "slug": "sorting"
+    },
+    {
+      "name": "摩尔投票算法",
+      "cn": "摩尔投票算法",
+      "slug": "boyer-moore-majority-vote-algorithm"
+    }
+  ],
+  "metaData": {
+    "name": "majorityElement",
+    "params": [
+      {
+        "name": "nums",
+        "type": "integer[]"
+      }
+    ],
+    "return": {
+      "type": "integer"
+    }
+  },
+  "codeSnippet": "class Solution {\n    public int majorityElement(int[] nums) {\n        \n    }\n}",
+  "sampleTestCase": "[3,2,3]",
+  "exampleTestcases": "[3,2,3]\n[2,2,1,1,1,2,2]",
+  "contentHtml": "<p>给定一个大小为 <code>n</code><em> </em>的数组&nbsp;<code>nums</code> ，返回其中的多数元素。多数元素是指在数组中出现次数 <strong>大于</strong>&nbsp;<code>⌊ n/2 ⌋</code>&nbsp;的元素。</p>\n\n<p>你可以假设数组是非空的，并且给定的数组总是存在多数元素。</p>\n\n<p>&nbsp;</p>\n\n<p><strong>示例&nbsp;1：</strong></p>\n\n<pre>\n<strong>输入：</strong>nums = [3,2,3]\n<strong>输出：</strong>3</pre>\n\n<p><strong>示例&nbsp;2：</strong></p>\n\n<pre>\n<strong>输入：</strong>nums = [2,2,1,1,1,2,2]\n<strong>输出：</strong>2\n</pre>\n\n<p>&nbsp;</p>\n<strong>提示：</strong>\n\n<ul>\n\t<li><code>n == nums.length</code></li>\n\t<li><code>1 &lt;= n &lt;= 5 * 10<sup>4</sup></code></li>\n\t<li><code>-10<sup>9</sup> &lt;= nums[i] &lt;= 10<sup>9</sup></code></li>\n\t<li>输入保证数组中一定有一个多数元素。</li>\n</ul>\n\n<p>&nbsp;</p>\n\n<p><strong>进阶：</strong>尝试设计时间复杂度为 O(n)、空间复杂度为 O(1) 的算法解决此问题。</p>\n",
+  "contentEnHtml": "<p>Given an array <code>nums</code> of size <code>n</code>, return <em>the majority element</em>.</p>\n\n<p>The majority element is the element that appears more than <code>&lfloor;n / 2&rfloor;</code> times. You may assume that the majority element always exists in the array.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n<pre><strong>Input:</strong> nums = [3,2,3]\n<strong>Output:</strong> 3\n</pre><p><strong class=\"example\">Example 2:</strong></p>\n<pre><strong>Input:</strong> nums = [2,2,1,1,1,2,2]\n<strong>Output:</strong> 2\n</pre>\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>n == nums.length</code></li>\n\t<li><code>1 &lt;= n &lt;= 5 * 10<sup>4</sup></code></li>\n\t<li><code>-10<sup>9</sup> &lt;= nums[i] &lt;= 10<sup>9</sup></code></li>\n\t<li>The input is generated such that a majority element will exist in the array.</li>\n</ul>\n\n<p>&nbsp;</p>\n<strong>Follow-up:</strong> Could you solve the problem in linear time and in <code>O(1)</code> space?",
+  "hints": null
+}

@@ -1,0 +1,53 @@
+{
+  "frontendId": "85",
+  "questionId": "85",
+  "title": "Maximal Rectangle",
+  "titleCn": "最大矩形",
+  "slug": "maximal-rectangle",
+  "difficulty": "Hard",
+  "topics": [
+    {
+      "name": "Stack",
+      "cn": "Stack",
+      "slug": "stack"
+    },
+    {
+      "name": "Array",
+      "cn": "Array",
+      "slug": "array"
+    },
+    {
+      "name": "Dynamic Programming",
+      "cn": "Dynamic Programming",
+      "slug": "dynamic-programming"
+    },
+    {
+      "name": "Matrix",
+      "cn": "Matrix",
+      "slug": "matrix"
+    },
+    {
+      "name": "Monotonic Stack",
+      "cn": "Monotonic Stack",
+      "slug": "monotonic-stack"
+    }
+  ],
+  "metaData": {
+    "name": "maximalRectangle",
+    "params": [
+      {
+        "name": "matrix",
+        "type": "character[][]"
+      }
+    ],
+    "return": {
+      "type": "integer"
+    }
+  },
+  "codeSnippet": "class Solution {\n    public int maximalRectangle(char[][] matrix) {\n        \n    }\n}",
+  "sampleTestCase": "[[\"1\",\"0\",\"1\",\"0\",\"0\"],[\"1\",\"0\",\"1\",\"1\",\"1\"],[\"1\",\"1\",\"1\",\"1\",\"1\"],[\"1\",\"0\",\"0\",\"1\",\"0\"]]",
+  "exampleTestcases": "[[\"1\",\"0\",\"1\",\"0\",\"0\"],[\"1\",\"0\",\"1\",\"1\",\"1\"],[\"1\",\"1\",\"1\",\"1\",\"1\"],[\"1\",\"0\",\"0\",\"1\",\"0\"]]\n[[\"0\"]]\n[[\"1\"]]",
+  "contentHtml": "<p>给定一个仅包含&nbsp;<code>0</code> 和 <code>1</code> 、大小为 <code>rows x cols</code> 的二维二进制矩阵，找出只包含 <code>1</code> 的最大矩形，并返回其面积。</p>\n\n<p>&nbsp;</p>\n\n<p><strong>示例 1：</strong></p>\n<img alt=\"\" src=\"assets/problems/maximal-rectangle/img-1.png\" style=\"width: 402px; height: 322px;\" />\n<pre>\n<strong>输入：</strong>matrix = [[\"1\",\"0\",\"1\",\"0\",\"0\"],[\"1\",\"0\",\"1\",\"1\",\"1\"],[\"1\",\"1\",\"1\",\"1\",\"1\"],[\"1\",\"0\",\"0\",\"1\",\"0\"]]\n<strong>输出：</strong>6\n<strong>解释：</strong>最大矩形如上图所示。\n</pre>\n\n<p><strong>示例 2：</strong></p>\n\n<pre>\n<strong>输入：</strong>matrix = [[\"0\"]]\n<strong>输出：</strong>0\n</pre>\n\n<p><strong>示例 3：</strong></p>\n\n<pre>\n<strong>输入：</strong>matrix = [[\"1\"]]\n<strong>输出：</strong>1\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>rows == matrix.length</code></li>\n\t<li><code>cols == matrix[0].length</code></li>\n\t<li><code>1 &lt;= rows, cols &lt;= 200</code></li>\n\t<li><code>matrix[i][j]</code> 为 <code>'0'</code> 或 <code>'1'</code></li>\n</ul>\n",
+  "contentEnHtml": "<p>Given a <code>rows x cols</code>&nbsp;binary <code>matrix</code> filled with <code>0</code>&#39;s and <code>1</code>&#39;s, find the largest rectangle containing only <code>1</code>&#39;s and return <em>its area</em>.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n<img alt=\"\" src=\"https://assets.leetcode.com/uploads/2020/09/14/maximal.jpg\" style=\"width: 402px; height: 322px;\" />\n<pre>\n<strong>Input:</strong> matrix = [[&quot;1&quot;,&quot;0&quot;,&quot;1&quot;,&quot;0&quot;,&quot;0&quot;],[&quot;1&quot;,&quot;0&quot;,&quot;1&quot;,&quot;1&quot;,&quot;1&quot;],[&quot;1&quot;,&quot;1&quot;,&quot;1&quot;,&quot;1&quot;,&quot;1&quot;],[&quot;1&quot;,&quot;0&quot;,&quot;0&quot;,&quot;1&quot;,&quot;0&quot;]]\n<strong>Output:</strong> 6\n<strong>Explanation:</strong> The maximal rectangle is shown in the above picture.\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> matrix = [[&quot;0&quot;]]\n<strong>Output:</strong> 0\n</pre>\n\n<p><strong class=\"example\">Example 3:</strong></p>\n\n<pre>\n<strong>Input:</strong> matrix = [[&quot;1&quot;]]\n<strong>Output:</strong> 1\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>rows == matrix.length</code></li>\n\t<li><code>cols == matrix[i].length</code></li>\n\t<li><code>1 &lt;= rows, cols &lt;= 200</code></li>\n\t<li><code>matrix[i][j]</code> is <code>&#39;0&#39;</code> or <code>&#39;1&#39;</code>.</li>\n</ul>\n",
+  "hints": null
+}

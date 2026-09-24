@@ -1,0 +1,53 @@
+{
+  "frontendId": "124",
+  "questionId": "124",
+  "title": "Binary Tree Maximum Path Sum",
+  "titleCn": "二叉树中的最大路径和",
+  "slug": "binary-tree-maximum-path-sum",
+  "difficulty": "Hard",
+  "topics": [
+    {
+      "name": "Tree",
+      "cn": "Tree",
+      "slug": "tree"
+    },
+    {
+      "name": "Depth-First Search",
+      "cn": "Depth-First Search",
+      "slug": "depth-first-search"
+    },
+    {
+      "name": "Dynamic Programming",
+      "cn": "Dynamic Programming",
+      "slug": "dynamic-programming"
+    },
+    {
+      "name": "Binary Tree",
+      "cn": "Binary Tree",
+      "slug": "binary-tree"
+    },
+    {
+      "name": "树形 DP",
+      "cn": "树形 DP",
+      "slug": "dp-on-trees"
+    }
+  ],
+  "metaData": {
+    "name": "maxPathSum",
+    "params": [
+      {
+        "name": "root",
+        "type": "TreeNode"
+      }
+    ],
+    "return": {
+      "type": "integer"
+    }
+  },
+  "codeSnippet": "/**\n * Definition for a binary tree node.\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n *     TreeNode() {}\n *     TreeNode(int val) { this.val = val; }\n *     TreeNode(int val, TreeNode left, TreeNode right) {\n *         this.val = val;\n *         this.left = left;\n *         this.right = right;\n *     }\n * }\n */\nclass Solution {\n    public int maxPathSum(TreeNode root) {\n        \n    }\n}",
+  "sampleTestCase": "[1,2,3]",
+  "exampleTestcases": "[1,2,3]\n[-10,9,20,null,null,15,7]",
+  "contentHtml": "<p>二叉树中的<strong> 路径</strong> 被定义为一条节点序列，序列中每对相邻节点之间都存在一条边。同一个节点在一条路径序列中 <strong>至多出现一次</strong> 。该路径<strong> 至少包含一个 </strong>节点，且不一定经过根节点。</p>\n\n<p><strong>路径和</strong> 是路径中各节点值的总和。</p>\n\n<p>给你一个二叉树的根节点 <code>root</code> ，返回其 <strong>最大路径和</strong> 。</p>\n\n<p>&nbsp;</p>\n\n<p><strong>示例 1：</strong></p>\n<img alt=\"\" src=\"assets/problems/binary-tree-maximum-path-sum/img-1.jpg\" style=\"width: 322px; height: 182px;\" />\n<pre>\n<strong>输入：</strong>root = [1,2,3]\n<strong>输出：</strong>6\n<strong>解释：</strong>最优路径是 2 -&gt; 1 -&gt; 3 ，路径和为 2 + 1 + 3 = 6</pre>\n\n<p><strong>示例 2：</strong></p>\n<img alt=\"\" src=\"assets/problems/binary-tree-maximum-path-sum/img-2.jpg\" />\n<pre>\n<strong>输入：</strong>root = [-10,9,20,null,null,15,7]\n<strong>输出：</strong>42\n<strong>解释：</strong>最优路径是 15 -&gt; 20 -&gt; 7 ，路径和为 15 + 20 + 7 = 42\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li>树中节点数目范围是 <code>[1, 3 * 10<sup>4</sup>]</code></li>\n\t<li><code>-1000 &lt;= Node.val &lt;= 1000</code></li>\n</ul>\n",
+  "contentEnHtml": "<p>A <strong>path</strong> in a binary tree is a sequence of nodes where each pair of adjacent nodes in the sequence has an edge connecting them. A node can only appear in the sequence <strong>at most once</strong>. Note that the path does not need to pass through the root.</p>\n\n<p>The <strong>path sum</strong> of a path is the sum of the node&#39;s values in the path.</p>\n\n<p>Given the <code>root</code> of a binary tree, return <em>the maximum <strong>path sum</strong> of any <strong>non-empty</strong> path</em>.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n<img alt=\"\" src=\"https://assets.leetcode.com/uploads/2020/10/13/exx1.jpg\" style=\"width: 322px; height: 182px;\" />\n<pre>\n<strong>Input:</strong> root = [1,2,3]\n<strong>Output:</strong> 6\n<strong>Explanation:</strong> The optimal path is 2 -&gt; 1 -&gt; 3 with a path sum of 2 + 1 + 3 = 6.\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n<img alt=\"\" src=\"https://assets.leetcode.com/uploads/2020/10/13/exx2.jpg\" />\n<pre>\n<strong>Input:</strong> root = [-10,9,20,null,null,15,7]\n<strong>Output:</strong> 42\n<strong>Explanation:</strong> The optimal path is 15 -&gt; 20 -&gt; 7 with a path sum of 15 + 20 + 7 = 42.\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li>The number of nodes in the tree is in the range <code>[1, 3 * 10<sup>4</sup>]</code>.</li>\n\t<li><code>-1000 &lt;= Node.val &lt;= 1000</code></li>\n</ul>\n",
+  "hints": null
+}

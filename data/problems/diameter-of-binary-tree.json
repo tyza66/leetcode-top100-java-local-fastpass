@@ -1,0 +1,48 @@
+{
+  "frontendId": "543",
+  "questionId": "543",
+  "title": "Diameter of Binary Tree",
+  "titleCn": "二叉树的直径",
+  "slug": "diameter-of-binary-tree",
+  "difficulty": "Easy",
+  "topics": [
+    {
+      "name": "Tree",
+      "cn": "Tree",
+      "slug": "tree"
+    },
+    {
+      "name": "Depth-First Search",
+      "cn": "Depth-First Search",
+      "slug": "depth-first-search"
+    },
+    {
+      "name": "Binary Tree",
+      "cn": "Binary Tree",
+      "slug": "binary-tree"
+    },
+    {
+      "name": "树形 DP",
+      "cn": "树形 DP",
+      "slug": "dp-on-trees"
+    }
+  ],
+  "metaData": {
+    "name": "diameterOfBinaryTree",
+    "params": [
+      {
+        "name": "root",
+        "type": "TreeNode"
+      }
+    ],
+    "return": {
+      "type": "integer"
+    }
+  },
+  "codeSnippet": "/**\n * Definition for a binary tree node.\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n *     TreeNode() {}\n *     TreeNode(int val) { this.val = val; }\n *     TreeNode(int val, TreeNode left, TreeNode right) {\n *         this.val = val;\n *         this.left = left;\n *         this.right = right;\n *     }\n * }\n */\nclass Solution {\n    public int diameterOfBinaryTree(TreeNode root) {\n        \n    }\n}",
+  "sampleTestCase": "[1,2,3,4,5]",
+  "exampleTestcases": "[1,2,3,4,5]\n[1,2]",
+  "contentHtml": "<p>给你一棵二叉树的根节点，返回该树的 <strong>直径</strong> 。</p>\n\n<p>二叉树的 <strong>直径</strong> 是指树中任意两个节点之间最长路径的 <strong>长度</strong> 。这条路径可能经过也可能不经过根节点 <code>root</code> 。</p>\n\n<p>两节点之间路径的 <strong>长度</strong> 由它们之间边数表示。</p>\n\n<p>&nbsp;</p>\n\n<p><strong class=\"example\">示例 1：</strong></p>\n<img alt=\"\" src=\"assets/problems/diameter-of-binary-tree/img-1.jpg\" style=\"width: 292px; height: 302px;\" />\n<pre>\n<strong>输入：</strong>root = [1,2,3,4,5]\n<strong>输出：</strong>3\n<strong>解释：</strong>3 ，取路径 [4,2,1,3] 或 [5,2,1,3] 的长度。\n</pre>\n\n<p><strong class=\"example\">示例 2：</strong></p>\n\n<pre>\n<strong>输入：</strong>root = [1,2]\n<strong>输出：</strong>1\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li>树中节点数目在范围 <code>[1, 10<sup>4</sup>]</code> 内</li>\n\t<li><code>-100 &lt;= Node.val &lt;= 100</code></li>\n</ul>\n",
+  "contentEnHtml": "<p>Given the <code>root</code> of a binary tree, return <em>the length of the <strong>diameter</strong> of the tree</em>.</p>\n\n<p>The <strong>diameter</strong> of a binary tree is the <strong>length</strong> of the longest path between any two nodes in a tree. This path may or may not pass through the <code>root</code>.</p>\n\n<p>The <strong>length</strong> of a path between two nodes is represented by the number of edges between them.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n<img alt=\"\" src=\"https://assets.leetcode.com/uploads/2021/03/06/diamtree.jpg\" style=\"width: 292px; height: 302px;\" />\n<pre>\n<strong>Input:</strong> root = [1,2,3,4,5]\n<strong>Output:</strong> 3\n<strong>Explanation:</strong> 3 is the length of the path [4,2,1,3] or [5,2,1,3].\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> root = [1,2]\n<strong>Output:</strong> 1\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li>The number of nodes in the tree is in the range <code>[1, 10<sup>4</sup>]</code>.</li>\n\t<li><code>-100 &lt;= Node.val &lt;= 100</code></li>\n</ul>\n",
+  "hints": null
+}

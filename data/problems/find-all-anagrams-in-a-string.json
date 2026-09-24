@@ -1,0 +1,47 @@
+{
+  "frontendId": "438",
+  "questionId": "438",
+  "title": "Find All Anagrams in a String",
+  "titleCn": "找到字符串中所有字母异位词",
+  "slug": "find-all-anagrams-in-a-string",
+  "difficulty": "Medium",
+  "topics": [
+    {
+      "name": "Hash Table",
+      "cn": "Hash Table",
+      "slug": "hash-table"
+    },
+    {
+      "name": "String",
+      "cn": "String",
+      "slug": "string"
+    },
+    {
+      "name": "Sliding Window",
+      "cn": "Sliding Window",
+      "slug": "sliding-window"
+    }
+  ],
+  "metaData": {
+    "name": "findAnagrams",
+    "params": [
+      {
+        "name": "s",
+        "type": "string"
+      },
+      {
+        "name": "p",
+        "type": "string"
+      }
+    ],
+    "return": {
+      "type": "list<integer>"
+    }
+  },
+  "codeSnippet": "class Solution {\n    public List<Integer> findAnagrams(String s, String p) {\n        \n    }\n}",
+  "sampleTestCase": "\"cbaebabacd\"\n\"abc\"",
+  "exampleTestcases": "\"cbaebabacd\"\n\"abc\"\n\"abab\"\n\"ab\"",
+  "contentHtml": "<p>给定两个字符串&nbsp;<code>s</code>&nbsp;和 <code>p</code>，找到&nbsp;<code>s</code><strong>&nbsp;</strong>中所有&nbsp;<code>p</code><strong>&nbsp;</strong>的&nbsp;<strong><span data-keyword=\"anagram\">异位词</span>&nbsp;</strong>的子串，返回这些子串的起始索引。不考虑答案输出的顺序。</p>\n\n<p>&nbsp;</p>\n\n<p><strong>示例&nbsp;1:</strong></p>\n\n<pre>\n<strong>输入: </strong>s = \"cbaebabacd\", p = \"abc\"\n<strong>输出: </strong>[0,6]\n<strong>解释:</strong>\n起始索引等于 0 的子串是 \"cba\", 它是 \"abc\" 的异位词。\n起始索引等于 6 的子串是 \"bac\", 它是 \"abc\" 的异位词。\n</pre>\n\n<p><strong>&nbsp;示例 2:</strong></p>\n\n<pre>\n<strong>输入: </strong>s = \"abab\", p = \"ab\"\n<strong>输出: </strong>[0,1,2]\n<strong>解释:</strong>\n起始索引等于 0 的子串是 \"ab\", 它是 \"ab\" 的异位词。\n起始索引等于 1 的子串是 \"ba\", 它是 \"ab\" 的异位词。\n起始索引等于 2 的子串是 \"ab\", 它是 \"ab\" 的异位词。\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= s.length, p.length &lt;= 3 * 10<sup>4</sup></code></li>\n\t<li><code>s</code>&nbsp;和&nbsp;<code>p</code>&nbsp;仅包含小写字母</li>\n</ul>\n",
+  "contentEnHtml": "<p>Given two strings <code>s</code> and <code>p</code>, return an array of all the start indices of <code>p</code>&#39;s <span data-keyword=\"anagram\">anagrams</span> in <code>s</code>. You may return the answer in <strong>any order</strong>.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<pre>\n<strong>Input:</strong> s = &quot;cbaebabacd&quot;, p = &quot;abc&quot;\n<strong>Output:</strong> [0,6]\n<strong>Explanation:</strong>\nThe substring with start index = 0 is &quot;cba&quot;, which is an anagram of &quot;abc&quot;.\nThe substring with start index = 6 is &quot;bac&quot;, which is an anagram of &quot;abc&quot;.\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> s = &quot;abab&quot;, p = &quot;ab&quot;\n<strong>Output:</strong> [0,1,2]\n<strong>Explanation:</strong>\nThe substring with start index = 0 is &quot;ab&quot;, which is an anagram of &quot;ab&quot;.\nThe substring with start index = 1 is &quot;ba&quot;, which is an anagram of &quot;ab&quot;.\nThe substring with start index = 2 is &quot;ab&quot;, which is an anagram of &quot;ab&quot;.\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= s.length, p.length &lt;= 3 * 10<sup>4</sup></code></li>\n\t<li><code>s</code> and <code>p</code> consist of lowercase English letters.</li>\n</ul>\n",
+  "hints": null
+}

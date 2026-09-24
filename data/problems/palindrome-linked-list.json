@@ -1,0 +1,48 @@
+{
+  "frontendId": "234",
+  "questionId": "234",
+  "title": "Palindrome Linked List",
+  "titleCn": "回文链表",
+  "slug": "palindrome-linked-list",
+  "difficulty": "Easy",
+  "topics": [
+    {
+      "name": "Stack",
+      "cn": "Stack",
+      "slug": "stack"
+    },
+    {
+      "name": "Recursion",
+      "cn": "Recursion",
+      "slug": "recursion"
+    },
+    {
+      "name": "Linked List",
+      "cn": "Linked List",
+      "slug": "linked-list"
+    },
+    {
+      "name": "Two Pointers",
+      "cn": "Two Pointers",
+      "slug": "two-pointers"
+    }
+  ],
+  "metaData": {
+    "name": "isPalindrome",
+    "params": [
+      {
+        "name": "head",
+        "type": "ListNode"
+      }
+    ],
+    "return": {
+      "type": "boolean"
+    }
+  },
+  "codeSnippet": "/**\n * Definition for singly-linked list.\n * public class ListNode {\n *     int val;\n *     ListNode next;\n *     ListNode() {}\n *     ListNode(int val) { this.val = val; }\n *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }\n * }\n */\nclass Solution {\n    public boolean isPalindrome(ListNode head) {\n        \n    }\n}",
+  "sampleTestCase": "[1,2,2,1]",
+  "exampleTestcases": "[1,2,2,1]\n[1,2]",
+  "contentHtml": "<p>给你一个单链表的头节点 <code>head</code> ，请你判断该链表是否为<span data-keyword=\"palindrome-sequence\">回文链表</span>。如果是，返回 <code>true</code> ；否则，返回 <code>false</code> 。</p>\n\n<p>&nbsp;</p>\n\n<p><strong>示例 1：</strong></p>\n<img alt=\"\" src=\"assets/problems/palindrome-linked-list/img-1.jpg\" style=\"width: 422px; height: 62px;\" />\n<pre>\n<strong>输入：</strong>head = [1,2,2,1]\n<strong>输出：</strong>true\n</pre>\n\n<p><strong>示例 2：</strong></p>\n<img alt=\"\" src=\"assets/problems/palindrome-linked-list/img-2.jpg\" style=\"width: 182px; height: 62px;\" />\n<pre>\n<strong>输入：</strong>head = [1,2]\n<strong>输出：</strong>false\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li>链表中节点数目在范围<code>[1, 10<sup>5</sup>]</code> 内</li>\n\t<li><code>0 &lt;= Node.val &lt;= 9</code></li>\n</ul>\n\n<p>&nbsp;</p>\n\n<p><strong>进阶：</strong>你能否用&nbsp;<code>O(n)</code> 时间复杂度和 <code>O(1)</code> 空间复杂度解决此题？</p>\n",
+  "contentEnHtml": "<p>Given the <code>head</code> of a singly linked list, return <code>true</code><em> if it is a </em><span data-keyword=\"palindrome-sequence\"><em>palindrome</em></span><em> or </em><code>false</code><em> otherwise</em>.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n<img alt=\"\" src=\"https://assets.leetcode.com/uploads/2021/03/03/pal1linked-list.jpg\" style=\"width: 422px; height: 62px;\" />\n<pre>\n<strong>Input:</strong> head = [1,2,2,1]\n<strong>Output:</strong> true\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n<img alt=\"\" src=\"https://assets.leetcode.com/uploads/2021/03/03/pal2linked-list.jpg\" style=\"width: 182px; height: 62px;\" />\n<pre>\n<strong>Input:</strong> head = [1,2]\n<strong>Output:</strong> false\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li>The number of nodes in the list is in the range <code>[1, 10<sup>5</sup>]</code>.</li>\n\t<li><code>0 &lt;= Node.val &lt;= 9</code></li>\n</ul>\n\n<p>&nbsp;</p>\n<strong>Follow up:</strong> Could you do it in <code>O(n)</code> time and <code>O(1)</code> space?",
+  "hints": null
+}

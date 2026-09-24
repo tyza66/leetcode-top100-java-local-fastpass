@@ -1,0 +1,62 @@
+{
+  "frontendId": "239",
+  "questionId": "239",
+  "title": "Sliding Window Maximum",
+  "titleCn": "滑动窗口最大值",
+  "slug": "sliding-window-maximum",
+  "difficulty": "Hard",
+  "topics": [
+    {
+      "name": "Queue",
+      "cn": "Queue",
+      "slug": "queue"
+    },
+    {
+      "name": "Array",
+      "cn": "Array",
+      "slug": "array"
+    },
+    {
+      "name": "Sliding Window",
+      "cn": "Sliding Window",
+      "slug": "sliding-window"
+    },
+    {
+      "name": "Monotonic Queue",
+      "cn": "Monotonic Queue",
+      "slug": "monotonic-queue"
+    },
+    {
+      "name": "Heap (Priority Queue)",
+      "cn": "Heap (Priority Queue)",
+      "slug": "heap-priority-queue"
+    },
+    {
+      "name": "区间最值查询",
+      "cn": "区间最值查询",
+      "slug": "range-minimum-maximum-query"
+    }
+  ],
+  "metaData": {
+    "name": "maxSlidingWindow",
+    "params": [
+      {
+        "name": "nums",
+        "type": "integer[]"
+      },
+      {
+        "name": "k",
+        "type": "integer"
+      }
+    ],
+    "return": {
+      "type": "integer[]"
+    }
+  },
+  "codeSnippet": "class Solution {\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        \n    }\n}",
+  "sampleTestCase": "[1,3,-1,-3,5,3,6,7]\n3",
+  "exampleTestcases": "[1,3,-1,-3,5,3,6,7]\n3\n[1]\n1",
+  "contentHtml": "<p>给你一个整数数组 <code>nums</code>，有一个大小为&nbsp;<code>k</code><em>&nbsp;</em>的滑动窗口从数组的最左侧移动到数组的最右侧。你只可以看到在滑动窗口内的 <code>k</code>&nbsp;个数字。滑动窗口每次只向右移动一位。</p>\n\n<p>返回 <em>滑动窗口中的最大值 </em>。</p>\n\n<p>&nbsp;</p>\n\n<p><strong>示例 1：</strong></p>\n\n<pre>\n<b>输入：</b>nums = [1,3,-1,-3,5,3,6,7], k = 3\n<b>输出：</b>[3,3,5,5,6,7]\n<b>解释：</b>\n滑动窗口的位置                最大值\n---------------               -----\n[1  3  -1] -3  5  3  6  7       <strong>3</strong>\n 1 [3  -1  -3] 5  3  6  7       <strong>3</strong>\n 1  3 [-1  -3  5] 3  6  7      <strong> 5</strong>\n 1  3  -1 [-3  5  3] 6  7       <strong>5</strong>\n 1  3  -1  -3 [5  3  6] 7       <strong>6</strong>\n 1  3  -1  -3  5 [3  6  7]      <strong>7</strong>\n</pre>\n\n<p><strong>示例 2：</strong></p>\n\n<pre>\n<b>输入：</b>nums = [1], k = 1\n<b>输出：</b>[1]\n</pre>\n\n<p>&nbsp;</p>\n\n<p><b>提示：</b></p>\n\n<ul>\n\t<li><code>1 &lt;= nums.length &lt;= 10<sup>5</sup></code></li>\n\t<li><code>-10<sup>4</sup>&nbsp;&lt;= nums[i] &lt;= 10<sup>4</sup></code></li>\n\t<li><code>1 &lt;= k &lt;= nums.length</code></li>\n</ul>\n",
+  "contentEnHtml": "<p>You are given an array of integers&nbsp;<code>nums</code>, there is a sliding window of size <code>k</code> which is moving from the very left of the array to the very right. You can only see the <code>k</code> numbers in the window. Each time the sliding window moves right by one position.</p>\n\n<p>Return <em>the max sliding window</em>.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<pre>\n<strong>Input:</strong> nums = [1,3,-1,-3,5,3,6,7], k = 3\n<strong>Output:</strong> [3,3,5,5,6,7]\n<strong>Explanation:</strong> \nWindow position                Max\n---------------               -----\n[1  3  -1] -3  5  3  6  7       <strong>3</strong>\n 1 [3  -1  -3] 5  3  6  7       <strong>3</strong>\n 1  3 [-1  -3  5] 3  6  7      <strong> 5</strong>\n 1  3  -1 [-3  5  3] 6  7       <strong>5</strong>\n 1  3  -1  -3 [5  3  6] 7       <strong>6</strong>\n 1  3  -1  -3  5 [3  6  7]      <strong>7</strong>\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> nums = [1], k = 1\n<strong>Output:</strong> [1]\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= nums.length &lt;= 10<sup>5</sup></code></li>\n\t<li><code>-10<sup>4</sup> &lt;= nums[i] &lt;= 10<sup>4</sup></code></li>\n\t<li><code>1 &lt;= k &lt;= nums.length</code></li>\n</ul>\n",
+  "hints": null
+}

@@ -1,0 +1,54 @@
+{
+  "frontendId": "200",
+  "questionId": "200",
+  "title": "Number of Islands",
+  "titleCn": "岛屿数量",
+  "slug": "number-of-islands",
+  "difficulty": "Medium",
+  "topics": [
+    {
+      "name": "Depth-First Search",
+      "cn": "Depth-First Search",
+      "slug": "depth-first-search"
+    },
+    {
+      "name": "Breadth-First Search",
+      "cn": "Breadth-First Search",
+      "slug": "breadth-first-search"
+    },
+    {
+      "name": "Union Find",
+      "cn": "Union Find",
+      "slug": "union-find"
+    },
+    {
+      "name": "Array",
+      "cn": "Array",
+      "slug": "array"
+    },
+    {
+      "name": "Matrix",
+      "cn": "Matrix",
+      "slug": "matrix"
+    }
+  ],
+  "metaData": {
+    "name": "numIslands",
+    "params": [
+      {
+        "name": "grid",
+        "type": "character[][]"
+      }
+    ],
+    "return": {
+      "type": "integer"
+    },
+    "manual": true
+  },
+  "codeSnippet": "class Solution {\n    public int numIslands(char[][] grid) {\n        \n    }\n}",
+  "sampleTestCase": "[[\"1\",\"1\",\"1\",\"1\",\"0\"],[\"1\",\"1\",\"0\",\"1\",\"0\"],[\"1\",\"1\",\"0\",\"0\",\"0\"],[\"0\",\"0\",\"0\",\"0\",\"0\"]]",
+  "exampleTestcases": "[[\"1\",\"1\",\"1\",\"1\",\"0\"],[\"1\",\"1\",\"0\",\"1\",\"0\"],[\"1\",\"1\",\"0\",\"0\",\"0\"],[\"0\",\"0\",\"0\",\"0\",\"0\"]]\n[[\"1\",\"1\",\"0\",\"0\",\"0\"],[\"1\",\"1\",\"0\",\"0\",\"0\"],[\"0\",\"0\",\"1\",\"0\",\"0\"],[\"0\",\"0\",\"0\",\"1\",\"1\"]]",
+  "contentHtml": "<p>给你一个由&nbsp;<code>'1'</code>（陆地）和 <code>'0'</code>（水）组成的的二维网格，请你计算网格中岛屿的数量。</p>\n\n<p>岛屿总是被水包围，并且每座岛屿只能由水平方向和/或竖直方向上相邻的陆地连接形成。</p>\n\n<p>此外，你可以假设该网格的四条边均被水包围。</p>\n\n<p>&nbsp;</p>\n\n<p><strong>示例 1：</strong></p>\n\n<pre>\n<strong>输入：</strong>grid = [\n&nbsp; ['1','1','1','1','0'],\n&nbsp; ['1','1','0','1','0'],\n&nbsp; ['1','1','0','0','0'],\n&nbsp; ['0','0','0','0','0']\n]\n<strong>输出：</strong>1\n</pre>\n\n<p><strong>示例 2：</strong></p>\n\n<pre>\n<strong>输入：</strong>grid = [\n&nbsp; ['1','1','0','0','0'],\n&nbsp; ['1','1','0','0','0'],\n&nbsp; ['0','0','1','0','0'],\n&nbsp; ['0','0','0','1','1']\n]\n<strong>输出：</strong>3\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>m == grid.length</code></li>\n\t<li><code>n == grid[i].length</code></li>\n\t<li><code>1 &lt;= m, n &lt;= 300</code></li>\n\t<li><code>grid[i][j]</code> 的值为 <code>'0'</code> 或 <code>'1'</code></li>\n</ul>\n",
+  "contentEnHtml": "<p>Given an <code>m x n</code> 2D binary grid <code>grid</code> which represents a map of <code>&#39;1&#39;</code>s (land) and <code>&#39;0&#39;</code>s (water), return <em>the number of islands</em>.</p>\n\n<p>An <strong>island</strong> is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<pre>\n<strong>Input:</strong> grid = [\n  [&quot;1&quot;,&quot;1&quot;,&quot;1&quot;,&quot;1&quot;,&quot;0&quot;],\n  [&quot;1&quot;,&quot;1&quot;,&quot;0&quot;,&quot;1&quot;,&quot;0&quot;],\n  [&quot;1&quot;,&quot;1&quot;,&quot;0&quot;,&quot;0&quot;,&quot;0&quot;],\n  [&quot;0&quot;,&quot;0&quot;,&quot;0&quot;,&quot;0&quot;,&quot;0&quot;]\n]\n<strong>Output:</strong> 1\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> grid = [\n  [&quot;1&quot;,&quot;1&quot;,&quot;0&quot;,&quot;0&quot;,&quot;0&quot;],\n  [&quot;1&quot;,&quot;1&quot;,&quot;0&quot;,&quot;0&quot;,&quot;0&quot;],\n  [&quot;0&quot;,&quot;0&quot;,&quot;1&quot;,&quot;0&quot;,&quot;0&quot;],\n  [&quot;0&quot;,&quot;0&quot;,&quot;0&quot;,&quot;1&quot;,&quot;1&quot;]\n]\n<strong>Output:</strong> 3\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>m == grid.length</code></li>\n\t<li><code>n == grid[i].length</code></li>\n\t<li><code>1 &lt;= m, n &lt;= 300</code></li>\n\t<li><code>grid[i][j]</code> is <code>&#39;0&#39;</code> or <code>&#39;1&#39;</code>.</li>\n</ul>\n",
+  "hints": null
+}

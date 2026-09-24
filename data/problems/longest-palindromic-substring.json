@@ -1,0 +1,48 @@
+{
+  "frontendId": "5",
+  "questionId": "5",
+  "title": "Longest Palindromic Substring",
+  "titleCn": "最长回文子串",
+  "slug": "longest-palindromic-substring",
+  "difficulty": "Medium",
+  "topics": [
+    {
+      "name": "Two Pointers",
+      "cn": "Two Pointers",
+      "slug": "two-pointers"
+    },
+    {
+      "name": "String",
+      "cn": "String",
+      "slug": "string"
+    },
+    {
+      "name": "Dynamic Programming",
+      "cn": "Dynamic Programming",
+      "slug": "dynamic-programming"
+    },
+    {
+      "name": "Manacher 算法",
+      "cn": "Manacher 算法",
+      "slug": "manacher"
+    }
+  ],
+  "metaData": {
+    "name": "longestPalindrome",
+    "params": [
+      {
+        "name": "s",
+        "type": "string"
+      }
+    ],
+    "return": {
+      "type": "string"
+    }
+  },
+  "codeSnippet": "class Solution {\n    public String longestPalindrome(String s) {\n        \n    }\n}",
+  "sampleTestCase": "\"babad\"",
+  "exampleTestcases": "\"babad\"\n\"cbbd\"",
+  "contentHtml": "<p>给你一个字符串 <code>s</code>，找到 <code>s</code> 中最长的 <span data-keyword=\"palindromic-string\">回文</span> <span data-keyword=\"substring-nonempty\">子串</span>。</p>\n\n<p>&nbsp;</p>\n\n<p><strong>示例 1：</strong></p>\n\n<pre>\n<strong>输入：</strong>s = \"babad\"\n<strong>输出：</strong>\"bab\"\n<strong>解释：</strong>\"aba\" 同样是符合题意的答案。\n</pre>\n\n<p><strong>示例 2：</strong></p>\n\n<pre>\n<strong>输入：</strong>s = \"cbbd\"\n<strong>输出：</strong>\"bb\"\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= s.length &lt;= 1000</code></li>\n\t<li><code>s</code> 仅由数字和英文字母组成</li>\n</ul>\n",
+  "contentEnHtml": "<p>Given a string <code>s</code>, return <em>the longest</em> <span data-keyword=\"palindromic-string\"><em>palindromic</em></span> <span data-keyword=\"substring-nonempty\"><em>substring</em></span> in <code>s</code>.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<pre>\n<strong>Input:</strong> s = &quot;babad&quot;\n<strong>Output:</strong> &quot;bab&quot;\n<strong>Explanation:</strong> &quot;aba&quot; is also a valid answer.\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> s = &quot;cbbd&quot;\n<strong>Output:</strong> &quot;bb&quot;\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= s.length &lt;= 1000</code></li>\n\t<li><code>s</code> consist of only digits and English letters.</li>\n</ul>\n",
+  "hints": null
+}

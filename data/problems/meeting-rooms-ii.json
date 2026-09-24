@@ -1,0 +1,58 @@
+{
+  "frontendId": "253",
+  "questionId": "253",
+  "title": "Meeting Rooms II",
+  "titleCn": "会议室 II",
+  "slug": "meeting-rooms-ii",
+  "difficulty": "Medium",
+  "topics": [
+    {
+      "name": "Greedy",
+      "cn": "Greedy",
+      "slug": "greedy"
+    },
+    {
+      "name": "Array",
+      "cn": "Array",
+      "slug": "array"
+    },
+    {
+      "name": "Two Pointers",
+      "cn": "Two Pointers",
+      "slug": "two-pointers"
+    },
+    {
+      "name": "Prefix Sum",
+      "cn": "Prefix Sum",
+      "slug": "prefix-sum"
+    },
+    {
+      "name": "Sorting",
+      "cn": "Sorting",
+      "slug": "sorting"
+    },
+    {
+      "name": "Heap (Priority Queue)",
+      "cn": "Heap (Priority Queue)",
+      "slug": "heap-priority-queue"
+    }
+  ],
+  "metaData": {
+    "name": "minMeetingRooms",
+    "params": [
+      {
+        "name": "intervals",
+        "type": "integer[][]"
+      }
+    ],
+    "return": {
+      "type": "integer"
+    }
+  },
+  "codeSnippet": "",
+  "sampleTestCase": "[[0,30],[5,10],[15,20]]",
+  "exampleTestcases": "[[0,30],[5,10],[15,20]]\n[[7,10],[2,4]]",
+  "contentHtml": "",
+  "contentEnHtml": "",
+  "hints": null
+}
