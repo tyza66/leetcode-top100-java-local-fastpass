@@ -3,6 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "license": "MIT",
   "scripts": {
     "dev": "concurrently -k -n api,web -c blue,green \"node server/index.mjs\" \"vite\"",
     "build": "vite build",
