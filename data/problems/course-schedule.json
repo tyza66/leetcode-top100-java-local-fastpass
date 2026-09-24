@@ -53,5 +53,66 @@
   "exampleTestcases": "2\n[[1,0]]\n2\n[[1,0],[0,1]]",
   "contentHtml": "<p>你这个学期必须选修 <code>numCourses</code> 门课程，记为&nbsp;<code>0</code>&nbsp;到&nbsp;<code>numCourses - 1</code> 。</p>\n\n<p>在选修某些课程之前需要一些先修课程。 先修课程按数组&nbsp;<code>prerequisites</code> 给出，其中&nbsp;<code>prerequisites[i] = [a<sub>i</sub>, b<sub>i</sub>]</code> ，表示如果要学习课程&nbsp;<code>a<sub>i</sub></code> 则 <strong>必须</strong> 先学习课程&nbsp; <code>b<sub>i</sub></code><sub> </sub>。</p>\n\n<ul>\n\t<li>例如，先修课程对&nbsp;<code>[0, 1]</code> 表示：想要学习课程 <code>0</code> ，你需要先完成课程 <code>1</code> 。</li>\n</ul>\n\n<p>请你判断是否可能完成所有课程的学习？如果可以，返回 <code>true</code> ；否则，返回 <code>false</code> 。</p>\n\n<p>&nbsp;</p>\n\n<p><strong>示例 1：</strong></p>\n\n<pre>\n<strong>输入：</strong>numCourses = 2, prerequisites = [[1,0]]\n<strong>输出：</strong>true\n<strong>解释：</strong>总共有 2 门课程。学习课程 1 之前，你需要完成课程 0 。这是可能的。</pre>\n\n<p><strong>示例 2：</strong></p>\n\n<pre>\n<strong>输入：</strong>numCourses = 2, prerequisites = [[1,0],[0,1]]\n<strong>输出：</strong>false\n<strong>解释：</strong>总共有 2 门课程。学习课程 1 之前，你需要先完成​课程 0 ；并且学习课程 0 之前，你还应先完成课程 1 。这是不可能的。</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= numCourses &lt;= 2000</code></li>\n\t<li><code>0 &lt;= prerequisites.length &lt;= 5000</code></li>\n\t<li><code>prerequisites[i].length == 2</code></li>\n\t<li><code>0 &lt;= a<sub>i</sub>, b<sub>i</sub> &lt; numCourses</code></li>\n\t<li><code>prerequisites[i]</code> 中的所有课程对 <strong>互不相同</strong></li>\n</ul>\n",
   "contentEnHtml": "<p>There are a total of <code>numCourses</code> courses you have to take, labeled from <code>0</code> to <code>numCourses - 1</code>. You are given an array <code>prerequisites</code> where <code>prerequisites[i] = [a<sub>i</sub>, b<sub>i</sub>]</code> indicates that you <strong>must</strong> take course <code>b<sub>i</sub></code> first if you want to take course <code>a<sub>i</sub></code>.</p>\n\n<ul>\n\t<li>For example, the pair <code>[0, 1]</code>, indicates that to take course <code>0</code> you have to first take course <code>1</code>.</li>\n</ul>\n\n<p>Return <code>true</code> if you can finish all courses. Otherwise, return <code>false</code>.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<pre>\n<strong>Input:</strong> numCourses = 2, prerequisites = [[1,0]]\n<strong>Output:</strong> true\n<strong>Explanation:</strong> There are a total of 2 courses to take. \nTo take course 1 you should have finished course 0. So it is possible.\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> numCourses = 2, prerequisites = [[1,0],[0,1]]\n<strong>Output:</strong> false\n<strong>Explanation:</strong> There are a total of 2 courses to take. \nTo take course 1 you should have finished course 0, and to take course 0 you should also have finished course 1. So it is impossible.\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= numCourses &lt;= 2000</code></li>\n\t<li><code>0 &lt;= prerequisites.length &lt;= 5000</code></li>\n\t<li><code>prerequisites[i].length == 2</code></li>\n\t<li><code>0 &lt;= a<sub>i</sub>, b<sub>i</sub> &lt; numCourses</code></li>\n\t<li>All the pairs prerequisites[i] are <strong>unique</strong>.</li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：拓扑排序",
+      "approach": "先修关系构成有向图，能修完所有课当且仅当图中无环。枚举排列检查约束在课程数较大时不可行。\n拓扑排序不断取出入度为 0 的课并减少其后继入度；若全部结点都能入队则无环，否则存在环。\n对于本题，我们可以将课程看作图中的节点，先修课程看作图中的边，那么我们可以将本题转化为判断有向图中是否存在环。\n具体地，我们可以使用拓扑排序的思想，对于每个入度为 0 的节点，我们将其出度的节点的入度减 1，直到所有节点都被遍历到。\n如果所有节点都被遍历到，说明图中不存在环，那么我们就可以完成所有课程的学习；否则，我们就无法完成所有课程的学习。\npython\nclass Solution:\ndef canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:\ng = [[] for _ in range(numCourses)]\nindeg = [0] * numCourses\nfor a, b in prerequisites:\ng[b].append(a)\nindeg[a] += 1\nq = [i for i, x in enumerate(indeg) if x == 0]\nfor i in q:\nnumCourses -= 1\nfor j in g[i]:\nindeg[j] -= 1\nif indeg[j] == 0:\nq.append(j)\nreturn numCourses == 0\njava\nclass Solution {\npublic boolean canFinish(int numCourses",
+      "complexity": "时间复杂度 $O(n + m)$空间复杂度 $O(n + m)$其中 $n$ 和 $m$ 分别为课程数和先修课程数 / 空间复杂度 $O(n + m)$其中 $n$ 和 $m$ 分别为课程数和先修课程数",
+      "javaSnippet": "class Solution {\n    public boolean canFinish(int numCourses, int[][] prerequisites) {\n        List<Integer>[] g = new List[numCourses];\n        Arrays.setAll(g, k -> new ArrayList<>());\n        int[] indeg = new int[numCourses];\n        for (var p : prerequisites) {\n            int a = p[0], b = p[1];\n            g[b].add(a);\n            ++indeg[a];\n        }\n        Deque<Integer> q = new ArrayDeque<>();\n        for (int i = 0; i < numCourses; ++i) {\n            if (indeg[i] == 0) {\n                q.offer(i);\n            }\n        }\n        while (!q.isEmpty()) {\n            int i = q.poll();\n            --numCourses;\n            for (int j : g[i]) {\n                if (--indeg[j] == 0) {\n                    q.offer(j);\n                }\n            }\n        }\n        return numCourses == 0;\n    }\n}"
+    },
+    "memory": {
+      "title": "对所有起点 DFS",
+      "approach": "把每个点/节点都当作起点走一遍搜索，用 visited 防止绕圈，每次搜索维护全局计数。",
+      "complexity": "O(n) 到 O(n^2) 取决于图结构",
+      "javaSnippet": ""
+    },
+    "keywords": [
+      "课程表",
+      "深度优先搜索",
+      "广度优先搜索",
+      "图",
+      "拓扑排序",
+      "有向无环图"
+    ],
+    "tech": [
+      {
+        "name": "DFS 框架",
+        "detail": "递归进入子树/邻居之前先处理当前节点，返回结果时用子树信息汇总。树上的路径和、最大路径、最近公共祖先都依赖后序返回值。"
+      },
+      {
+        "name": "访问标记",
+        "detail": "图中需要 visited 集合避免走回头路；树天然无环，但要注意空节点和越界条件。"
+      },
+      {
+        "name": "BFS 框架",
+        "detail": "用队列做层级遍历，每次取出当前层全部节点再扩展下一层；可以同时处理最短路径、层级序号、多源扩散等场景。"
+      },
+      {
+        "name": "层次计数",
+        "detail": "在 for (int i = size; i > 0; i--) 的循环里计算层数，能保证每次循环只处理同一层节点。"
+      },
+      {
+        "name": "图遍历",
+        "detail": "邻接表建图；BFS 适合无权最短路和层数，DFS 适合连通分量与依赖路径；注意 visited 标记的时间点。"
+      },
+      {
+        "name": "拓扑排序",
+        "detail": "用入度表 + 队列实现 Kahn 算法：先加入入度为 0 的节点，每弹出节点就把后继入度减一。最终访问数不等于节点数说明有环。"
+      }
+    ],
+    "pitfalls": [
+      "先明确题目边界条件与返回值转义",
+      "写前用小样例手动推演一遍"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

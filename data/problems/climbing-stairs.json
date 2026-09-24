@@ -39,5 +39,62 @@
   "exampleTestcases": "2\n3",
   "contentHtml": "<p>假设你正在爬楼梯。需要 <code>n</code>&nbsp;阶你才能到达楼顶。</p>\n\n<p>每次你可以爬 <code>1</code> 或 <code>2</code> 个台阶。你有多少种不同的方法可以爬到楼顶呢？</p>\n\n<p>&nbsp;</p>\n\n<p><strong>示例 1：</strong></p>\n\n<pre>\n<strong>输入：</strong>n = 2\n<strong>输出：</strong>2\n<strong>解释：</strong>有两种方法可以爬到楼顶。\n1. 1 阶 + 1 阶\n2. 2 阶</pre>\n\n<p><strong>示例 2：</strong></p>\n\n<pre>\n<strong>输入：</strong>n = 3\n<strong>输出：</strong>3\n<strong>解释：</strong>有三种方法可以爬到楼顶。\n1. 1 阶 + 1 阶 + 1 阶\n2. 1 阶 + 2 阶\n3. 2 阶 + 1 阶\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= n &lt;= 45</code></li>\n</ul>\n",
   "contentEnHtml": "<p>You are climbing a staircase. It takes <code>n</code> steps to reach the top.</p>\n\n<p>Each time you can either climb <code>1</code> or <code>2</code> steps. In how many distinct ways can you climb to the top?</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<pre>\n<strong>Input:</strong> n = 2\n<strong>Output:</strong> 2\n<strong>Explanation:</strong> There are two ways to climb to the top.\n1. 1 step + 1 step\n2. 2 steps\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> n = 3\n<strong>Output:</strong> 3\n<strong>Explanation:</strong> There are three ways to climb to the top.\n1. 1 step + 1 step + 1 step\n2. 1 step + 2 steps\n3. 2 steps + 1 step\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= n &lt;= 45</code></li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：递推",
+      "approach": "到达第 n 阶的最后一步只能是爬 1 阶或 2 阶，因此方案数满足 f(n) = f(n-1) + f(n-2)。若直接按此递归，n <= 45 时同一子问题会被反复展开，时间无法接受。\n这与斐波那契数列相同，自底向上递推即可避免重复计算。f[i] 只依赖于前两项，用两个变量滚动维护，即可在 O(n) 时间、O(1) 额外空间内得到答案。\n我们定义 f[i] 表示爬到第 i 阶楼梯的方法数，那么 f[i] 可以由 f[i - 1] 和 f[i - 2] 转移而来，即：\nf[i] = f[i - 1] + f[i - 2]\n初始条件为 f[0] = 1，f[1] = 1，即爬到第 0 阶楼梯的方法数为 1，爬到第 1 阶楼梯的方法数也为 1。\n答案即为 f[n]。\n由于 f[i] 只与 f[i - 1] 和 f[i - 2] 有关，因此我们可以只用两个变量 a 和 b 来维护当前的方法数，空间复杂度降低为 O(1)。\npython\nclass Solution:\ndef climbStairs(self, n: int) -> int:\na, b = 0, 1\nfor _ in range(n):\na, b = b, a + b\nreturn b\njava\nclass Solution {\npublic int climbStairs(int n) {\nint a = 0, b = 1;\nfor (int i = 0; i < n; ++i) {\nint c = a + b;\na = b;\nb = c;\n}\nreturn b;\n}\n}\ncpp\nclass Solution {\np",
+      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(1)$ / 空间复杂度 降低为 $O(1)$",
+      "javaSnippet": "class Solution {\n    public int climbStairs(int n) {\n        int a = 0, b = 1;\n        for (int i = 0; i < n; ++i) {\n            int c = a + b;\n            a = b;\n            b = c;\n        }\n        return b;\n    }\n}"
+    },
+    "memory": {
+      "title": "方法二：矩阵快速幂加速递推",
+      "approach": "方法一已经是 O(n)，对本题 n <= 45 足够，但线性递推在 n 更大时仍偏慢。\n线性齐次递推可以写成矩阵乘法：F_n 由 F_{n-1} 乘上固定的 2 x 2 转移矩阵得到。矩阵快速幂把 n 次转移压到 O(\\log n)，常数略大，适合需要加速同一递推的场景。\n我们设 Fib(n) 表示一个 1 x 2 的矩阵 \\begin{bmatrix} F_n & F_{n - 1} \\end{bmatrix}，其中 F_n 和 F_{n - 1} 分别是第 n 个和第 n - 1 个斐波那契数。\n我们希望根据 Fib(n-1) = \\begin{bmatrix} F_{n - 1} & F_{n - 2} \\end{bmatrix} 推出 Fib(n)。也即是说，我们需要一个矩阵 base，使得 Fib(n - 1) x base = Fib(n)，即：\n\\begin{bmatrix}\nF_{n - 1} & F_{n - 2}\n\\end{bmatrix} x base = \\begin{bmatrix} F_n & F_{n - 1} \\end{bmatrix}\n由于 F_n = F_{n - 1} + F_{n - 2}，所以矩阵 base 的第一列为：\n\\begin{bmatrix}\n1 \\\\\n1\n\\end{bmatrix}\n第二列为：\n\\begin{bmatrix}\n1 \\\\\n0\n\\end{bmatrix}\n因此有：\n\\begin{bmatrix} F_{n - 1} & F_{n - 2} \\end{bmatrix} x \\begin{bmatrix}1 & 1 ",
+      "complexity": "时间复杂度 $O(\\log n)$空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "javaSnippet": "class Solution {\n    private final int[][] a = {{1, 1}, {1, 0}};\n\n    public int climbStairs(int n) {\n        return pow(a, n - 1)[0][0];\n    }\n\n    private int[][] mul(int[][] a, int[][] b) {\n        int m = a.length, n = b[0].length;\n        int[][] c = new int[m][n];\n        for (int i = 0; i < m; ++i) {\n            for (int j = 0; j < n; ++j) {\n                for (int k = 0; k < a[0].length; ++k) {\n                    c[i][j] += a[i][k] * b[k][j];\n                }\n            }\n        }\n        return c;\n    }\n\n    private int[][] pow(int[][] a, int n) {\n        int[][] res = {{1, 1}, {0, 0}};\n        while (n > 0) {\n            if ((n & 1) == 1) {\n                res = mul(res, a);\n            }\n            n >>= 1;\n            a = mul(a, a);\n        }\n        return res;\n    }\n}"
+    },
+    "keywords": [
+      "爬楼梯",
+      "记忆化",
+      "数学",
+      "动态规划",
+      "递推"
+    ],
+    "tech": [
+      {
+        "name": "记忆化缓存",
+        "detail": "把递归参数映射到结果，存放在二维数组或 HashMap；注意缓存命中与未命中分开，避免用默认值掩盖真实结果 0。"
+      },
+      {
+        "name": "数学归纳",
+        "detail": "求通项、快速幂、取模、组合数、容斥等场景先推导公式，再在代码里维护迭代变量。"
+      },
+      {
+        "name": "动态规划五步",
+        "detail": "定义 dp 状态 -> 推导转移方程 -> 确定初始值 -> 确定遍历顺序 -> 返回答案。先写小例子验证 dp 表，再压缩空间。"
+      },
+      {
+        "name": "状态压缩",
+        "detail": "很多 dp 只依赖前一两行，可以把二维数组压成一维，甚至只用两个变量；滚动数组不会改变状态含义，只减少空间。"
+      },
+      {
+        "name": "记忆化搜索",
+        "detail": "用递归 + memo 数组/Map 缓存结果，本质上与自底向上 dp 等价，适合状态转移方向不直观的题目。"
+      }
+    ],
+    "pitfalls": [
+      "dp 数组初始值要区分 0 与“不可达”",
+      "遍历顺序决定能否使用前一轮状态，注意下标从 1 开始",
+      "返回的是 dp[n] 还是 dp 数组最大值"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

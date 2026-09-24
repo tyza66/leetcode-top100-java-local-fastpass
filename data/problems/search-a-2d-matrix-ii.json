@@ -49,5 +49,68 @@
   "exampleTestcases": "[[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]]\n5\n[[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]]\n20",
   "contentHtml": "<p>编写一个高效的算法来搜索&nbsp;<code><em>m</em>&nbsp;x&nbsp;<em>n</em></code>&nbsp;矩阵 <code>matrix</code> 中的一个目标值 <code>target</code> 。该矩阵具有以下特性：</p>\n\n<ul>\n\t<li>每行的元素从左到右升序排列。</li>\n\t<li>每列的元素从上到下升序排列。</li>\n</ul>\n\n<p>&nbsp;</p>\n\n<p><b>示例 1：</b></p>\n<img alt=\"\" src=\"assets/problems/search-a-2d-matrix-ii/img-1.jpg\" />\n<pre>\n<b>输入：</b>matrix = [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]], target = 5\n<b>输出：</b>true\n</pre>\n\n<p><b>示例 2：</b></p>\n<img alt=\"\" src=\"assets/problems/search-a-2d-matrix-ii/img-2.jpg\" />\n<pre>\n<b>输入：</b>matrix = [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]], target = 20\n<b>输出：</b>false\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>m == matrix.length</code></li>\n\t<li><code>n == matrix[i].length</code></li>\n\t<li><code>1 &lt;= n, m &lt;= 300</code></li>\n\t<li><code>-10<sup>9</sup>&nbsp;&lt;= matrix[i][j] &lt;= 10<sup>9</sup></code></li>\n\t<li>每行的所有元素从左到右升序排列</li>\n\t<li>每列的所有元素从上到下升序排列</li>\n\t<li><code>-10<sup>9</sup>&nbsp;&lt;= target &lt;= 10<sup>9</sup></code></li>\n</ul>\n",
   "contentEnHtml": "<p>Write an efficient algorithm that searches for a value <code>target</code> in an <code>m x n</code> integer matrix <code>matrix</code>. This matrix has the following properties:</p>\n\n<ul>\n\t<li>Integers in each row are sorted in ascending from left to right.</li>\n\t<li>Integers in each column are sorted in ascending from top to bottom.</li>\n</ul>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n<img alt=\"\" src=\"https://assets.leetcode.com/uploads/2020/11/24/searchgrid2.jpg\" style=\"width: 300px; height: 300px;\" />\n<pre>\n<strong>Input:</strong> matrix = [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]], target = 5\n<strong>Output:</strong> true\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n<img alt=\"\" src=\"https://assets.leetcode.com/uploads/2020/11/24/searchgrid.jpg\" style=\"width: 300px; height: 300px;\" />\n<pre>\n<strong>Input:</strong> matrix = [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]], target = 20\n<strong>Output:</strong> false\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>m == matrix.length</code></li>\n\t<li><code>n == matrix[i].length</code></li>\n\t<li><code>1 &lt;= n, m &lt;= 300</code></li>\n\t<li><code>-10<sup>9</sup> &lt;= matrix[i][j] &lt;= 10<sup>9</sup></code></li>\n\t<li>All the integers in each row are <strong>sorted</strong> in ascending order.</li>\n\t<li>All the integers in each column are <strong>sorted</strong> in ascending order.</li>\n\t<li><code>-10<sup>9</sup> &lt;= target &lt;= 10<sup>9</sup></code></li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：二分查找",
+      "approach": "每行、每列均递增，可对每一行二分查找 target。行数为 m、列为 n 时时间为 O(m\\log n)，无需额外空间。\n由于每一行的所有元素升序排列，因此，对于每一行，我们可以使用二分查找找到第一个大于等于 \\textit{target} 的元素，然后判断该元素是否等于 \\textit{target}。如果等于 \\textit{target}，说明找到了目标值，直接返回 \\text{true}。如果不等于 \\textit{target}，说明这一行的所有元素都小于 \\textit{target}，应该继续搜索下一行。\n如果所有行都搜索完了，都没有找到目标值，说明目标值不存在，返回 \\text{false}。\npython\nclass Solution:\ndef searchMatrix(self, matrix: List[List[int]], target: int) -> bool:\nfor row in matrix:\nj = bisect_left(row, target)\nif j < len(matrix[0]) and row[j] == target:\nreturn True\nreturn False\njava\nclass Solution {\npublic boolean searchMatrix(int[][] matrix, int target) {\nfor (var row : matrix) {\nint j = Arrays.binarySearch(row, target);\nif (j >= 0) {\nreturn true;\n}\n}\nret",
+      "complexity": "时间复杂度 $O(m \\times \\log n)$其中 $m$ 和 $n$ 分别为矩阵的行数和列数空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "javaSnippet": "class Solution {\n    public boolean searchMatrix(int[][] matrix, int target) {\n        for (var row : matrix) {\n            int j = Arrays.binarySearch(row, target);\n            if (j >= 0) {\n                return true;\n            }\n        }\n        return false;\n    }\n}"
+    },
+    "memory": {
+      "title": "方法二：从左下角或右上角搜索",
+      "approach": "逐行二分未同时利用列递增。从左下角出发：当前值过大则上移（排除本列上方），过小则右移（排除本行右侧）。\n每步丢掉一行或一列，时间为 O(m+n)。\n这里我们以左下角或右上角作为起始搜索点，往右上或左下方向开始搜索。比较当前元素 \\textit{matrix}[i][j] 与 \\textit{target} 的大小关系：\n- 若 \\textit{matrix}[i][j] = \\textit{target}，说明找到了目标值，直接返回 \\text{true}。\n- 若 \\textit{matrix}[i][j] > \\textit{target}，说明这一列从当前位置开始往上的所有元素均大于 \\textit{target}，应该让 i 指针往上移动，即 i <=ftarrow i - 1。\n- 若 \\textit{matrix}[i][j] < \\textit{target}，说明这一行从当前位置开始往右的所有元素均小于 \\textit{target}，应该让 j 指针往右移动，即 j <=ftarrow j + 1。\n若搜索结束依然找不到 \\textit{target}，返回 \\text{false}。\npython\nclass Solution:\ndef searchMatrix(self, matrix: List[List[int]], target: int) -> bool:\nm, n = len(matrix), len(matrix[0])\ni, j = m - 1, 0\nwhile i >= 0 and j < n:\nif matrix[i][j] == tar",
+      "complexity": "时间复杂度 $O(m + n)$其中 $m$ 和 $n$ 分别为矩阵的行数和列数空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "javaSnippet": "class Solution {\n    public boolean searchMatrix(int[][] matrix, int target) {\n        int m = matrix.length, n = matrix[0].length;\n        int i = m - 1, j = 0;\n        while (i >= 0 && j < n) {\n            if (matrix[i][j] == target) {\n                return true;\n            }\n            if (matrix[i][j] > target) {\n                --i;\n            } else {\n                ++j;\n            }\n        }\n        return false;\n    }\n}"
+    },
+    "keywords": [
+      "搜索二维矩阵 II",
+      "数组",
+      "二分查找",
+      "分治",
+      "矩阵"
+    ],
+    "tech": [
+      {
+        "name": "二分查找模板",
+        "detail": "在有序（或满足单调性）的区间里找边界，用 l <= r 与 mid = l + (r - l) / 2。问“第一个满足条件”还是“最后一个满足条件”决定收缩方向。"
+      },
+      {
+        "name": "峰值与旋转数组",
+        "detail": "不一定完全有序，只要比较中点与端点即可排除一半；注意数组长度为 1 和边界索引。"
+      },
+      {
+        "name": "分治",
+        "detail": "把问题拆成独立子问题，分别求解后合并。归并排序、最大子数组、二叉搜索树计数都可以用分治思想。"
+      },
+      {
+        "name": "合并函数",
+        "detail": "分治的难点常在 merge 一步：要维护哪些全局信息、如何把左右答案组合。"
+      },
+      {
+        "name": "矩阵遍历",
+        "detail": "行列方向用方向数组 dirs={{-1,0},{1,0},{0,-1},{0,1}}；DFS 时先标记再递归，避免重复访问。"
+      },
+      {
+        "name": "矩阵变换",
+        "detail": "原地旋转、螺旋遍历、搜索二维矩阵都要求严格按层或按方向定义边界，写之前先画出下标规律。"
+      }
+    ],
+    "pitfalls": [
+      "while 条件的 < 与 <= 决定边界怎么写",
+      "mid 用 l+(r-l)/2 防溢出",
+      "更新 l/r 时必须跳过 mid，否则死循环",
+      "边界判断顺序：先越界再看内容",
+      "原地修改前先备份会被覆盖的值"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

@@ -39,5 +39,63 @@
   "exampleTestcases": "[2,3,1,1,4]\n[3,2,1,0,4]",
   "contentHtml": "<p>给你一个非负整数数组&nbsp;<code>nums</code> ，你最初位于数组的 <strong>第一个下标</strong> 。数组中的每个元素代表你在该位置可以跳跃的最大长度。</p>\n\n<p>判断你是否能够到达最后一个下标，如果可以，返回 <code>true</code> ；否则，返回 <code>false</code> 。</p>\n\n<p>&nbsp;</p>\n\n<p><strong>示例&nbsp;1：</strong></p>\n\n<pre>\n<strong>输入：</strong>nums = [2,3,1,1,4]\n<strong>输出：</strong>true\n<strong>解释：</strong>可以先跳 1 步，从下标 0 到达下标 1, 然后再从下标 1 跳 3 步到达最后一个下标。\n</pre>\n\n<p><strong>示例&nbsp;2：</strong></p>\n\n<pre>\n<strong>输入：</strong>nums = [3,2,1,0,4]\n<strong>输出：</strong>false\n<strong>解释：</strong>无论怎样，总会到达下标为 3 的位置。但该下标的最大跳跃长度是 0 ， 所以永远不可能到达最后一个下标。\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= nums.length &lt;= 10<sup>4</sup></code></li>\n\t<li><code>0 &lt;= nums[i] &lt;= 10<sup>5</sup></code></li>\n</ul>\n",
   "contentEnHtml": "<p>You are given an integer array <code>nums</code>. You are initially positioned at the array&#39;s <strong>first index</strong>, and each element in the array represents your maximum jump length at that position.</p>\n\n<p>Return <code>true</code><em> if you can reach the last index, or </em><code>false</code><em> otherwise</em>.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<pre>\n<strong>Input:</strong> nums = [2,3,1,1,4]\n<strong>Output:</strong> true\n<strong>Explanation:</strong> Jump 1 step from index 0 to 1, then 3 steps to the last index.\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> nums = [3,2,1,0,4]\n<strong>Output:</strong> false\n<strong>Explanation:</strong> You will always arrive at index 3 no matter what. Its maximum jump length is 0, which makes it impossible to reach the last index.\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= nums.length &lt;= 10<sup>4</sup></code></li>\n\t<li><code>0 &lt;= nums[i] &lt;= 10<sup>5</sup></code></li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：贪心",
+      "approach": "题目只关心最后一个下标是否可达。从每个位置展开全部跳跃，或用动态规划判断每个下标能否到达，最坏时间均为 O(n^2)。n <= 10^4 偏紧，且不必记下中间每一步如何跳。\n能到达的下标构成一段前缀：维护当前最远可达位置 mx，若出现 i > mx，则之后均不可达。\n因此从左扫描，用 i + \\textit{nums}[i] 更新 mx；若能扫完全部下标，终点即可达。\n我们用变量 mx 维护当前能够到达的最远下标，初始时 mx = 0。\n我们从左到右遍历数组，对于遍历到的每个位置 i，如果 mx \\lt i，说明当前位置无法到达，直接返回 false。否则，我们可以通过跳跃从位置 i 到达的最远位置为 i+nums[i]，我们用 i+nums[i] 更新 mx 的值，即 mx = \\max(mx, i + nums[i])。\n遍历结束，直接返回 true。\n相似题目：\n- 45. 跳跃游戏 II\n- 1024. 视频拼接\n- 1326. 灌溉花园的最少水龙头数目\npython\nclass Solution:\ndef canJump(self, nums: List[int]) -> bool:\nmx = 0\nfor i, x in enumerate(nums):\nif mx < i:\nreturn False\nmx = max(mx, i + x)\nreturn True\njava\nclass Solution {\npublic boolean canJump(int[] nums) {\nint mx = 0;\nfor (int i = 0; i < nums.length;",
+      "complexity": "时间复杂度 $O(n)$其中 $n$ 为数组的长度空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "javaSnippet": "class Solution {\n    public boolean canJump(int[] nums) {\n        int mx = 0;\n        for (int i = 0; i < nums.length; ++i) {\n            if (mx < i) {\n                return false;\n            }\n            mx = Math.max(mx, i + nums[i]);\n        }\n        return true;\n    }\n}"
+    },
+    "memory": {
+      "title": "暴力枚举（兜底）",
+      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
+      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
+      "javaSnippet": ""
+    },
+    "keywords": [
+      "跳跃游戏",
+      "贪心",
+      "数组",
+      "动态规划"
+    ],
+    "tech": [
+      {
+        "name": "贪心策略",
+        "detail": "在每一步做出当前看起来最优的选择，需要证明局部最优能推出全局最优。常见场景：区间调度、跳跃游戏、分发任务、区间覆盖。"
+      },
+      {
+        "name": "贪心 + 排序",
+        "detail": "很多贪心题先排序再扫描，例如按结束时间排序、按高度排序、按频率排序，排序能让局部决策被简化。"
+      },
+      {
+        "name": "动态规划五步",
+        "detail": "定义 dp 状态 -> 推导转移方程 -> 确定初始值 -> 确定遍历顺序 -> 返回答案。先写小例子验证 dp 表，再压缩空间。"
+      },
+      {
+        "name": "状态压缩",
+        "detail": "很多 dp 只依赖前一两行，可以把二维数组压成一维，甚至只用两个变量；滚动数组不会改变状态含义，只减少空间。"
+      },
+      {
+        "name": "记忆化搜索",
+        "detail": "用递归 + memo 数组/Map 缓存结果，本质上与自底向上 dp 等价，适合状态转移方向不直观的题目。"
+      }
+    ],
+    "pitfalls": [
+      "贪心需要能证明局部最优 -> 全局最优",
+      "排序的依据要与贪心目标一致",
+      "注意覆盖的区间初值",
+      "dp 数组初始值要区分 0 与“不可达”",
+      "遍历顺序决定能否使用前一轮状态，注意下标从 1 开始"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

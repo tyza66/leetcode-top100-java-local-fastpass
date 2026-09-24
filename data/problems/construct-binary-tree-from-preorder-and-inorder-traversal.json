@@ -54,5 +54,70 @@
   "exampleTestcases": "[3,9,20,15,7]\n[9,3,15,20,7]\n[-1]\n[-1]",
   "contentHtml": "<p>给定两个整数数组&nbsp;<code>preorder</code> 和 <code>inorder</code>&nbsp;，其中&nbsp;<code>preorder</code> 是二叉树的<strong>先序遍历</strong>， <code>inorder</code>&nbsp;是同一棵树的<strong>中序遍历</strong>，请构造二叉树并返回其根节点。</p>\n\n<p>&nbsp;</p>\n\n<p><strong>示例 1:</strong></p>\n<img alt=\"\" src=\"assets/problems/construct-binary-tree-from-preorder-and-inorder-traversal/img-1.jpg\" style=\"height: 302px; width: 277px;\" />\n<pre>\n<strong>输入</strong><strong>:</strong> preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]\n<strong>输出:</strong> [3,9,20,null,null,15,7]\n</pre>\n\n<p><strong>示例 2:</strong></p>\n\n<pre>\n<strong>输入:</strong> preorder = [-1], inorder = [-1]\n<strong>输出:</strong> [-1]\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= preorder.length &lt;= 3000</code></li>\n\t<li><code>inorder.length == preorder.length</code></li>\n\t<li><code>-3000 &lt;= preorder[i], inorder[i] &lt;= 3000</code></li>\n\t<li><code>preorder</code>&nbsp;和&nbsp;<code>inorder</code>&nbsp;均 <strong>无重复</strong> 元素</li>\n\t<li><code>inorder</code>&nbsp;均出现在&nbsp;<code>preorder</code></li>\n\t<li><code>preorder</code>&nbsp;<strong>保证</strong> 为二叉树的前序遍历序列</li>\n\t<li><code>inorder</code>&nbsp;<strong>保证</strong> 为二叉树的中序遍历序列</li>\n</ul>\n",
   "contentEnHtml": "<p>Given two integer arrays <code>preorder</code> and <code>inorder</code> where <code>preorder</code> is the preorder traversal of a binary tree and <code>inorder</code> is the inorder traversal of the same tree, construct and return <em>the binary tree</em>.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n<img alt=\"\" src=\"https://assets.leetcode.com/uploads/2021/02/19/tree.jpg\" style=\"width: 277px; height: 302px;\" />\n<pre>\n<strong>Input:</strong> preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]\n<strong>Output:</strong> [3,9,20,null,null,15,7]\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> preorder = [-1], inorder = [-1]\n<strong>Output:</strong> [-1]\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= preorder.length &lt;= 3000</code></li>\n\t<li><code>inorder.length == preorder.length</code></li>\n\t<li><code>-3000 &lt;= preorder[i], inorder[i] &lt;= 3000</code></li>\n\t<li><code>preorder</code> and <code>inorder</code> consist of <strong>unique</strong> values.</li>\n\t<li>Each value of <code>inorder</code> also appears in <code>preorder</code>.</li>\n\t<li><code>preorder</code> is <strong>guaranteed</strong> to be the preorder traversal of the tree.</li>\n\t<li><code>inorder</code> is <strong>guaranteed</strong> to be the inorder traversal of the tree.</li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：哈希表 + 递归",
+      "approach": "前序给出根的出现顺序，中序给出每个根左右子树的分界。每次在中序里线性扫描根的位置，总时间可达 O(n^2)；n <= 3000 偏紧。\n题目保证节点值互不相同，因此中序位置可以预处理进哈希表，查找变为 O(1)。前序区间的首元素是根，中序中该值左侧是左子树、右侧是右子树，长度确定后再递归构造两段。\n前序序列的第一个节点 preorder[0] 为根节点，我们在中序序列中找到根节点的位置 k，可以将中序序列划分为左子树 inorder[0..k] 、右子树 inorder[k+1..]。\n通过左右子树的区间，可以计算出左、右子树节点的个数，假设为 a 和 b。然后在前序节点中，从根节点往后的 a 个节点为左子树，再往后的 b 个节点为右子树。\n因此，我们设计一个函数 dfs(i, j, n)，其中 i 和 j 分别表示前序序列和中序序列的起始位置，而 n 表示节点个数。函数的返回值是以 preorder[i..i+n-1] 为前序序列，以 inorder[j..j+n-1] 为中序序列构造出的二叉树。\n函数 dfs(i, j, n) 的执行过程如下：\n- 如果 n <=q 0，说明没有节点，返回空节点。\n- 取出前序序列的第一个节点 v = preorder[i] 作为根节点，然后利用哈希表 d 找到根节点在中序序列中的位置 k，那么左子树的节点个数为 k - j，右子树的节点个数为 n - k + j - 1。\n- 递归构造左子树 l = dfs(i + 1, j, k - j) 和右子树 r = dfs(i + 1 + k - j, k + 1, n - k + j - 1)",
+      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(n)$其中 $n$ 为二叉树节点个数 / 空间复杂度 $O(n)$其中 $n$ 为二叉树节点个数",
+      "javaSnippet": "/**\n * Definition for a binary tree node.\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n *     TreeNode() {}\n *     TreeNode(int val) { this.val = val; }\n *     TreeNode(int val, TreeNode left, TreeNode right) {\n *         this.val = val;\n *         this.left = left;\n *         this.right = right;\n *     }\n * }\n */\nclass Solution {\n    private int[] preorder;\n    private Map<Integer, Integer> d = new HashMap<>();\n\n    public TreeNode buildTree(int[] preorder, int[] inorder) {\n        int n = preorder.length;\n        this.preorder = preorder;\n        for (int i = 0; i < n; ++i) {\n            d.put(inorder[i], i);\n        }\n        return dfs(0, 0, n);\n    }\n\n    private TreeNode dfs(int i, int j, int n) {\n        if (n <= 0) {\n            return null;\n        }\n        int v = preorder[i];\n        int k = d.get(v);\n        TreeNode l = dfs(i + 1, j, k - j);\n        TreeNode r = dfs(i + 1 + k - j, k + 1, n - 1 - (k - j));\n        return new TreeNode(v, l, r);\n    }\n}"
+    },
+    "memory": {
+      "title": "方法二：哈希表 + 递归（节点值可重复）",
+      "approach": "方法一依赖「值唯一」才能用单个下标定位根。若值可重复，同一值在中序中可能有多个合法位置，必须记录全部下标并枚举落在当前区间内的每一个，分别递归左右子树再做笛卡尔组合。本题本身不需要这条分支，它回答的是值可重复时如何穷举所有可行树。\n本题保证节点值互不相同。如果节点值可以重复，哈希表需要记录每个值出现的所有位置，并枚举当前区间内每一个可能的根位置，递归构造出所有可能的二叉树。\npython\nclass Solution:\ndef getBinaryTrees(self, preOrder: List[int], inOrder: List[int]) -> List[TreeNode]:\ndef dfs(i: int, j: int, n: int) -> List[TreeNode]:\nif n <= 0:\nreturn [None]\nv = preOrder[i]\nans = []\nfor k in d[v]:\nif j <= k < j + n:\nfor l in dfs(i + 1, j, k - j):\nfor r in dfs(i + 1 + k - j, k + 1, n - 1 - (k - j)):\nans.append(TreeNode(v, l, r))\nreturn ans\nd = defaultdict(list)\nfor i, x in enumerate(inOrder):\nd[x].append(i)\nreturn dfs(0, 0, len(preOrder))\njava\nclass Solution {\nprivate List<Integer",
+      "complexity": "时间复杂度 和空间复杂度均与可行二叉树的数量相关（需要构造并保存全部结果）最坏情况下为指数级递归栈额外占用 $O(n)$ 空间 / 空间复杂度 均与可行二叉树的数量相关（需要构造并保存全部结果），最坏情况下为指数级递归栈额外占用 $O(n)$ 空间",
+      "javaSnippet": "class Solution {\n    private List<Integer> preorder;\n    private Map<Integer, List<Integer>> d = new HashMap<>();\n\n    public List<TreeNode> getBinaryTrees(List<Integer> preOrder, List<Integer> inOrder) {\n        int n = preOrder.size();\n        this.preorder = preOrder;\n        for (int i = 0; i < n; ++i) {\n            d.computeIfAbsent(inOrder.get(i), k -> new ArrayList<>()).add(i);\n        }\n        return dfs(0, 0, n);\n    }\n\n    private List<TreeNode> dfs(int i, int j, int n) {\n        List<TreeNode> ans = new ArrayList<>();\n        if (n <= 0) {\n            ans.add(null);\n            return ans;\n        }\n        int v = preorder.get(i);\n        for (int k : d.get(v)) {\n            if (k >= j && k < j + n) {\n                for (TreeNode l : dfs(i + 1, j, k - j)) {\n                    for (TreeNode r : dfs(i + 1 + k - j, k + 1, n - 1 - (k - j))) {\n                        ans.add(new TreeNode(v, l, r));\n                    }\n                }\n            }\n        }\n        return ans;\n    }\n}"
+    },
+    "keywords": [
+      "从前序与中序遍历序列构造二叉树",
+      "Tree",
+      "数组",
+      "哈希表",
+      "分治",
+      "二叉树",
+      "递归"
+    ],
+    "tech": [
+      {
+        "name": "HashMap / HashSet",
+        "detail": "get、containsKey、put 平均 O(1)。哈希表适合把“查找是否存在”降到常数时间，使用时要决定 key 与 value 各自表达什么，例如“值 -> 下标”还是“元素 -> 出现次数”。"
+      },
+      {
+        "name": "冲突与扩容",
+        "detail": "Java 的 HashMap 在哈希冲突时使用链表或红黑树，整体平均仍是 O(1)。遍历过程中不断扩容可能带来少量开销，但不影响算法复杂度。"
+      },
+      {
+        "name": "分治",
+        "detail": "把问题拆成独立子问题，分别求解后合并。归并排序、最大子数组、二叉搜索树计数都可以用分治思想。"
+      },
+      {
+        "name": "合并函数",
+        "detail": "分治的难点常在 merge 一步：要维护哪些全局信息、如何把左右答案组合。"
+      },
+      {
+        "name": "树的三种遍历",
+        "detail": "前序（根左右）、中序（左根右）、后序（左右根）。先序可以序列化树，中序在有 BST 性质时有序，后序适合自底向上汇总。"
+      },
+      {
+        "name": "递归返回值设计",
+        "detail": "确定每个递归函数“要什么、给什么”。例如路径和要返回最大贡献，直径要维护全局最大值。"
+      }
+    ],
+    "pitfalls": [
+      "注意“先查后插”，避免同一元素被使用两次",
+      "Map 里存下标还是存次数要想清楚",
+      "整数可能为负，不要用数组下标无脑表示 key",
+      "空节点要单独处理",
+      "递归返回值类型与树的关系要先设计好"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

@@ -67,5 +67,53 @@
   "exampleTestcases": "[\"MinStack\",\"push\",\"push\",\"push\",\"getMin\",\"pop\",\"top\",\"getMin\"]\n[[],[-2],[0],[-3],[],[],[],[]]",
   "contentHtml": "<p>设计一个支持 <code>push</code> ，<code>pop</code> ，<code>top</code> 操作，并能在常数时间内检索到最小元素的栈。</p>\n\n<p>实现 <code>MinStack</code> 类:</p>\n\n<ul>\n\t<li><code>MinStack()</code> 初始化堆栈对象。</li>\n\t<li><code>void push(int value)</code> 将元素 <code>value</code> 推入堆栈。</li>\n\t<li><code>void pop()</code> 删除堆栈顶部的元素。</li>\n\t<li><code>int top()</code> 获取堆栈顶部的元素。</li>\n\t<li><code>int getMin()</code> 获取堆栈中的最小元素。</li>\n</ul>\n\n<p>&nbsp;</p>\n\n<p><strong>示例 1:</strong></p>\n\n<pre>\n<strong>输入：</strong>\n[\"MinStack\",\"push\",\"push\",\"push\",\"getMin\",\"pop\",\"top\",\"getMin\"]\n[[],[-2],[0],[-3],[],[],[],[]]\n\n<strong>输出：</strong>\n[null,null,null,null,-3,null,0,-2]\n\n<strong>解释：</strong>\nMinStack minStack = new MinStack();\nminStack.push(-2);\nminStack.push(0);\nminStack.push(-3);\nminStack.getMin();   --&gt; 返回 -3.\nminStack.pop();\nminStack.top();      --&gt; 返回 0.\nminStack.getMin();   --&gt; 返回 -2.\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>-2<sup>31</sup>&nbsp;&lt;= val &lt;= 2<sup>31</sup>&nbsp;- 1</code></li>\n\t<li><code>pop</code>、<code>top</code> 和 <code>getMin</code> 操作总是在 <strong>非空栈</strong> 上调用</li>\n\t<li><code>push</code>,&nbsp;<code>pop</code>,&nbsp;<code>top</code>, and&nbsp;<code>getMin</code>最多被调用&nbsp;<code>3 * 10<sup>4</sup></code>&nbsp;次</li>\n</ul>\n",
   "contentEnHtml": "<p>Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.</p>\n\n<p>Implement the <code>MinStack</code> class:</p>\n\n<ul>\n\t<li><code>MinStack()</code> initializes the stack object.</li>\n\t<li><code>void push(int value)</code> pushes the element <code>value</code> onto the stack.</li>\n\t<li><code>void pop()</code> removes the element on the top of the stack.</li>\n\t<li><code>int top()</code> gets the top element of the stack.</li>\n\t<li><code>int getMin()</code> retrieves the minimum element in the stack.</li>\n</ul>\n\n<p>You must implement a solution with <code>O(1)</code> time complexity for each function.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<pre>\n<strong>Input</strong>\n[&quot;MinStack&quot;,&quot;push&quot;,&quot;push&quot;,&quot;push&quot;,&quot;getMin&quot;,&quot;pop&quot;,&quot;top&quot;,&quot;getMin&quot;]\n[[],[-2],[0],[-3],[],[],[],[]]\n\n<strong>Output</strong>\n[null,null,null,null,-3,null,0,-2]\n\n<strong>Explanation</strong>\nMinStack minStack = new MinStack();\nminStack.push(-2);\nminStack.push(0);\nminStack.push(-3);\nminStack.getMin(); // return -3\nminStack.pop();\nminStack.top();    // return 0\nminStack.getMin(); // return -2\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>-2<sup>31</sup> &lt;= val &lt;= 2<sup>31</sup> - 1</code></li>\n\t<li>Methods <code>pop</code>, <code>top</code> and <code>getMin</code> operations will always be called on <strong>non-empty</strong> stacks.</li>\n\t<li>At most <code>3 * 10<sup>4</sup></code> calls will be made to <code>push</code>, <code>pop</code>, <code>top</code>, and <code>getMin</code>.</li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：双栈",
+      "approach": "栈的 \\textit{getMin} 要与 \\textit{push}/\\textit{pop} 一样 O(1)。每次扫描栈底是线性的，调用可达 3x 10^4。最小值只在入栈更小元素或弹出当前最小时变化，因此再维护一个同步的最小栈：每次压入 \\min(x,  当前最小 )，弹出时两栈一起弹。\n我们用两个栈来实现，其中 stk1 用来存储数据，stk2 用来存储当前栈中的最小值。初始时，stk2 中存储一个极大值。\n- 当我们向栈中压入一个元素 x 时，我们将 x 压入 stk1，并将 min(x, stk2[-1]) 压入 stk2。\n- 当我们从栈中弹出一个元素时，我们将 stk1 和 stk2 的栈顶元素都弹出。\n- 当我们要获取当前栈中的栈顶元素时，我们只需要返回 stk1 的栈顶元素即可。\n- 当我们要获取当前栈中的最小值时，我们只需要返回 stk2 的栈顶元素即可。\n每个操作的时间复杂度为 O(1)。整体的空间复杂度为 O(n)，其中 n 为栈中元素的个数。\npython\nclass MinStack:\ndef __init__(self):\nself.stk1 = []\nself.stk2 = [inf]\ndef push(self, val: int) -> None:\nself.stk1.append(val)\nself.stk2.append(min(val, self.stk2[-1]))\ndef pop(self) -> None:\nself.stk1.pop()\nself.stk2.pop()\ndef top(self) -> int:\nreturn ",
+      "complexity": "时间复杂度 为 $O(1)$整体的空间复杂度为 $O(n)$其中 $n$ 为栈中元素的个数 / 空间复杂度 为 $O(n)$，其中 $n$ 为栈中元素的个数",
+      "javaSnippet": "class MinStack {\n    private Deque<Integer> stk1 = new ArrayDeque<>();\n    private Deque<Integer> stk2 = new ArrayDeque<>();\n\n    public MinStack() {\n        stk2.push(Integer.MAX_VALUE);\n    }\n\n    public void push(int val) {\n        stk1.push(val);\n        stk2.push(Math.min(val, stk2.peek()));\n    }\n\n    public void pop() {\n        stk1.pop();\n        stk2.pop();\n    }\n\n    public int top() {\n        return stk1.peek();\n    }\n\n    public int getMin() {\n        return stk2.peek();\n    }\n}\n\n/**\n * Your MinStack object will be instantiated and called as such:\n * MinStack obj = new MinStack();\n * obj.push(val);\n * obj.pop();\n * int param_3 = obj.top();\n * int param_4 = obj.getMin();\n */"
+    },
+    "memory": {
+      "title": "两层循环补栈",
+      "approach": "对每个位置扫描其后元素，找到第一个满足条件的值并记录；不再依赖栈时最容易理解。",
+      "complexity": "O(n^2) 时间 / O(1) 空间",
+      "javaSnippet": ""
+    },
+    "keywords": [
+      "最小栈",
+      "栈",
+      "设计",
+      "双栈"
+    ],
+    "tech": [
+      {
+        "name": "栈与括号/表达式",
+        "detail": "后进先出天然匹配最近配对：括号匹配、直方图最大矩形、每日温度、字符串解码都依赖单调栈或普通栈保存待处理信息。"
+      },
+      {
+        "name": "单调栈",
+        "detail": "维护栈内元素单调递增或递减，弹出时往往就是答案结算时机；栈中保存下标比保存值更好用。"
+      },
+      {
+        "name": "设计题",
+        "detail": "先确定核心数据结构，再约束每个方法复杂度。LRU 用 HashMap + 双向链表，最小栈用辅助栈或自定义节点，序列化树用先序 + 分隔符。"
+      }
+    ],
+    "pitfalls": [
+      "栈空时不要贸然 peek/pop",
+      "保存下标比保存值更容易算距离",
+      "记得最后清空剩余栈内容"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

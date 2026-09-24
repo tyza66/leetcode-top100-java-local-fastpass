@@ -38,5 +38,62 @@
   "exampleTestcases": "\"horse\"\n\"ros\"\n\"intention\"\n\"execution\"",
   "contentHtml": "<p>给你两个单词&nbsp;<code>word1</code> 和&nbsp;<code>word2</code>， <em>请返回将&nbsp;<code>word1</code>&nbsp;转换成&nbsp;<code>word2</code> 所使用的最少操作数</em> &nbsp;。</p>\n\n<p>你可以对一个单词进行如下三种操作：</p>\n\n<ul>\n\t<li>插入一个字符</li>\n\t<li>删除一个字符</li>\n\t<li>替换一个字符</li>\n</ul>\n\n<p>&nbsp;</p>\n\n<p><strong>示例&nbsp;1：</strong></p>\n\n<pre>\n<strong>输入：</strong>word1 = \"horse\", word2 = \"ros\"\n<strong>输出：</strong>3\n<strong>解释：</strong>\nhorse -&gt; rorse (将 'h' 替换为 'r')\nrorse -&gt; rose (删除 'r')\nrose -&gt; ros (删除 'e')\n</pre>\n\n<p><strong>示例&nbsp;2：</strong></p>\n\n<pre>\n<strong>输入：</strong>word1 = \"intention\", word2 = \"execution\"\n<strong>输出：</strong>5\n<strong>解释：</strong>\nintention -&gt; inention (删除 't')\ninention -&gt; enention (将 'i' 替换为 'e')\nenention -&gt; exention (将 'n' 替换为 'x')\nexention -&gt; exection (将 'n' 替换为 'c')\nexection -&gt; execution (插入 'u')\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>0 &lt;= word1.length, word2.length &lt;= 500</code></li>\n\t<li><code>word1</code> 和 <code>word2</code> 由小写英文字母组成</li>\n</ul>\n",
   "contentEnHtml": "<p>Given two strings <code>word1</code> and <code>word2</code>, return <em>the minimum number of operations required to convert <code>word1</code> to <code>word2</code></em>.</p>\n\n<p>You have the following three operations permitted on a word:</p>\n\n<ul>\n\t<li>Insert a character</li>\n\t<li>Delete a character</li>\n\t<li>Replace a character</li>\n</ul>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<pre>\n<strong>Input:</strong> word1 = &quot;horse&quot;, word2 = &quot;ros&quot;\n<strong>Output:</strong> 3\n<strong>Explanation:</strong> \nhorse -&gt; rorse (replace &#39;h&#39; with &#39;r&#39;)\nrorse -&gt; rose (remove &#39;r&#39;)\nrose -&gt; ros (remove &#39;e&#39;)\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> word1 = &quot;intention&quot;, word2 = &quot;execution&quot;\n<strong>Output:</strong> 5\n<strong>Explanation:</strong> \nintention -&gt; inention (remove &#39;t&#39;)\ninention -&gt; enention (replace &#39;i&#39; with &#39;e&#39;)\nenention -&gt; exention (replace &#39;n&#39; with &#39;x&#39;)\nexention -&gt; exection (replace &#39;n&#39; with &#39;c&#39;)\nexection -&gt; execution (insert &#39;u&#39;)\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>0 &lt;= word1.length, word2.length &lt;= 500</code></li>\n\t<li><code>word1</code> and <code>word2</code> consist of lowercase English letters.</li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：动态规划",
+      "approach": "把 word1 变成 word2，每次只能插入、删除或替换一个字符。若在每个位置尝试三种操作并递归处理剩余部分，同一对前缀会被不同路径反复求解，m, n <= 500 时时间无法接受。\n同一对前缀的最少操作数与到达路径无关，因此可以按前缀长度递推。定义 f[i][j] 为将 word1 前 i 个字符变成 word2 前 j 个字符的最少操作数：末尾字符相同则无需改动；否则三种操作分别对应删除、插入与替换，取最小值即可。空串到另一串只能全部删除或全部插入。按 i、j 递增填表，f[m][n] 即为答案。\n我们定义 f[i][j] 表示将 word1 的前 i 个字符转换成 word2 的前 j 个字符所使用的最少操作数。初始时 f[i][0] = i, f[0][j] = j。其中 i \\in [1, m], j \\in [0, n]。\n考虑 f[i][j]：\n- 如果 word1[i - 1] = word2[j - 1]，那么我们只需要考虑将 word1 的前 i - 1 个字符转换成 word2 的前 j - 1 个字符所使用的最少操作数，因此 f[i][j] = f[i - 1][j - 1]；\n- 否则，我们可以考虑插入、删除、替换操作，那么 f[i][j] = \\min(f[i - 1][j], f[i][j - 1], f[i - 1][j - 1]) + 1。\n综上，我们可以得到状态转移方程：\nf[i][j] = \\begin{cases}\ni, & \\textit{if } j = 0 \\\\\nj, & \\textit{if } i = 0 \\\\\nf[i - 1",
+      "complexity": "时间复杂度 $O(m \\times n)$空间复杂度 $O(m \\times n)$其中 $m$ 和 $n$ 分别是 $word1$ 和 $word2$ 的长度 / 空间复杂度 $O(m \\times n)$其中 $m$ 和 $n$ 分别是 $word1$ 和 $word2$ 的长度",
+      "javaSnippet": "class Solution {\n    public int minDistance(String word1, String word2) {\n        int m = word1.length(), n = word2.length();\n        int[][] f = new int[m + 1][n + 1];\n        for (int j = 1; j <= n; ++j) {\n            f[0][j] = j;\n        }\n        for (int i = 1; i <= m; ++i) {\n            f[i][0] = i;\n            for (int j = 1; j <= n; ++j) {\n                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {\n                    f[i][j] = f[i - 1][j - 1];\n                } else {\n                    f[i][j] = Math.min(f[i - 1][j], Math.min(f[i][j - 1], f[i - 1][j - 1])) + 1;\n                }\n            }\n        }\n        return f[m][n];\n    }\n}"
+    },
+    "memory": {
+      "title": "枚举子串 + 计数",
+      "approach": "枚举字符串所有起点，逐步扩展右端点并维护计数，扩展过程中判断是否满足条件；写起来直观。",
+      "complexity": "O(n^2) 时间 / O(字符集) 空间",
+      "javaSnippet": "public int minDistance(String word1, String word2) {\n    int m = word1.length();\n    int n = word2.length();\n    int[][] dp = new int[m + 1][n + 1];\n    // 初始化\n    for (int i = 1; i <= m; i++) {\n        dp[i][0] =  i;\n    }\n    for (int j = 1; j <= n; j++) {\n        dp[0][j] = j;\n    }\n    for (int i = 1; i <= m; i++) {\n        for (int j = 1; j <= n; j++) {\n            // 因为dp数组有效位从1开始\n            // 所以当前遍历到的字符串的位置为i-1 | j-1\n            if (word1.charAt(i - 1) == word2.charAt(j - 1)) {\n                dp[i][j] = dp[i - 1][j - 1];\n            } else {\n                dp[i][j] = Math.min(Math.min(dp[i - 1][j - 1], dp[i][j - 1]), dp[i - 1][j]) + 1;\n            }\n        }\n    }\n    return dp[m][n];\n}"
+    },
+    "keywords": [
+      "编辑距离",
+      "字符串",
+      "动态规划"
+    ],
+    "tech": [
+      {
+        "name": "字符串处理",
+        "detail": "注意不可变性：频繁拼接用 StringBuilder；比较时想清楚大小写、数字位数、分隔符和空串；回文类题目常配合中心扩展或马拉车。"
+      },
+      {
+        "name": "字符计数",
+        "detail": "只含小写字母时用 int[26]，需要记录字符种类时维护 diff 变量，避免每次重新扫描。"
+      },
+      {
+        "name": "动态规划五步",
+        "detail": "定义 dp 状态 -> 推导转移方程 -> 确定初始值 -> 确定遍历顺序 -> 返回答案。先写小例子验证 dp 表，再压缩空间。"
+      },
+      {
+        "name": "状态压缩",
+        "detail": "很多 dp 只依赖前一两行，可以把二维数组压成一维，甚至只用两个变量；滚动数组不会改变状态含义，只减少空间。"
+      },
+      {
+        "name": "记忆化搜索",
+        "detail": "用递归 + memo 数组/Map 缓存结果，本质上与自底向上 dp 等价，适合状态转移方向不直观的题目。"
+      }
+    ],
+    "pitfalls": [
+      "字符串下标从 0 开始，子串边界要小心",
+      "统计字符时先确定字符集大小",
+      "拼接字符串用 StringBuilder",
+      "dp 数组初始值要区分 0 与“不可达”",
+      "遍历顺序决定能否使用前一轮状态，注意下标从 1 开始"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

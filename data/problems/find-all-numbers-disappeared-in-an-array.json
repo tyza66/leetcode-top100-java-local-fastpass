@@ -34,5 +34,49 @@
   "exampleTestcases": "[4,3,2,7,8,2,3,1]\n[1,1]",
   "contentHtml": "<p>给你一个含 <code>n</code> 个整数的数组 <code>nums</code> ，其中 <code>nums[i]</code> 在区间 <code>[1, n]</code> 内。请你找出所有在 <code>[1, n]</code> 范围内但没有出现在 <code>nums</code> 中的数字，并以数组的形式返回结果。</p>\n\n<p> </p>\n\n<p><strong>示例 1：</strong></p>\n\n<pre>\n<strong>输入：</strong>nums = [4,3,2,7,8,2,3,1]\n<strong>输出：</strong>[5,6]\n</pre>\n\n<p><strong>示例 2：</strong></p>\n\n<pre>\n<strong>输入：</strong>nums = [1,1]\n<strong>输出：</strong>[2]\n</pre>\n\n<p> </p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>n == nums.length</code></li>\n\t<li><code>1 <= n <= 10<sup>5</sup></code></li>\n\t<li><code>1 <= nums[i] <= n</code></li>\n</ul>\n\n<p><strong>进阶：</strong>你能在不使用额外空间且时间复杂度为<em> </em><code>O(n)</code><em> </em>的情况下解决这个问题吗? 你可以假定返回的数组不算在额外空间内。</p>\n",
   "contentEnHtml": "<p>Given an array <code>nums</code> of <code>n</code> integers where <code>nums[i]</code> is in the range <code>[1, n]</code>, return <em>an array of all the integers in the range</em> <code>[1, n]</code> <em>that do not appear in</em> <code>nums</code>.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n<pre><strong>Input:</strong> nums = [4,3,2,7,8,2,3,1]\n<strong>Output:</strong> [5,6]\n</pre><p><strong class=\"example\">Example 2:</strong></p>\n<pre><strong>Input:</strong> nums = [1,1]\n<strong>Output:</strong> [2]\n</pre>\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>n == nums.length</code></li>\n\t<li><code>1 &lt;= n &lt;= 10<sup>5</sup></code></li>\n\t<li><code>1 &lt;= nums[i] &lt;= n</code></li>\n</ul>\n\n<p>&nbsp;</p>\n<p><strong>Follow up:</strong> Could you do it without extra space and in <code>O(n)</code> runtime? You may assume the returned list does not count as extra space.</p>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：数组或哈希表",
+      "approach": "值域为 [1,n]，缺的是集合差。哈希集合记录出现过的数，再扫一遍 1..n。线性时间，额外 O(n) 空间。\n进阶要求常数空间，这一解先保证正确。\n我们可以使用数组或哈希表记录数组中的数字，然后遍历 [1, n] 区间内的数字，若数字不存在于数组或哈希表中，则说明数组中缺失该数字，将其添加到结果列表中。\npython\nclass Solution:\ndef findDisappearedNumbers(self, nums: List[int]) -> List[int]:\ns = set(nums)\nreturn [x for x in range(1, len(nums) + 1) if x not in s]\njava\nclass Solution {\npublic List<Integer> findDisappearedNumbers(int[] nums) {\nint n = nums.length;\nboolean[] s = new boolean[n + 1];\nfor (int x : nums) {\ns[x] = true;\n}\nList<Integer> ans = new ArrayList<>();\nfor (int i = 1; i <= n; i++) {\nif (!s[i]) {\nans.add(i);\n}\n}\nreturn ans;\n}\n}\ncpp\nclass Solution {\npublic:\nvector<int> findDisappearedNumbers(vector<int>& nums) {\nint n = nums.siz",
+      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(n)$其中 $n$ 为数组长度 / 空间复杂度 $O(n)$其中 $n$ 为数组长度",
+      "javaSnippet": "class Solution {\n    public List<Integer> findDisappearedNumbers(int[] nums) {\n        int n = nums.length;\n        boolean[] s = new boolean[n + 1];\n        for (int x : nums) {\n            s[x] = true;\n        }\n        List<Integer> ans = new ArrayList<>();\n        for (int i = 1; i <= n; i++) {\n            if (!s[i]) {\n                ans.add(i);\n            }\n        }\n        return ans;\n    }\n}"
+    },
+    "memory": {
+      "title": "方法二：原地修改",
+      "approach": "方法一多用一个集合。值 x 可以把下标 |x|-1 标成负数表示「出现过」，最后仍为正的位置 i 对应缺失的 i+1。取绝对值再标记，避免把已标记的值再当正下标。\n我们可以遍历数组 nums，将 |nums[i]|-1 位置的数字标记为负数，表示数组 nums[i] 出现过。最后遍历数组 nums，若 nums[i] 为正数，则说明数组中缺失 i+1，将其添加到结果列表中。\n遍历结束后，返回结果列表即可。\npython\nclass Solution:\ndef findDisappearedNumbers(self, nums: List[int]) -> List[int]:\nfor x in nums:\ni = abs(x) - 1\nif nums[i] > 0:\nnums[i] *= -1\nreturn [i + 1 for i in range(len(nums)) if nums[i] > 0]\njava\nclass Solution {\npublic List<Integer> findDisappearedNumbers(int[] nums) {\nint n = nums.length;\nfor (int x : nums) {\nint i = Math.abs(x) - 1;\nif (nums[i] > 0) {\nnums[i] *= -1;\n}\n}\nList<Integer> ans = new ArrayList<>();\nfor (int i = 0; i < n; i++) {\nif (nums[i] > 0) {\nans.add(i + 1);\n}\n}",
+      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(1)$其中 $n$ 为数组长度 / 空间复杂度 $O(1)$其中 $n$ 为数组长度",
+      "javaSnippet": "class Solution {\n    public List<Integer> findDisappearedNumbers(int[] nums) {\n        int n = nums.length;\n        for (int x : nums) {\n            int i = Math.abs(x) - 1;\n            if (nums[i] > 0) {\n                nums[i] *= -1;\n            }\n        }\n        List<Integer> ans = new ArrayList<>();\n        for (int i = 0; i < n; i++) {\n            if (nums[i] > 0) {\n                ans.add(i + 1);\n            }\n        }\n        return ans;\n    }\n}"
+    },
+    "keywords": [
+      "找到所有数组中消失的数字",
+      "数组",
+      "哈希表",
+      "数组或哈希表"
+    ],
+    "tech": [
+      {
+        "name": "HashMap / HashSet",
+        "detail": "get、containsKey、put 平均 O(1)。哈希表适合把“查找是否存在”降到常数时间，使用时要决定 key 与 value 各自表达什么，例如“值 -> 下标”还是“元素 -> 出现次数”。"
+      },
+      {
+        "name": "冲突与扩容",
+        "detail": "Java 的 HashMap 在哈希冲突时使用链表或红黑树，整体平均仍是 O(1)。遍历过程中不断扩容可能带来少量开销，但不影响算法复杂度。"
+      }
+    ],
+    "pitfalls": [
+      "注意“先查后插”，避免同一元素被使用两次",
+      "Map 里存下标还是存次数要想清楚",
+      "整数可能为负，不要用数组下标无脑表示 key"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

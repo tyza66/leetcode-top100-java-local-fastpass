@@ -58,5 +58,68 @@
   "exampleTestcases": "[3,5,1,6,2,0,8,null,null,7,4]\n5\n1\n[3,5,1,6,2,0,8,null,null,7,4]\n5\n4\n[1,2]\n1\n2",
   "contentHtml": "<p>给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。</p>\n\n<p><a href=\"https://baike.baidu.com/item/%E6%9C%80%E8%BF%91%E5%85%AC%E5%85%B1%E7%A5%96%E5%85%88/8918834?fr=aladdin\" target=\"_blank\">百度百科</a>中最近公共祖先的定义为：“对于有根树 T 的两个节点 p、q，最近公共祖先表示为一个节点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（<strong>一个节点也可以是它自己的祖先</strong>）。”</p>\n\n<p> </p>\n\n<p><strong>示例 1：</strong></p>\n<img alt=\"\" src=\"assets/problems/lowest-common-ancestor-of-a-binary-tree/img-1.png\" style=\"width: 200px; height: 190px;\" />\n<pre>\n<strong>输入：</strong>root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1\n<strong>输出：</strong>3\n<strong>解释：</strong>节点 <code>5 </code>和节点 <code>1 </code>的最近公共祖先是节点 <code>3 。</code>\n</pre>\n\n<p><strong>示例 2：</strong></p>\n<img alt=\"\" src=\"assets/problems/lowest-common-ancestor-of-a-binary-tree/img-1.png\" style=\"width: 200px; height: 190px;\" />\n<pre>\n<strong>输入：</strong>root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 4\n<strong>输出：</strong>5\n<strong>解释：</strong>节点 <code>5 </code>和节点 <code>4 </code>的最近公共祖先是节点 <code>5 。</code>因为根据定义最近公共祖先节点可以为节点本身。\n</pre>\n\n<p><strong>示例 3：</strong></p>\n\n<pre>\n<strong>输入：</strong>root = [1,2], p = 1, q = 2\n<strong>输出：</strong>1\n</pre>\n\n<p> </p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li>树中节点数目在范围 <code>[2, 10<sup>5</sup>]</code> 内。</li>\n\t<li><code>-10<sup>9</sup> <= Node.val <= 10<sup>9</sup></code></li>\n\t<li>所有 <code>Node.val</code> <code>互不相同</code> 。</li>\n\t<li><code>p != q</code></li>\n\t<li><code>p</code> 和 <code>q</code> 均存在于给定的二叉树中。</li>\n</ul>\n",
   "contentEnHtml": "<p>Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.</p>\n\n<p>According to the <a href=\"https://en.wikipedia.org/wiki/Lowest_common_ancestor\" target=\"_blank\">definition of LCA on Wikipedia</a>: &ldquo;The lowest common ancestor is defined between two nodes <code>p</code> and <code>q</code> as the lowest node in <code>T</code> that has both <code>p</code> and <code>q</code> as descendants (where we allow <b>a node to be a descendant of itself</b>).&rdquo;</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n<img alt=\"\" src=\"https://assets.leetcode.com/uploads/2018/12/14/binarytree.png\" style=\"width: 200px; height: 190px;\" />\n<pre>\n<strong>Input:</strong> root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1\n<strong>Output:</strong> 3\n<strong>Explanation:</strong> The LCA of nodes 5 and 1 is 3.\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n<img alt=\"\" src=\"https://assets.leetcode.com/uploads/2018/12/14/binarytree.png\" style=\"width: 200px; height: 190px;\" />\n<pre>\n<strong>Input:</strong> root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 4\n<strong>Output:</strong> 5\n<strong>Explanation:</strong> The LCA of nodes 5 and 4 is 5, since a node can be a descendant of itself according to the LCA definition.\n</pre>\n\n<p><strong class=\"example\">Example 3:</strong></p>\n\n<pre>\n<strong>Input:</strong> root = [1,2], p = 1, q = 2\n<strong>Output:</strong> 1\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li>The number of nodes in the tree is in the range <code>[2, 10<sup>5</sup>]</code>.</li>\n\t<li><code>-10<sup>9</sup> &lt;= Node.val &lt;= 10<sup>9</sup></code></li>\n\t<li>All <code>Node.val</code> are <strong>unique</strong>.</li>\n\t<li><code>p != q</code></li>\n\t<li><code>p</code> and <code>q</code> will exist in the tree.</li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：递归",
+      "approach": "普通二叉树没有有序性，不能按值决定方向。LCA 是同时覆盖 p 与 q 的最深结点。\n后序递归：子树中找到目标则上送该结点；左右都非空则当前根为 LCA，否则上送非空一侧。\n我们递归遍历二叉树：\n如果当前节点为空或者等于 p 或者 q，则返回当前节点；\n否则，我们递归遍历左右子树，将返回的结果分别记为 left 和 right。如果 left 和 right 都不为空，则说明 p 和 q 分别在左右子树中，因此当前节点即为最近公共祖先；如果 left 和 right 中只有一个不为空，返回不为空的那个。\npython\nDefinition for a binary tree node.\nclass TreeNode:\ndef __init__(self, x):\nself.val = x\nself.left = None\nself.right = None\nclass Solution:\ndef lowestCommonAncestor(\nself, root: \"TreeNode\", p: \"TreeNode\", q: \"TreeNode\"\n) -> \"TreeNode\":\nif root in (None, p, q):\nreturn root\nleft = self.lowestCommonAncestor(root.left, p, q)\nright = self.lowestCommonAncestor(root.right, p, q)\nreturn root if left and right else (left or right)\njava\n/\n* Defin",
+      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(n)$其中 $n$ 为二叉树节点个数 / 空间复杂度 $O(n)$其中 $n$ 为二叉树节点个数",
+      "javaSnippet": "/**\n * Definition for a binary tree node.\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n *     TreeNode(int x) { val = x; }\n * }\n */\nclass Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root == null || root == p || root == q) {\n            return root;\n        }\n        var left = lowestCommonAncestor(root.left, p, q);\n        var right = lowestCommonAncestor(root.right, p, q);\n        if (left != null && right != null) {\n            return root;\n        }\n        return left == null ? right : left;\n    }\n}"
+    },
+    "memory": {
+      "title": "递归暴力遍历",
+      "approach": "对每个节点执行一次以它为根的完整遍历，把所有子树统计结果汇总；思路简单，适合小规模树。",
+      "complexity": "最坏 O(n^2) 时间",
+      "javaSnippet": ""
+    },
+    "keywords": [
+      "二叉树的最近公共祖先",
+      "Tree",
+      "深度优先搜索",
+      "二叉树",
+      "最近公共祖先",
+      "倍增",
+      "递归"
+    ],
+    "tech": [
+      {
+        "name": "DFS 框架",
+        "detail": "递归进入子树/邻居之前先处理当前节点，返回结果时用子树信息汇总。树上的路径和、最大路径、最近公共祖先都依赖后序返回值。"
+      },
+      {
+        "name": "访问标记",
+        "detail": "图中需要 visited 集合避免走回头路；树天然无环，但要注意空节点和越界条件。"
+      },
+      {
+        "name": "树的三种遍历",
+        "detail": "前序（根左右）、中序（左根右）、后序（左右根）。先序可以序列化树，中序在有 BST 性质时有序，后序适合自底向上汇总。"
+      },
+      {
+        "name": "递归返回值设计",
+        "detail": "确定每个递归函数“要什么、给什么”。例如路径和要返回最大贡献，直径要维护全局最大值。"
+      },
+      {
+        "name": "最近公共祖先",
+        "detail": "后序遍历返回“是否找到 p/q”；左右都找到时当前节点就是 LCA；BST 版本可直接按值大小决定走向。"
+      },
+      {
+        "name": "倍增",
+        "detail": "预处理 2^k 步后的状态，用于 LCA、RMQ、树上 K 级祖先等；查询时按二进制位跳跃。"
+      }
+    ],
+    "pitfalls": [
+      "空节点要单独处理",
+      "递归返回值类型与树的关系要先设计好",
+      "使用全局变量时注意重置"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

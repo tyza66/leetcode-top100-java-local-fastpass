@@ -58,5 +58,71 @@
   "exampleTestcases": "[\"A\",\"A\",\"A\",\"B\",\"B\",\"B\"]\n2\n[\"A\",\"C\",\"A\",\"B\",\"D\",\"B\"]\n1\n[\"A\",\"A\",\"A\", \"B\",\"B\",\"B\"]\n3",
   "contentHtml": "<p>给你一个用字符数组&nbsp;<code>tasks</code> 表示的 CPU 需要执行的任务列表，用字母 A 到 Z 表示，以及一个冷却时间 <code>n</code>。每个周期或时间间隔允许完成一项任务。任务可以按任何顺序完成，但有一个限制：两个<strong> 相同种类</strong> 的任务之间必须有长度为<strong>&nbsp;</strong><code>n</code><strong> </strong>的冷却时间。</p>\n\n<p>返回完成所有任务所需要的<strong> 最短时间间隔</strong>&nbsp;。</p>\n\n<p>&nbsp;</p>\n\n<p><strong>示例 1：</strong></p>\n\n<div class=\"example-block\"><strong>输入：</strong>tasks = [\"A\",\"A\",\"A\",\"B\",\"B\",\"B\"], n = 2</div>\n\n<div class=\"example-block\"><strong>输出：</strong>8</div>\n\n<div class=\"example-block\"><strong>解释：</strong></div>\n\n<div class=\"example-block\">在完成任务 A 之后，你必须等待两个间隔。对任务 B 来说也是一样。在第 3 个间隔，A 和 B 都不能完成，所以你需要待命。在第 4 个间隔，由于已经经过了 2 个间隔，你可以再次执行 A 任务。</div>\n\n<div class=\"example-block\">&nbsp;</div>\n\n<p><strong class=\"example\">示例 2：</strong></p>\n\n<div class=\"example-block\">\n<p><b>输入：</b>tasks = [\"A\",\"C\",\"A\",\"B\",\"D\",\"B\"], n = 1</p>\n\n<p><b>输出：</b>6</p>\n\n<p><b>解释：</b>一种可能的序列是：A -&gt; B -&gt; C -&gt; D -&gt; A -&gt; B。</p>\n\n<p>由于冷却间隔为 1，你可以在完成另一个任务后重复执行这个任务。</p>\n</div>\n\n<p><strong>示例 3：</strong></p>\n\n<div class=\"example-block\"><strong>输入：</strong>tasks = [\"A\",\"A\",\"A\",\"B\",\"B\",\"B\"], n = 3</div>\n\n<div class=\"example-block\"><strong>输出：</strong>10</div>\n\n<div class=\"example-block\"><strong>解释：</strong>一种可能的序列为：A -&gt; B -&gt; idle -&gt; idle -&gt; A -&gt; B -&gt; idle -&gt; idle -&gt; A -&gt; B。</div>\n\n<div class=\"example-block\">只有两种任务类型，A 和 B，需要被 3 个间隔分割。这导致重复执行这些任务的间隔当中有两次待命状态。</div>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= tasks.length &lt;= 10<sup>4</sup></code></li>\n\t<li><code>tasks[i]</code> 是大写英文字母</li>\n\t<li><code>0 &lt;= n &lt;= 100</code></li>\n</ul>\n",
   "contentEnHtml": "<p>You are given an array of CPU <code>tasks</code>, each labeled with a letter from A to Z, and a number <code>n</code>. Each CPU interval can be idle or allow the completion of one task. Tasks can be completed in any order, but there&#39;s a constraint: there has to be a gap of <strong>at least</strong> <code>n</code> intervals between two tasks with the same label.</p>\n\n<p>Return the <strong>minimum</strong> number of CPU intervals required to complete all tasks.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<div class=\"example-block\" style=\"\n    border-color: var(--border-tertiary);\n    border-left-width: 2px;\n    color: var(--text-secondary);\n    font-size: .875rem;\n    margin-bottom: 1rem;\n    margin-top: 1rem;\n    overflow: visible;\n    padding-left: 1rem;\n\">\n<p><strong>Input:</strong> <span class=\"example-io\" style=\"\n    font-family: Menlo,sans-serif;\n    font-size: 0.85rem;\n\">tasks = [&quot;A&quot;,&quot;A&quot;,&quot;A&quot;,&quot;B&quot;,&quot;B&quot;,&quot;B&quot;], n = 2</span></p>\n\n<p><strong>Output:</strong> <span class=\"example-io\" style=\"\nfont-family: Menlo,sans-serif;\nfont-size: 0.85rem;\n\">8</span></p>\n\n<p><strong>Explanation:</strong> A possible sequence is: A -&gt; B -&gt; idle -&gt; A -&gt; B -&gt; idle -&gt; A -&gt; B.</p>\n\n<p>After completing task A, you must wait two intervals before doing A again. The same applies to task B. In the 3<sup>rd</sup> interval, neither A nor B can be done, so you idle. By the 4<sup>th</sup> interval, you can do A again as 2 intervals have passed.</p>\n</div>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<div class=\"example-block\" style=\"\n    border-color: var(--border-tertiary);\n    border-left-width: 2px;\n    color: var(--text-secondary);\n    font-size: .875rem;\n    margin-bottom: 1rem;\n    margin-top: 1rem;\n    overflow: visible;\n    padding-left: 1rem;\n\">\n<p><strong>Input:</strong> <span class=\"example-io\" style=\"\n    font-family: Menlo,sans-serif;\n    font-size: 0.85rem;\n\">tasks = [&quot;A&quot;,&quot;C&quot;,&quot;A&quot;,&quot;B&quot;,&quot;D&quot;,&quot;B&quot;], n = 1</span></p>\n\n<p><strong>Output:</strong> <span class=\"example-io\" style=\"\n    font-family: Menlo,sans-serif;\n    font-size: 0.85rem;\n\">6</span></p>\n\n<p><strong>Explanation:</strong> A possible sequence is: A -&gt; B -&gt; C -&gt; D -&gt; A -&gt; B.</p>\n\n<p>With a cooling interval of 1, you can repeat a task after just one other task.</p>\n</div>\n\n<p><strong class=\"example\">Example 3:</strong></p>\n\n<div class=\"example-block\" style=\"\n    border-color: var(--border-tertiary);\n    border-left-width: 2px;\n    color: var(--text-secondary);\n    font-size: .875rem;\n    margin-bottom: 1rem;\n    margin-top: 1rem;\n    overflow: visible;\n    padding-left: 1rem;\n\">\n<p><strong>Input:</strong> <span class=\"example-io\" style=\"\n    font-family: Menlo,sans-serif;\n    font-size: 0.85rem;\n\">tasks = [&quot;A&quot;,&quot;A&quot;,&quot;A&quot;, &quot;B&quot;,&quot;B&quot;,&quot;B&quot;], n = 3</span></p>\n\n<p><strong>Output:</strong> <span class=\"example-io\" style=\"\n    font-family: Menlo,sans-serif;\n    font-size: 0.85rem;\n\">10</span></p>\n\n<p><strong>Explanation:</strong> A possible sequence is: A -&gt; B -&gt; idle -&gt; idle -&gt; A -&gt; B -&gt; idle -&gt; idle -&gt; A -&gt; B.</p>\n\n<p>There are only two types of tasks, A and B, which need to be separated by 3 intervals. This leads to idling twice between repetitions of these tasks.</p>\n</div>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= tasks.length &lt;= 10<sup>4</sup></code></li>\n\t<li><code>tasks[i]</code> is an uppercase English letter.</li>\n\t<li><code>0 &lt;= n &lt;= 100</code></li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：贪心 + 构造",
+      "approach": "相同任务之间至少间隔 n，直接模拟时间轴在任务数较大时偏慢，且冷却空档要显式填。\n次数最多的任务决定「框架」：(x-1) 个完整间隔加上最后一批 s 个并列最多者。若任务总数更大，空档会被其余任务填满，故答案取 \\max(m, (x-1)(n+1)+s)。\n不妨设 m 是任务的个数，统计每种任务出现的次数，记录在数组 cnt 中。\n假设出现次数最多的任务为 A，出现次数为 x，则至少需要 (x-1)x(n+1) + 1 个时间单位才能安排完所有任务。如果出现次数最多的任务有 s 个，则需要再加上出现次数最多的任务的个数。\n答案是 \\max ((x-1) x(n+1)+s, m)。\npython\nclass Solution:\ndef leastInterval(self, tasks: List[str], n: int) -> int:\ncnt = Counter(tasks)\nx = max(cnt.values())\ns = sum(v == x for v in cnt.values())\nreturn max(len(tasks), (x - 1) * (n + 1) + s)\njava\nclass Solution {\npublic int leastInterval(char[] tasks, int n) {\nint[] cnt = new int[26];\nint x = 0;\nfor (char c : tasks) {\nc -= 'A';\n++cnt[c];\nx = Math.max(x, cnt[c]);\n}\nint s = 0;\nfor (int v ",
+      "complexity": "时间复杂度 $O(m+|\\Sigma|)$其中 $|\\Sigma|$ 是任务的种类数",
+      "javaSnippet": "class Solution {\n    public int leastInterval(char[] tasks, int n) {\n        int[] cnt = new int[26];\n        int x = 0;\n        for (char c : tasks) {\n            c -= 'A';\n            ++cnt[c];\n            x = Math.max(x, cnt[c]);\n        }\n        int s = 0;\n        for (int v : cnt) {\n            if (v == x) {\n                ++s;\n            }\n        }\n        return Math.max(tasks.length, (x - 1) * (n + 1) + s);\n    }\n}"
+    },
+    "memory": {
+      "title": "暴力枚举（兜底）",
+      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
+      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
+      "javaSnippet": ""
+    },
+    "keywords": [
+      "任务调度器",
+      "贪心",
+      "数组",
+      "哈希表",
+      "计数",
+      "排序",
+      "堆/优先队列",
+      "构造"
+    ],
+    "tech": [
+      {
+        "name": "贪心策略",
+        "detail": "在每一步做出当前看起来最优的选择，需要证明局部最优能推出全局最优。常见场景：区间调度、跳跃游戏、分发任务、区间覆盖。"
+      },
+      {
+        "name": "贪心 + 排序",
+        "detail": "很多贪心题先排序再扫描，例如按结束时间排序、按高度排序、按频率排序，排序能让局部决策被简化。"
+      },
+      {
+        "name": "HashMap / HashSet",
+        "detail": "get、containsKey、put 平均 O(1)。哈希表适合把“查找是否存在”降到常数时间，使用时要决定 key 与 value 各自表达什么，例如“值 -> 下标”还是“元素 -> 出现次数”。"
+      },
+      {
+        "name": "冲突与扩容",
+        "detail": "Java 的 HashMap 在哈希冲突时使用链表或红黑树，整体平均仍是 O(1)。遍历过程中不断扩容可能带来少量开销，但不影响算法复杂度。"
+      },
+      {
+        "name": "计数数组",
+        "detail": "用数值直接作下标统计出现次数，常见 int[101]、int[26]；能把排序、频次判断降到 O(n)。"
+      },
+      {
+        "name": "常用排序",
+        "detail": "快速排序/归并排序 O(n log n)；计数排序适合值域小的整数；TopK/找第 k 大可用快速选择，平均 O(n)。"
+      }
+    ],
+    "pitfalls": [
+      "贪心需要能证明局部最优 -> 全局最优",
+      "排序的依据要与贪心目标一致",
+      "注意覆盖的区间初值",
+      "注意“先查后插”，避免同一元素被使用两次",
+      "Map 里存下标还是存次数要想清楚"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

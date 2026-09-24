@@ -34,5 +34,52 @@
   "exampleTestcases": "[3,1,5,8]\n[1,5]",
   "contentHtml": "<p>有 <code>n</code> 个气球，编号为<code>0</code> 到 <code>n - 1</code>，每个气球上都标有一个数字，这些数字存在数组&nbsp;<code>nums</code>&nbsp;中。</p>\n\n<p>现在要求你戳破所有的气球。戳破第 <code>i</code> 个气球，你可以获得&nbsp;<code>nums[i - 1] * nums[i] * nums[i + 1]</code> 枚硬币。&nbsp;这里的 <code>i - 1</code> 和 <code>i + 1</code> 代表和&nbsp;<code>i</code>&nbsp;相邻的两个气球的序号。如果 <code>i - 1</code>或 <code>i + 1</code> 超出了数组的边界，那么就当它是一个数字为 <code>1</code> 的气球。</p>\n\n<p>求所能获得硬币的最大数量。</p>\n\n<p>&nbsp;</p>\n<strong>示例 1：</strong>\n\n<pre>\n<strong>输入：</strong>nums = [3,1,5,8]\n<strong>输出：</strong>167\n<strong>解释：</strong>\nnums = [3,1,5,8] --&gt; [3,5,8] --&gt; [3,8] --&gt; [8] --&gt; []\ncoins =  3*1*5    +   3*5*8   +  1*3*8  + 1*8*1 = 167</pre>\n\n<p><strong>示例 2：</strong></p>\n\n<pre>\n<strong>输入：</strong>nums = [1,5]\n<strong>输出：</strong>10\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>n == nums.length</code></li>\n\t<li><code>1 &lt;= n &lt;= 300</code></li>\n\t<li><code>0 &lt;= nums[i] &lt;= 100</code></li>\n</ul>\n",
   "contentEnHtml": "<p>You are given <code>n</code> balloons, indexed from <code>0</code> to <code>n - 1</code>. Each balloon is painted with a number on it represented by an array <code>nums</code>. You are asked to burst all the balloons.</p>\n\n<p>If you burst the <code>i<sup>th</sup></code> balloon, you will get <code>nums[i - 1] * nums[i] * nums[i + 1]</code> coins. If <code>i - 1</code> or <code>i + 1</code> goes out of bounds of the array, then treat it as if there is a balloon with a <code>1</code> painted on it.</p>\n\n<p>Return <em>the maximum coins you can collect by bursting the balloons wisely</em>.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<pre>\n<strong>Input:</strong> nums = [3,1,5,8]\n<strong>Output:</strong> 167\n<strong>Explanation:</strong>\nnums = [3,1,5,8] --&gt; [3,5,8] --&gt; [3,8] --&gt; [8] --&gt; []\ncoins =  3*1*5    +   3*5*8   +  1*3*8  + 1*8*1 = 167</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> nums = [1,5]\n<strong>Output:</strong> 10\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>n == nums.length</code></li>\n\t<li><code>1 &lt;= n &lt;= 300</code></li>\n\t<li><code>0 &lt;= nums[i] &lt;= 100</code></li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：动态规划",
+      "approach": "戳气球的顺序会改变两侧相邻关系，直接按戳破次序搜索会重复子区间。两端各补 1 后，区间边界成为固定乘数。\n若 k 是开区间 (i,j) 中最后戳破的气球，则左右子区间互不干扰，得分多出 arr[i]\\cdot arr[k]\\cdot arr[j]。为此定义 f[i][j] 为戳完 (i,j) 内全部气球的最大得分，按区间长度递增（代码中 i 降序、j 升序）填表，答案为 f[0][n+1]。\n我们记数组 nums 的长度为 n。根据题目描述，我们可以在数组 nums 的左右两端各添加一个 1，记为 arr。\n然后，我们定义 f[i][j] 表示戳破区间 [i, j] 内的所有气球能得到的最多硬币数，那么答案即为 f[0][n+1]。\n对于 f[i][j]，我们枚举区间 [i, j] 内的所有位置 k，假设 k 是最后一个戳破的气球，那么我们可以得到如下状态转移方程：\nf[i][j] = \\max(f[i][j], f[i][k] + f[k][j] + arr[i] x arr[k] x arr[j])\n在实现上，由于 f[i][j] 的状态转移方程中涉及到 f[i][k] 和 f[k][j]，其中 i < k < j，因此我们需要从大到小地遍历 i，从小到大地遍历 j，这样才能保证当计算 f[i][j] 时 f[i][k] 和 f[k][j] 已经被计算出来。\n最后，我们返回 f[0][n+1] 即可。\npython\nclass Solution:\ndef maxCoins(self, nums: List[int]) -> int:\nn = len(nums)\narr = ",
+      "complexity": "时间复杂度 $O(n^3)$空间复杂度 $O(n^2)$其中 $n$ 为数组 $nums$ 的长度 / 空间复杂度 $O(n^2)$其中 $n$ 为数组 $nums$ 的长度",
+      "javaSnippet": "class Solution {\n    public int maxCoins(int[] nums) {\n        int n = nums.length;\n        int[] arr = new int[n + 2];\n        arr[0] = 1;\n        arr[n + 1] = 1;\n        System.arraycopy(nums, 0, arr, 1, n);\n        int[][] f = new int[n + 2][n + 2];\n        for (int i = n - 1; i >= 0; i--) {\n            for (int j = i + 2; j <= n + 1; j++) {\n                for (int k = i + 1; k < j; k++) {\n                    f[i][j] = Math.max(f[i][j], f[i][k] + f[k][j] + arr[i] * arr[k] * arr[j]);\n                }\n            }\n        }\n        return f[0][n + 1];\n    }\n}"
+    },
+    "memory": {
+      "title": "暴力枚举（兜底）",
+      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
+      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
+      "javaSnippet": ""
+    },
+    "keywords": [
+      "戳气球",
+      "数组",
+      "动态规划"
+    ],
+    "tech": [
+      {
+        "name": "动态规划五步",
+        "detail": "定义 dp 状态 -> 推导转移方程 -> 确定初始值 -> 确定遍历顺序 -> 返回答案。先写小例子验证 dp 表，再压缩空间。"
+      },
+      {
+        "name": "状态压缩",
+        "detail": "很多 dp 只依赖前一两行，可以把二维数组压成一维，甚至只用两个变量；滚动数组不会改变状态含义，只减少空间。"
+      },
+      {
+        "name": "记忆化搜索",
+        "detail": "用递归 + memo 数组/Map 缓存结果，本质上与自底向上 dp 等价，适合状态转移方向不直观的题目。"
+      }
+    ],
+    "pitfalls": [
+      "dp 数组初始值要区分 0 与“不可达”",
+      "遍历顺序决定能否使用前一轮状态，注意下标从 1 开始",
+      "返回的是 dp[n] 还是 dp 数组最大值"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

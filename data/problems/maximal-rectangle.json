@@ -49,5 +49,69 @@
   "exampleTestcases": "[[\"1\",\"0\",\"1\",\"0\",\"0\"],[\"1\",\"0\",\"1\",\"1\",\"1\"],[\"1\",\"1\",\"1\",\"1\",\"1\"],[\"1\",\"0\",\"0\",\"1\",\"0\"]]\n[[\"0\"]]\n[[\"1\"]]",
   "contentHtml": "<p>给定一个仅包含&nbsp;<code>0</code> 和 <code>1</code> 、大小为 <code>rows x cols</code> 的二维二进制矩阵，找出只包含 <code>1</code> 的最大矩形，并返回其面积。</p>\n\n<p>&nbsp;</p>\n\n<p><strong>示例 1：</strong></p>\n<img alt=\"\" src=\"assets/problems/maximal-rectangle/img-1.png\" style=\"width: 402px; height: 322px;\" />\n<pre>\n<strong>输入：</strong>matrix = [[\"1\",\"0\",\"1\",\"0\",\"0\"],[\"1\",\"0\",\"1\",\"1\",\"1\"],[\"1\",\"1\",\"1\",\"1\",\"1\"],[\"1\",\"0\",\"0\",\"1\",\"0\"]]\n<strong>输出：</strong>6\n<strong>解释：</strong>最大矩形如上图所示。\n</pre>\n\n<p><strong>示例 2：</strong></p>\n\n<pre>\n<strong>输入：</strong>matrix = [[\"0\"]]\n<strong>输出：</strong>0\n</pre>\n\n<p><strong>示例 3：</strong></p>\n\n<pre>\n<strong>输入：</strong>matrix = [[\"1\"]]\n<strong>输出：</strong>1\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>rows == matrix.length</code></li>\n\t<li><code>cols == matrix[0].length</code></li>\n\t<li><code>1 &lt;= rows, cols &lt;= 200</code></li>\n\t<li><code>matrix[i][j]</code> 为 <code>'0'</code> 或 <code>'1'</code></li>\n</ul>\n",
   "contentEnHtml": "<p>Given a <code>rows x cols</code>&nbsp;binary <code>matrix</code> filled with <code>0</code>&#39;s and <code>1</code>&#39;s, find the largest rectangle containing only <code>1</code>&#39;s and return <em>its area</em>.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n<img alt=\"\" src=\"https://assets.leetcode.com/uploads/2020/09/14/maximal.jpg\" style=\"width: 402px; height: 322px;\" />\n<pre>\n<strong>Input:</strong> matrix = [[&quot;1&quot;,&quot;0&quot;,&quot;1&quot;,&quot;0&quot;,&quot;0&quot;],[&quot;1&quot;,&quot;0&quot;,&quot;1&quot;,&quot;1&quot;,&quot;1&quot;],[&quot;1&quot;,&quot;1&quot;,&quot;1&quot;,&quot;1&quot;,&quot;1&quot;],[&quot;1&quot;,&quot;0&quot;,&quot;0&quot;,&quot;1&quot;,&quot;0&quot;]]\n<strong>Output:</strong> 6\n<strong>Explanation:</strong> The maximal rectangle is shown in the above picture.\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> matrix = [[&quot;0&quot;]]\n<strong>Output:</strong> 0\n</pre>\n\n<p><strong class=\"example\">Example 3:</strong></p>\n\n<pre>\n<strong>Input:</strong> matrix = [[&quot;1&quot;]]\n<strong>Output:</strong> 1\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>rows == matrix.length</code></li>\n\t<li><code>cols == matrix[i].length</code></li>\n\t<li><code>1 &lt;= rows, cols &lt;= 200</code></li>\n\t<li><code>matrix[i][j]</code> is <code>&#39;0&#39;</code> or <code>&#39;1&#39;</code>.</li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：单调栈",
+      "approach": "若枚举矩形的左上、右下两个角点，再检查内部是否全为 1，时间复杂度为 O(m^2 n^2)。m, n <= 200，无法通过。\n同一片区域会被反复检查。注意到：固定底边所在行 i 后，第 j 列向上连续 1 的个数，恰好是一根柱子的高度。因此每一行都可以化成一道「柱状图中最大的矩形」，而后者已由第 84 题用单调栈在线性时间内解决。\n为此我们逐行维护 \\textit{heights}[j]：当前格为 1 则高度加一，为 0 则清零，再对当前直方图求最大矩形。总时间 O(mn)。\n我们把每一行视为柱状图的底部，对每一行求柱状图的最大面积即可。\n具体地，我们维护一个与矩阵列数相同的数组 \\textit{heights}，其中 \\textit{heights}[j] 表示以当前行为底部、以第 j 列为高度的柱子的高度。对于每一行，我们遍历每一列：\n- 如果当前元素为 '1'，则将 \\textit{heights}[j] 加 1。\n- 如果当前元素为 '0'，则将 \\textit{heights}[j] 置为 0。\n然后，我们使用单调栈算法计算当前柱状图的最大矩形面积，并更新答案。\n单调栈的具体做法如下：\n1. 初始化一个空栈 \\textit{stk}，用于存储柱子的索引。\n2. 初始化两个数组 \\textit{left} 和 \\textit{right}，分别表示每个柱子左侧和右侧第一个小于当前柱子的柱子的索引。\n3. 遍历柱子高度数组 \\textit{heights}，首先计算每个柱子左侧第一个小于当前柱子的柱子的索引，并存储在 \\textit{left} 中。\n4. 然后反向遍历",
+      "complexity": "时间复杂度 为 $O(m^2 n^2)$$m n \\le 200$无法通过",
+      "javaSnippet": "class Solution {\n    public int maximalRectangle(char[][] matrix) {\n        int n = matrix[0].length;\n        int[] heights = new int[n];\n        int ans = 0;\n        for (var row : matrix) {\n            for (int j = 0; j < n; ++j) {\n                if (row[j] == '1') {\n                    heights[j] += 1;\n                } else {\n                    heights[j] = 0;\n                }\n            }\n            ans = Math.max(ans, largestRectangleArea(heights));\n        }\n        return ans;\n    }\n\n    private int largestRectangleArea(int[] heights) {\n        int res = 0, n = heights.length;\n        Deque<Integer> stk = new ArrayDeque<>();\n        int[] left = new int[n];\n        int[] right = new int[n];\n        Arrays.fill(right, n);\n        for (int i = 0; i < n; ++i) {\n            while (!stk.isEmpty() && heights[stk.peek()] >= heights[i]) {\n                right[stk.pop()] = i;\n            }\n            left[i] = stk.isEmpty() ? -1 : stk.peek();\n            stk.push(i);\n        }\n        for (int i = 0; i < n; ++i) {\n            res = Math.max(res, heights[i] * (right[i] - left[i] - 1));\n        }\n        return res;\n    }\n}"
+    },
+    "memory": {
+      "title": "两层循环补栈",
+      "approach": "对每个位置扫描其后元素，找到第一个满足条件的值并记录；不再依赖栈时最容易理解。",
+      "complexity": "O(n^2) 时间 / O(1) 空间",
+      "javaSnippet": ""
+    },
+    "keywords": [
+      "最大矩形",
+      "栈",
+      "数组",
+      "动态规划",
+      "矩阵",
+      "单调栈"
+    ],
+    "tech": [
+      {
+        "name": "栈与括号/表达式",
+        "detail": "后进先出天然匹配最近配对：括号匹配、直方图最大矩形、每日温度、字符串解码都依赖单调栈或普通栈保存待处理信息。"
+      },
+      {
+        "name": "单调栈",
+        "detail": "维护栈内元素单调递增或递减，弹出时往往就是答案结算时机；栈中保存下标比保存值更好用。"
+      },
+      {
+        "name": "动态规划五步",
+        "detail": "定义 dp 状态 -> 推导转移方程 -> 确定初始值 -> 确定遍历顺序 -> 返回答案。先写小例子验证 dp 表，再压缩空间。"
+      },
+      {
+        "name": "状态压缩",
+        "detail": "很多 dp 只依赖前一两行，可以把二维数组压成一维，甚至只用两个变量；滚动数组不会改变状态含义，只减少空间。"
+      },
+      {
+        "name": "记忆化搜索",
+        "detail": "用递归 + memo 数组/Map 缓存结果，本质上与自底向上 dp 等价，适合状态转移方向不直观的题目。"
+      },
+      {
+        "name": "矩阵遍历",
+        "detail": "行列方向用方向数组 dirs={{-1,0},{1,0},{0,-1},{0,1}}；DFS 时先标记再递归，避免重复访问。"
+      }
+    ],
+    "pitfalls": [
+      "栈空时不要贸然 peek/pop",
+      "保存下标比保存值更容易算距离",
+      "记得最后清空剩余栈内容",
+      "dp 数组初始值要区分 0 与“不可达”",
+      "遍历顺序决定能否使用前一轮状态，注意下标从 1 开始"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

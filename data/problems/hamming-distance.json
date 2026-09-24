@@ -33,5 +33,46 @@
   "exampleTestcases": "1\n4\n3\n1",
   "contentHtml": "<p>两个整数之间的 <a href=\"https://baike.baidu.com/item/%E6%B1%89%E6%98%8E%E8%B7%9D%E7%A6%BB\">汉明距离</a> 指的是这两个数字对应二进制位不同的位置的数目。</p>\n\n<p>给你两个整数 <code>x</code> 和 <code>y</code>，计算并返回它们之间的汉明距离。</p>\n\n<p>&nbsp;</p>\n\n<p><strong>示例 1：</strong></p>\n\n<pre>\n<strong>输入：</strong>x = 1, y = 4\n<strong>输出：</strong>2\n<strong>解释：</strong>\n1   (0 0 0 1)\n4   (0 1 0 0)\n       ↑   ↑\n上面的箭头指出了对应二进制位不同的位置。\n</pre>\n\n<p><strong>示例 2：</strong></p>\n\n<pre>\n<strong>输入：</strong>x = 3, y = 1\n<strong>输出：</strong>1\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>0 &lt;=&nbsp;x, y &lt;= 2<sup>31</sup> - 1</code></li>\n</ul>\n\n<p>&nbsp;</p>\n\n<p><strong>注意：</strong>本题与&nbsp;<a href=\"https://leetcode.cn/problems/minimum-bit-flips-to-convert-number/\">2220. 转换数字的最少位翻转次数</a>&nbsp;相同。</p>\n",
   "contentEnHtml": "<p>The <a href=\"https://en.wikipedia.org/wiki/Hamming_distance\" target=\"_blank\">Hamming distance</a> between two integers is the number of positions at which the corresponding bits are different.</p>\n\n<p>Given two integers <code>x</code> and <code>y</code>, return <em>the <strong>Hamming distance</strong> between them</em>.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<pre>\n<strong>Input:</strong> x = 1, y = 4\n<strong>Output:</strong> 2\n<strong>Explanation:</strong>\n1   (0 0 0 1)\n4   (0 1 0 0)\n       &uarr;   &uarr;\nThe above arrows point to positions where the corresponding bits are different.\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> x = 3, y = 1\n<strong>Output:</strong> 1\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>0 &lt;=&nbsp;x, y &lt;= 2<sup>31</sup> - 1</code></li>\n</ul>\n\n<p>&nbsp;</p>\n<p><strong>Note:</strong> This question is the same as <a href=\"https://leetcode.com/problems/minimum-bit-flips-to-convert-number/description/\" target=\"_blank\"> 2220: Minimum Bit Flips to Convert Number.</a></p>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：位运算",
+      "approach": "汉明距离是二进制不同位的个数。逐位比较需要循环 32 次。\nx\\oplus y 的 1 位恰是不同位，对其做 \\textit{bit\\_count} 即可。\n异或把比较收成一次字运算，再数 1 的硬件指令或循环均可。\n我们将 x 和 y 按位异或，得到的结果中的 1 的个数就是汉明距离。\npython\nclass Solution:\ndef hammingDistance(self, x: int, y: int) -> int:\nreturn (x ^ y).bit_count()\njava\nclass Solution {\npublic int hammingDistance(int x, int y) {\nreturn Integer.bitCount(x ^ y);\n}\n}\ncpp\nclass Solution {\npublic:\nint hammingDistance(int x, int y) {\nreturn __builtin_popcount(x ^ y);\n}\n};\ngo\nfunc hammingDistance(x int, y int) int {\nreturn bits.OnesCount(uint(x ^ y))\n}\nts\nfunction hammingDistance(x: number, y: number): number {\nx ^= y;\nlet ans = 0;\nwhile (x) {\nx -= x & -x;\n++ans;\n}\nreturn ans;\n}\njs\n/\n* @param {number} x\n* @param {numbe",
+      "complexity": "时间复杂度 $O(1)$空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "javaSnippet": "class Solution {\n    public int hammingDistance(int x, int y) {\n        return Integer.bitCount(x ^ y);\n    }\n}"
+    },
+    "memory": {
+      "title": "暴力枚举（兜底）",
+      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
+      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
+      "javaSnippet": ""
+    },
+    "keywords": [
+      "汉明距离",
+      "位运算"
+    ],
+    "tech": [
+      {
+        "name": "异或性质",
+        "detail": "a ^ a = 0，0 ^ a = a，异或满足交换律和结合律。出现奇数次的唯一元素可以用全员异或求出。"
+      },
+      {
+        "name": "位运算技巧",
+        "detail": "n & (n-1) 消除最低位 1；n & -n 取出最低位 1；判断 2 的幂、统计 1 的个数都能用。"
+      }
+    ],
+    "pitfalls": [
+      "先明确题目边界条件与返回值转义",
+      "写前用小样例手动推演一遍"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

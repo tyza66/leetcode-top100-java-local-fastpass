@@ -43,5 +43,60 @@
   "exampleTestcases": "[10,5,-3,3,2,null,11,3,-2,null,1]\n8\n[5,4,8,11,null,13,4,7,2,null,null,5,1]\n22",
   "contentHtml": "<p>给定一个二叉树的根节点 <code>root</code> ，和一个整数 <code>targetSum</code> ，求该二叉树里节点值之和等于 <code>targetSum</code> 的 <strong>路径</strong> 的数目。</p>\n\n<p><strong>路径</strong> 不需要从根节点开始，也不需要在叶子节点结束，但是路径方向必须是向下的（只能从父节点到子节点）。</p>\n\n<p> </p>\n\n<p><strong>示例 1：</strong></p>\n\n<p><img src=\"assets/problems/path-sum-iii/img-1.jpg\" style=\"width: 452px; \" /></p>\n\n<pre>\n<strong>输入：</strong>root = [10,5,-3,3,2,null,11,3,-2,null,1], targetSum = 8\n<strong>输出：</strong>3\n<strong>解释：</strong>和等于 8 的路径有 3 条，如图所示。\n</pre>\n\n<p><strong>示例 2：</strong></p>\n\n<pre>\n<strong>输入：</strong>root = [5,4,8,11,null,13,4,7,2,null,null,5,1], targetSum = 22\n<strong>输出：</strong>3\n</pre>\n\n<p> </p>\n\n<p><strong>提示:</strong></p>\n\n<ul>\n\t<li>二叉树的节点个数的范围是 <code>[0,1000]</code></li>\n\t<li><meta charset=\"UTF-8\" /><code>-10<sup>9</sup> <= Node.val <= 10<sup>9</sup></code> </li>\n\t<li><code>-1000 <= targetSum <= 1000</code> </li>\n</ul>\n",
   "contentEnHtml": "<p>Given the <code>root</code> of a binary tree and an integer <code>targetSum</code>, return <em>the number of paths where the sum of the values&nbsp;along the path equals</em>&nbsp;<code>targetSum</code>.</p>\n\n<p>The path does not need to start or end at the root or a leaf, but it must go downwards (i.e., traveling only from parent nodes to child nodes).</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n<img alt=\"\" src=\"https://assets.leetcode.com/uploads/2021/04/09/pathsum3-1-tree.jpg\" style=\"width: 450px; height: 386px;\" />\n<pre>\n<strong>Input:</strong> root = [10,5,-3,3,2,null,11,3,-2,null,1], targetSum = 8\n<strong>Output:</strong> 3\n<strong>Explanation:</strong> The paths that sum to 8 are shown.\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> root = [5,4,8,11,null,13,4,7,2,null,null,5,1], targetSum = 22\n<strong>Output:</strong> 3\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li>The number of nodes in the tree is in the range <code>[0, 1000]</code>.</li>\n\t<li><code>-10<sup>9</sup> &lt;= Node.val &lt;= 10<sup>9</sup></code></li>\n\t<li><code>-1000 &lt;= targetSum &lt;= 1000</code></li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：哈希表 + 前缀和 + 递归",
+      "approach": "路径必须向下，枚举每个祖先再向下扫描是 O(n^2)。路径和等于 \\textit{targetSum} 可改写成「当前前缀和减去某个祖先前缀和」。\n先序累加前缀和 s，用哈希表统计根到当前结点的前缀出现次数，\\textit{cnt}[s-\\textit{targetSum}] 即以此为终点的合法路径数。回溯时撤销 s，避免把另一条分支算进来。\n初始 \\textit{cnt}[0]=1，对应从根出发整段刚好等于目标。先查询再插入，路径不含「当前结点用两次」。\n我们可以运用前缀和的思想，对二叉树进行递归遍历，同时用哈希表 \\textit{cnt} 统计从根节点到当前节点的路径上各个前缀和出现的次数。\n我们设计一个递归函数 \\textit{dfs(node, s)}，表示当前遍历到的节点为 \\textit{node}，从根节点到当前节点的路径上的前缀和为 s。函数的返回值是统计以 \\textit{node} 节点及其子树节点作为路径终点且路径和为 \\textit{targetSum} 的路径数目。那么答案就是 \\textit{dfs(root, 0)}。\n函数 \\textit{dfs(node, s)} 的递归过程如下：\n- 如果当前节点 \\textit{node} 为空，则返回 0。\n- 计算从根节点到当前节点的路径上的前缀和 s。\n- 用 \\textit{cnt}[s - \\textit{targetSum}] 表示以当前节点为路径终点且路径和为 \\textit{targetSum} 的路径数目，其中 \\textit{cnt}[s - \\textit{targetSum}] 即为",
+      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(n)$其中 $n$ 是二叉树的节点个数 / 空间复杂度 $O(n)$其中 $n$ 是二叉树的节点个数",
+      "javaSnippet": "/**\n * Definition for a binary tree node.\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n *     TreeNode() {}\n *     TreeNode(int val) { this.val = val; }\n *     TreeNode(int val, TreeNode left, TreeNode right) {\n *         this.val = val;\n *         this.left = left;\n *         this.right = right;\n *     }\n * }\n */\nclass Solution {\n    private Map<Long, Integer> cnt = new HashMap<>();\n    private int targetSum;\n\n    public int pathSum(TreeNode root, int targetSum) {\n        cnt.put(0L, 1);\n        this.targetSum = targetSum;\n        return dfs(root, 0);\n    }\n\n    private int dfs(TreeNode node, long s) {\n        if (node == null) {\n            return 0;\n        }\n        s += node.val;\n        int ans = cnt.getOrDefault(s - targetSum, 0);\n        cnt.merge(s, 1, Integer::sum);\n        ans += dfs(node.left, s);\n        ans += dfs(node.right, s);\n        cnt.merge(s, -1, Integer::sum);\n        return ans;\n    }\n}"
+    },
+    "memory": {
+      "title": "递归暴力遍历",
+      "approach": "对每个节点执行一次以它为根的完整遍历，把所有子树统计结果汇总；思路简单，适合小规模树。",
+      "complexity": "最坏 O(n^2) 时间",
+      "javaSnippet": ""
+    },
+    "keywords": [
+      "路径总和 III",
+      "Tree",
+      "深度优先搜索",
+      "二叉树",
+      "哈希表",
+      "前缀和",
+      "递归"
+    ],
+    "tech": [
+      {
+        "name": "DFS 框架",
+        "detail": "递归进入子树/邻居之前先处理当前节点，返回结果时用子树信息汇总。树上的路径和、最大路径、最近公共祖先都依赖后序返回值。"
+      },
+      {
+        "name": "访问标记",
+        "detail": "图中需要 visited 集合避免走回头路；树天然无环，但要注意空节点和越界条件。"
+      },
+      {
+        "name": "树的三种遍历",
+        "detail": "前序（根左右）、中序（左根右）、后序（左右根）。先序可以序列化树，中序在有 BST 性质时有序，后序适合自底向上汇总。"
+      },
+      {
+        "name": "递归返回值设计",
+        "detail": "确定每个递归函数“要什么、给什么”。例如路径和要返回最大贡献，直径要维护全局最大值。"
+      }
+    ],
+    "pitfalls": [
+      "空节点要单独处理",
+      "递归返回值类型与树的关系要先设计好",
+      "使用全局变量时注意重置"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

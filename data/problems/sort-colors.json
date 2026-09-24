@@ -53,5 +53,68 @@
   "exampleTestcases": "[2,0,2,1,1,0]\n[2,0,1]",
   "contentHtml": "<p>给定一个包含红色、白色和蓝色、共&nbsp;<code>n</code><em> </em>个元素的数组<meta charset=\"UTF-8\" />&nbsp;<code>nums</code>&nbsp;，<strong><a href=\"https://baike.baidu.com/item/%E5%8E%9F%E5%9C%B0%E7%AE%97%E6%B3%95\" target=\"_blank\">原地</a>&nbsp;</strong>对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。</p>\n\n<p>我们使用整数 0、&nbsp;1 和 2 分别表示红色、白色和蓝色。</p>\n\n<ul>\n</ul>\n\n<p>必须在不使用库内置的 sort 函数的情况下解决这个问题。</p>\n\n<p>&nbsp;</p>\n\n<p><strong class=\"example\">示例 1：</strong></p>\n\n<div class=\"example-block\">\n<p><span class=\"example-io\"><b>输入：</b>nums = [2,0,2,1,1,0]</span></p>\n\n<p><span class=\"example-io\"><b>输出：</b>[0,0,1,1,2,2]</span></p>\n\n<p><strong>解释：</strong></p>\n\n<p>该数组包含两个 0、两个 1 和两个 2。将它们原地排序后，所有 0 排在最前面，接着是所有 1，最后是所有 2。</p>\n</div>\n\n<p><strong class=\"example\">示例 2：</strong></p>\n\n<div class=\"example-block\">\n<p><span class=\"example-io\"><b>输入：</b>nums = [2,0,1]</span></p>\n\n<p><span class=\"example-io\"><b>输出：</b>[0,1,2]</span></p>\n\n<p><strong>解释：</strong></p>\n\n<p>数组中有且仅有一个 0、一个 1 和一个 2，按 0、1、2 的顺序原地排列。</p>\n</div>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>n == nums.length</code></li>\n\t<li><code>1 &lt;= n &lt;= 300</code></li>\n\t<li><code>nums[i]</code> 为 0、1 或 2</li>\n</ul>\n\n<p>&nbsp;</p>\n\n<p><strong>进阶：</strong></p>\n\n<ul>\n\t<li>你能想出一个仅使用常数空间的一趟扫描算法吗？</li>\n</ul>\n",
   "contentEnHtml": "<p>You are given an array <code>nums</code> with <code>n</code> objects colored red, white, or blue, sort them <strong><a href=\"https://en.wikipedia.org/wiki/In-place_algorithm\" target=\"_blank\">in-place</a> </strong>so that objects of the same color are adjacent, with the colors in the order red, white, and blue.</p>\n\n<p>We will use the integers 0, 1, and 2 to represent the color red, white, and blue, respectively.</p>\n\n<p>You must solve this problem without using the library&#39;s sort function.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<div class=\"example-block\">\n<p><strong>Input:</strong> <span class=\"example-io\">nums = [2,0,2,1,1,0]</span></p>\n\n<p><strong>Output:</strong> <span class=\"example-io\">[0,0,1,1,2,2]</span></p>\n\n<p><strong>Explanation:</strong></p>\n\n<p>The array has two 0s, two 1s, and two 2s. Sorting them in-place places all 0s first, then all 1s, then all 2s.</p>\n</div>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<div class=\"example-block\">\n<p><strong>Input:</strong> <span class=\"example-io\">nums = [2,0,1]</span></p>\n\n<p><strong>Output:</strong> <span class=\"example-io\">[0,1,2]</span></p>\n\n<p><strong>Explanation:</strong></p>\n\n<p>The array has one each of 0, 1, and 2, arranged in-place in the order 0, 1, 2.</p>\n</div>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>n == nums.length</code></li>\n\t<li><code>1 &lt;= n &lt;= 300</code></li>\n\t<li><code>nums[i]</code> is either 0, 1, or 2.</li>\n</ul>\n\n<p>&nbsp;</p>\n<p><strong>Follow up:</strong>&nbsp;Could you come up with a one-pass algorithm using only&nbsp;constant extra space?</p>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：三指针",
+      "approach": "统计 0、1、2 的个数再覆写需要两趟扫描；直接排序也能得到结果，n <= 300 时间足够。题目不允许使用库函数排序，进阶还要求一趟扫描且仅用常数额外空间。\n数组中只有三个取值，需要划分成「全 0 / 全 1 / 全 2」三段。为此用 i、j 分别框住已经归位的 0 与 2，k 扫描未知区间。与 2 交换时，换回来的元素尚未考察，因此 k 不能前进；与 0 交换时，换回来的元素来自已扫描区间，因此 k 可以同步右移。一遍结束后三段自然有序。\n我们定义三个指针 i, j 和 k，其中指针 i 用于指向数组中元素值为 0 的最右边界，指针 j 用于指向数组中元素值为 2 的最左边界，初始时 i=-1, j=n。指针 k 用于指向当前遍历的元素，初始时 k=0。\n当 k \\lt j 时，我们执行如下操作：\n- 若 nums[k]=0，则将其与 nums[i+1] 交换，然后 i 和 k 都加 1；\n- 若 nums[k]=2，则将其与 nums[j-1] 交换，然后 j 减 1；\n- 若 nums[k]=1，则 k 加 1。\n遍历结束后，数组中的元素就被分成了 [0,i], [i+1,j-1] 和 [j,n-1] 三个部分。\npython\nclass Solution:\ndef sortColors(self, nums: List[int]) -> None:\ni, j, k = -1, len(nums), 0\nwhile k < j:\nif nums[k] == 0:\ni += 1\nnums[i], nums[k] = nums[k], nums[i]\nk += 1\nelif",
+      "complexity": "时间复杂度 $O(n)$其中 $n$ 是数组的长度只需要遍历一遍数组即可空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "javaSnippet": "class Solution {\n    public void sortColors(int[] nums) {\n        int i = -1, j = nums.length, k = 0;\n        while (k < j) {\n            if (nums[k] == 0) {\n                swap(nums, ++i, k++);\n            } else if (nums[k] == 2) {\n                swap(nums, --j, k);\n            } else {\n                ++k;\n            }\n        }\n    }\n\n    private void swap(int[] nums, int i, int j) {\n        int t = nums[i];\n        nums[i] = nums[j];\n        nums[j] = t;\n    }\n}"
+    },
+    "memory": {
+      "title": "暴力枚举（兜底）",
+      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
+      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
+      "javaSnippet": ""
+    },
+    "keywords": [
+      "颜色分类",
+      "数组",
+      "双指针",
+      "冒泡排序",
+      "排序",
+      "快速排序",
+      "三指针"
+    ],
+    "tech": [
+      {
+        "name": "双指针",
+        "detail": "分为相向双指针（有序数组求两数和、接雨水、盛最多水）和同向快慢指针（去重、滑动窗口）。核心是先建立指针移动的不变量，每次只让指针朝一个方向移动，避免重复枚举。"
+      },
+      {
+        "name": "边界处理",
+        "detail": "写好 while 的结束条件，防止 left 与 right 交叉或越界；在比较元素时优先验证索引是否有效。"
+      },
+      {
+        "name": "冒泡排序",
+        "detail": "相邻交换把最大元素“浮”到末尾，最多 n-1 趟；适合小数组或教学演示。"
+      },
+      {
+        "name": "常用排序",
+        "detail": "快速排序/归并排序 O(n log n)；计数排序适合值域小的整数；TopK/找第 k 大可用快速选择，平均 O(n)。"
+      },
+      {
+        "name": "原地与稳定性",
+        "detail": "需要原地修改且关注空间时用快排或堆排；需要稳定排序且内存充足时用归并。"
+      },
+      {
+        "name": "快排",
+        "detail": "选 pivot 分区，递归排序两侧；平均 O(n log n)。实现时用左右交换法避免额外数组。"
+      }
+    ],
+    "pitfalls": [
+      "移动指针前检查越界",
+      "有去重要求时不要跳过重复元素而不更新答案",
+      "相向指针不要交叉"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

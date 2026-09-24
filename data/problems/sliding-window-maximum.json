@@ -58,5 +58,68 @@
   "exampleTestcases": "[1,3,-1,-3,5,3,6,7]\n3\n[1]\n1",
   "contentHtml": "<p>给你一个整数数组 <code>nums</code>，有一个大小为&nbsp;<code>k</code><em>&nbsp;</em>的滑动窗口从数组的最左侧移动到数组的最右侧。你只可以看到在滑动窗口内的 <code>k</code>&nbsp;个数字。滑动窗口每次只向右移动一位。</p>\n\n<p>返回 <em>滑动窗口中的最大值 </em>。</p>\n\n<p>&nbsp;</p>\n\n<p><strong>示例 1：</strong></p>\n\n<pre>\n<b>输入：</b>nums = [1,3,-1,-3,5,3,6,7], k = 3\n<b>输出：</b>[3,3,5,5,6,7]\n<b>解释：</b>\n滑动窗口的位置                最大值\n---------------               -----\n[1  3  -1] -3  5  3  6  7       <strong>3</strong>\n 1 [3  -1  -3] 5  3  6  7       <strong>3</strong>\n 1  3 [-1  -3  5] 3  6  7      <strong> 5</strong>\n 1  3  -1 [-3  5  3] 6  7       <strong>5</strong>\n 1  3  -1  -3 [5  3  6] 7       <strong>6</strong>\n 1  3  -1  -3  5 [3  6  7]      <strong>7</strong>\n</pre>\n\n<p><strong>示例 2：</strong></p>\n\n<pre>\n<b>输入：</b>nums = [1], k = 1\n<b>输出：</b>[1]\n</pre>\n\n<p>&nbsp;</p>\n\n<p><b>提示：</b></p>\n\n<ul>\n\t<li><code>1 &lt;= nums.length &lt;= 10<sup>5</sup></code></li>\n\t<li><code>-10<sup>4</sup>&nbsp;&lt;= nums[i] &lt;= 10<sup>4</sup></code></li>\n\t<li><code>1 &lt;= k &lt;= nums.length</code></li>\n</ul>\n",
   "contentEnHtml": "<p>You are given an array of integers&nbsp;<code>nums</code>, there is a sliding window of size <code>k</code> which is moving from the very left of the array to the very right. You can only see the <code>k</code> numbers in the window. Each time the sliding window moves right by one position.</p>\n\n<p>Return <em>the max sliding window</em>.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<pre>\n<strong>Input:</strong> nums = [1,3,-1,-3,5,3,6,7], k = 3\n<strong>Output:</strong> [3,3,5,5,6,7]\n<strong>Explanation:</strong> \nWindow position                Max\n---------------               -----\n[1  3  -1] -3  5  3  6  7       <strong>3</strong>\n 1 [3  -1  -3] 5  3  6  7       <strong>3</strong>\n 1  3 [-1  -3  5] 3  6  7      <strong> 5</strong>\n 1  3  -1 [-3  5  3] 6  7       <strong>5</strong>\n 1  3  -1  -3 [5  3  6] 7       <strong>6</strong>\n 1  3  -1  -3  5 [3  6  7]      <strong>7</strong>\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> nums = [1], k = 1\n<strong>Output:</strong> [1]\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= nums.length &lt;= 10<sup>5</sup></code></li>\n\t<li><code>-10<sup>4</sup> &lt;= nums[i] &lt;= 10<sup>4</sup></code></li>\n\t<li><code>1 &lt;= k &lt;= nums.length</code></li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：优先队列（大根堆）",
+      "approach": "每个窗口内再扫一遍求最大，总时间为 O(nk)。大根堆可在对数时间内给出当前最大，过期下标在堆顶时再弹出。\n先放入前 k-1 个，随后每纳入一个新元素并清理过期堆顶，堆顶即为该窗口最大值。\n我们可以使用优先队列（大根堆）来维护滑动窗口中的最大值。\n先将前 k-1 个元素加入优先队列，接下来从第 k 个元素开始，将新元素加入优先队列，同时判断堆顶元素是否滑出窗口，如果滑出窗口则将堆顶元素弹出。然后我们将堆顶元素加入结果数组。\npython\nclass Solution:\ndef maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:\nq = [(-v, i) for i, v in enumerate(nums[: k - 1])]\nheapify(q)\nans = []\nfor i in range(k - 1, len(nums)):\nheappush(q, (-nums[i], i))\nwhile q[0][1] <= i - k:\nheappop(q)\nans.append(-q[0][0])\nreturn ans\njava\nclass Solution {\npublic int[] maxSlidingWindow(int[] nums, int k) {\nPriorityQueue<int[]> q\n= new PriorityQueue<>((a, b) -> a[0] == b[0] ? a[1] - b[1] : b[0] - a[0]);\nint n = nums.length;\nfor (i",
+      "complexity": "时间复杂度 $O(n \\times \\log k)$空间复杂度 $O(k)$其中 $n$ 为数组长度 / 空间复杂度 $O(k)$其中 $n$ 为数组长度",
+      "javaSnippet": "class Solution {\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        PriorityQueue<int[]> q\n            = new PriorityQueue<>((a, b) -> a[0] == b[0] ? a[1] - b[1] : b[0] - a[0]);\n        int n = nums.length;\n        for (int i = 0; i < k - 1; ++i) {\n            q.offer(new int[] {nums[i], i});\n        }\n        int[] ans = new int[n - k + 1];\n        for (int i = k - 1, j = 0; i < n; ++i) {\n            q.offer(new int[] {nums[i], i});\n            while (q.peek()[1] <= i - k) {\n                q.poll();\n            }\n            ans[j++] = q.peek()[0];\n        }\n        return ans;\n    }\n}"
+    },
+    "memory": {
+      "title": "方法二：单调队列",
+      "approach": "堆中会残留过期元素，最坏仍带对数。窗口最大值只关心队头到队尾递减的候选。\n单调队列存下标：队头滑出则弹出，队尾不大于当前值则弹出，队头即为窗口最大，线性完成。\n求滑动窗口的最大值，一种常见的方法是使用单调队列。\n我们可以维护一个从队头到队尾单调递减的队列 q，队列中存储的是元素的下标。遍历数组 \\textit{nums}，对于当前元素 \\textit{nums}[i]，我们首先判断队头元素是否滑出窗口，如果滑出窗口则将队头元素弹出。然后我们将当前元素 \\textit{nums}[i] 从队尾开始依次与队尾元素比较，如果队尾元素小于等于当前元素，则将队尾元素弹出，直到队尾元素大于当前元素或者队列为空。然后将当前元素的下标加入队列。此时队列的队头元素即为当前滑动窗口的最大值，注意，我们将队头元素加入结果数组的时机是当下标 i 大于等于 k-1 时。\npython\nclass Solution:\ndef maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:\nq = deque()\nans = []\nfor i, x in enumerate(nums):\nif q and i - q[0] >= k:\nq.popleft()\nwhile q and nums[q[-1]] <= x:\nq.pop()\nq.append(i)\nif i >= k - 1:\nans.append(nums[q[0]])\nreturn ans\njava\nclass Solution {\npublic int[] maxSlidingWin",
+      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(k)$其中 $n$ 为数组 $\\textit{nums}$ 的长度 / 空间复杂度 $O(k)$其中 $n$ 为数组 $\\textit{nums}$ 的长度",
+      "javaSnippet": "class Solution {\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        int n = nums.length;\n        int[] ans = new int[n - k + 1];\n        Deque<Integer> q = new ArrayDeque<>();\n        for (int i = 0; i < n; ++i) {\n            if (!q.isEmpty() && i - q.peekFirst() >= k) {\n                q.pollFirst();\n            }\n            while (!q.isEmpty() && nums[q.peekLast()] <= nums[i]) {\n                q.pollLast();\n            }\n            q.offerLast(i);\n            if (i >= k - 1) {\n                ans[i - k + 1] = nums[q.peekFirst()];\n            }\n        }\n        return ans;\n    }\n}"
+    },
+    "keywords": [
+      "滑动窗口最大值",
+      "队列",
+      "数组",
+      "滑动窗口",
+      "单调队列",
+      "堆/优先队列",
+      "区间最值查询"
+    ],
+    "tech": [
+      {
+        "name": "滑动窗口",
+        "detail": "用 left/right 维护一个连续区间，右指针扩张加入元素，左指针收缩移除元素。窗口内容通常用计数数组、HashMap 或单调队列维护，使整体复杂度降到 O(n)。"
+      },
+      {
+        "name": "窗口有效性",
+        "detail": "必须先明确窗口何时合法：通常是“满足条件后收缩”还是“不满足条件时扩张”，这决定了 while 循环的位置。"
+      },
+      {
+        "name": "单调队列",
+        "detail": "滑动窗口最大值/最小值常用双端队列维护，队首是最值，队尾按单调性淘汰无用元素；每个元素最多出入队一次，整体 O(n)。"
+      },
+      {
+        "name": "优先队列",
+        "detail": "Java PriorityQueue 默认小顶堆。求第 k 大用大小为 k 的小顶堆，求若干最大元素用大顶堆；实现类统一在初始化时传入 Comparator。"
+      },
+      {
+        "name": "合并多个有序链",
+        "detail": "把每个序列的头节点放入堆，每次弹出最小节点并推入其后继，能高效完成 k 路归并。"
+      },
+      {
+        "name": "RMQ",
+        "detail": "区间最值可用稀疏表或线段树；稀疏表预处理 O(n log n)，查询 O(1)。"
+      }
+    ],
+    "pitfalls": [
+      "窗口何时收缩要想清楚，否则可能漏解",
+      "计数变化后要先判断窗口是否仍合法",
+      "右指针越界后还要处理窗口内合法结果"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

@@ -44,5 +44,54 @@
   "exampleTestcases": "[2,1,5,6,2,3]\n[2,4]",
   "contentHtml": "<p>给定 <em>n</em> 个非负整数，用来表示柱状图中各个柱子的高度。每个柱子彼此相邻，且宽度为 1 。</p>\n\n<p>求在该柱状图中，能够勾勒出来的矩形的最大面积。</p>\n\n<p> </p>\n\n<p><strong>示例 1:</strong></p>\n\n<p><img src=\"assets/problems/largest-rectangle-in-histogram/img-1.jpg\" /></p>\n\n<pre>\n<strong>输入：</strong>heights = [2,1,5,6,2,3]\n<strong>输出：</strong>10\n<strong>解释：</strong>最大的矩形为图中红色区域，面积为 10\n</pre>\n\n<p><strong>示例 2：</strong></p>\n\n<p><img src=\"assets/problems/largest-rectangle-in-histogram/img-2.jpg\" /></p>\n\n<pre>\n<strong>输入：</strong> heights = [2,4]\n<b>输出：</b> 4</pre>\n\n<p> </p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>1 <= heights.length <=10<sup>5</sup></code></li>\n\t<li><code>0 <= heights[i] <= 10<sup>4</sup></code></li>\n</ul>\n",
   "contentEnHtml": "<p>Given an array of integers <code>heights</code> representing the histogram&#39;s bar height where the width of each bar is <code>1</code>, return <em>the area of the largest rectangle in the histogram</em>.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n<img alt=\"\" src=\"https://assets.leetcode.com/uploads/2021/01/04/histogram.jpg\" style=\"width: 522px; height: 242px;\" />\n<pre>\n<strong>Input:</strong> heights = [2,1,5,6,2,3]\n<strong>Output:</strong> 10\n<strong>Explanation:</strong> The above is a histogram where width of each bar is 1.\nThe largest rectangle is shown in the red area, which has an area = 10 units.\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n<img alt=\"\" src=\"https://assets.leetcode.com/uploads/2021/01/04/histogram-1.jpg\" style=\"width: 202px; height: 362px;\" />\n<pre>\n<strong>Input:</strong> heights = [2,4]\n<strong>Output:</strong> 4\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= heights.length &lt;= 10<sup>5</sup></code></li>\n\t<li><code>0 &lt;= heights[i] &lt;= 10<sup>4</sup></code></li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：单调栈",
+      "approach": "若枚举左右边界 [l, r]，高度取区间最小值，面积为 (r - l + 1) x \\min，时间复杂度为 O(n^2)。n <= 10^5，无法通过。\n可以改换枚举对象：以第 i 根柱作为矩形的最矮柱，宽度就是它向左右延伸到第一根更矮柱之间的距离。求每个位置「左右两侧最近的更小值」，适合用单调栈：栈中下标对应的高度单调递增，遇到更矮的柱便弹出，同时得到被弹柱的右边界，栈顶即为左边界。每根柱入栈、出栈各一次，线性即可扫完。\n我们可以枚举每根柱子的高度 h 作为矩形的高度，利用单调栈，向左右两边找第一个高度小于 h 的下标 left_i, right_i。那么此时矩形面积为 h x (right_i-left_i-1)，求最大值即可。\n单调栈常见模型：找出每个数左/右边离它最近的且比它大/小的数。模板：\npython\nstk = []\nfor i in range(n):\nwhile stk and check(stk[-1], i):\nstk.pop()\nstk.append(i)\npython\nclass Solution:\ndef largestRectangleArea(self, heights: List[int]) -> int:\nn = len(heights)\nstk = []\nleft = [-1] * n\nright = [n] * n\nfor i, h in enumerate(heights):\nwhile stk and heights[stk[-1]] >= h:\nright[stk[-1]] = i\nstk.pop()\nif stk:\nleft[i",
+      "complexity": "时间复杂度 为 $O(n^2)$$n \\le 10^5$无法通过 / 空间复杂度 $O(n)$其中 $n$ 表示 $heights$ 的长度",
+      "javaSnippet": "class Solution {\n    public int largestRectangleArea(int[] heights) {\n        int res = 0, n = heights.length;\n        Deque<Integer> stk = new ArrayDeque<>();\n        int[] left = new int[n];\n        int[] right = new int[n];\n        Arrays.fill(right, n);\n        for (int i = 0; i < n; ++i) {\n            while (!stk.isEmpty() && heights[stk.peek()] >= heights[i]) {\n                right[stk.pop()] = i;\n            }\n            left[i] = stk.isEmpty() ? -1 : stk.peek();\n            stk.push(i);\n        }\n        for (int i = 0; i < n; ++i) {\n            res = Math.max(res, heights[i] * (right[i] - left[i] - 1));\n        }\n        return res;\n    }\n}"
+    },
+    "memory": {
+      "title": "两层循环补栈",
+      "approach": "对每个位置扫描其后元素，找到第一个满足条件的值并记录；不再依赖栈时最容易理解。",
+      "complexity": "O(n^2) 时间 / O(1) 空间",
+      "javaSnippet": "class Solution {\n    int largestRectangleArea(int[] heights) {\n        Stack<Integer> st = new Stack<Integer>();\n        \n        // 数组扩容，在头和尾各加入一个元素\n        int [] newHeights = new int[heights.length + 2];\n        newHeights[0] = 0;\n        newHeights[newHeights.length - 1] = 0;\n        for (int index = 0; index < heights.length; index++){\n            newHeights[index + 1] = heights[index];\n        }\n\n        heights = newHeights;\n        \n        st.push(0);\n        int result = 0;\n        // 第一个元素已经入栈，从下标1开始\n        for (int i = 1; i < heights.length; i++) {\n            // 注意heights[i] 是和heights[st.top()] 比较 ，st.top()是下标\n            if (heights[i] > heights[st.peek()]) {\n                st.push(i);\n            } else if (heights[i] == heights[st.peek()]) {\n                st.pop(); // 这个可以加，可以不加，效果一样，思路不同\n                st.push(i);\n            } else {\n                while (heights[i] < heights[st.peek()]) { // 注意是while\n                    int mid = st.peek();\n                    st.pop();\n                    int left = st.peek();\n                    int right = i;\n                    int w = right - left - 1;\n                    int h = heights[mid];\n                    result = Math.max(result, w * h);\n                }\n                st.push(i);\n            }\n        }\n        return result;\n    }\n}"
+    },
+    "keywords": [
+      "柱状图中最大的矩形",
+      "栈",
+      "数组",
+      "单调栈",
+      "区间最值查询"
+    ],
+    "tech": [
+      {
+        "name": "栈与括号/表达式",
+        "detail": "后进先出天然匹配最近配对：括号匹配、直方图最大矩形、每日温度、字符串解码都依赖单调栈或普通栈保存待处理信息。"
+      },
+      {
+        "name": "单调栈",
+        "detail": "维护栈内元素单调递增或递减，弹出时往往就是答案结算时机；栈中保存下标比保存值更好用。"
+      },
+      {
+        "name": "RMQ",
+        "detail": "区间最值可用稀疏表或线段树；稀疏表预处理 O(n log n)，查询 O(1)。"
+      }
+    ],
+    "pitfalls": [
+      "栈空时不要贸然 peek/pop",
+      "保存下标比保存值更容易算距离",
+      "记得最后清空剩余栈内容"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

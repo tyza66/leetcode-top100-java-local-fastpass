@@ -46,5 +46,58 @@
   "exampleTestcases": "[2,4,3]\n[5,6,4]\n[0]\n[0]\n[9,9,9,9,9,9,9]\n[9,9,9,9]",
   "contentHtml": "<p>给你两个&nbsp;<strong>非空</strong> 的链表，表示两个非负的整数。它们每位数字都是按照&nbsp;<strong>逆序</strong>&nbsp;的方式存储的，并且每个节点只能存储&nbsp;<strong>一位</strong>&nbsp;数字。</p>\n\n<p>请你将两个数相加，并以相同形式返回一个表示和的链表。</p>\n\n<p>你可以假设除了数字 0 之外，这两个数都不会以 0&nbsp;开头。</p>\n\n<p>&nbsp;</p>\n\n<p><strong class=\"example\">示例 1：</strong></p>\n<img alt=\"\" src=\"assets/problems/add-two-numbers/img-1.jpg\" style=\"width: 483px; height: 342px;\" />\n<pre>\n<strong>输入：</strong>l1 = [2,4,3], l2 = [5,6,4]\n<strong>输出：</strong>[7,0,8]\n<strong>解释：</strong>342 + 465 = 807.\n</pre>\n\n<p><strong class=\"example\">示例 2：</strong></p>\n\n<pre>\n<strong>输入：</strong>l1 = [0], l2 = [0]\n<strong>输出：</strong>[0]\n</pre>\n\n<p><strong class=\"example\">示例 3：</strong></p>\n\n<pre>\n<strong>输入：</strong>l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9]\n<strong>输出：</strong>[8,9,9,9,0,0,0,1]\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li>每个链表中的节点数在范围 <code>[1, 100]</code> 内</li>\n\t<li><code>0 &lt;= Node.val &lt;= 9</code></li>\n\t<li>题目数据保证列表表示的数字不含前导零</li>\n</ul>\n",
   "contentEnHtml": "<p>You are given two <strong>non-empty</strong> linked lists representing two non-negative integers. The digits are stored in <strong>reverse order</strong>, and each of their nodes contains a single digit. Add the two numbers and return the sum&nbsp;as a linked list.</p>\n\n<p>You may assume the two numbers do not contain any leading zero, except the number 0 itself.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n<img alt=\"\" src=\"https://assets.leetcode.com/uploads/2020/10/02/addtwonumber1.jpg\" style=\"width: 483px; height: 342px;\" />\n<pre>\n<strong>Input:</strong> l1 = [2,4,3], l2 = [5,6,4]\n<strong>Output:</strong> [7,0,8]\n<strong>Explanation:</strong> 342 + 465 = 807.\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> l1 = [0], l2 = [0]\n<strong>Output:</strong> [0]\n</pre>\n\n<p><strong class=\"example\">Example 3:</strong></p>\n\n<pre>\n<strong>Input:</strong> l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9]\n<strong>Output:</strong> [8,9,9,9,0,0,0,1]\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li>The number of nodes in each linked list is in the range <code>[1, 100]</code>.</li>\n\t<li><code>0 &lt;= Node.val &lt;= 9</code></li>\n\t<li>It is guaranteed that the list represents a number that does not have leading zeros.</li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：模拟",
+      "approach": "题目已经将个位放在链表头部，按位逆序存放，本质上就是竖式加法。若先把链表转成整数再相加，反而绕开了这一结构，也需要处理大整数。\n两条链的长度可能不同，最高位还可能产生额外进位。每一位都是「当前两位数字（缺省为 0）与进位 carry 之和」，再拆出个位和新的进位。从哑节点依次接上答案节点，两个指针同步前进；循环条件应为 l_1、l_2 或 carry 仍未结束，否则像 [9] + [1] 这样的情况会丢失最后的进位。\n我们同时遍历两个链表 l_1 和 l_2，并使用变量 carry 表示当前是否有进位。\n每次遍历时，我们取出对应链表的当前位，计算它们与进位 carry 的和，然后更新进位的值，最后将当前位的值加入答案链表。如果两个链表都遍历完了，并且进位为 0 时，遍历结束。\n最后我们返回答案链表的头节点即可。\npython\nDefinition for singly-linked list.\nclass ListNode:\ndef __init__(self, val=0, next=None):\nself.val = val\nself.next = next\nclass Solution:\ndef addTwoNumbers(\nself, l1: Optional[ListNode], l2: Optional[ListNode]\n) -> Optional[ListNode]:\ndummy = ListNode()\ncarry, curr = 0, dummy\nwhile l1 or l2 or carry:\ns = (l1.val if l1 else 0) + (l2",
+      "complexity": "时间复杂度 $O(\\max(m n))$其中 $m$ 和 $n$ 分别为两个链表的长度我们需要遍历两个链表的全部位置而处理每个位置只需要 $O(1)$ 的时间忽略答案的空间消耗空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "javaSnippet": "/**\n * Definition for singly-linked list.\n * public class ListNode {\n *     int val;\n *     ListNode next;\n *     ListNode() {}\n *     ListNode(int val) { this.val = val; }\n *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }\n * }\n */\nclass Solution {\n    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {\n        ListNode dummy = new ListNode(0);\n        int carry = 0;\n        ListNode cur = dummy;\n        while (l1 != null || l2 != null || carry != 0) {\n            int s = (l1 == null ? 0 : l1.val) + (l2 == null ? 0 : l2.val) + carry;\n            carry = s / 10;\n            cur.next = new ListNode(s % 10);\n            cur = cur.next;\n            l1 = l1 == null ? null : l1.next;\n            l2 = l2 == null ? null : l2.next;\n        }\n        return dummy.next;\n    }\n}"
+    },
+    "memory": {
+      "title": "转数组再处理",
+      "approach": "先遍历链表把值放入数组，用数组完成判断或计算，再按需重建链表；逻辑直观，面试中可先给该解法。",
+      "complexity": "O(n) 时间 / O(n) 空间",
+      "javaSnippet": ""
+    },
+    "keywords": [
+      "两数相加",
+      "递归",
+      "链表",
+      "数学",
+      "模拟"
+    ],
+    "tech": [
+      {
+        "name": "递归三要素",
+        "detail": "结束条件、缩小问题规模、当前层与递归结果的关系。写递归先默认子调用已经正确返回，再组合当前层逻辑。"
+      },
+      {
+        "name": "虚拟头节点",
+        "detail": "需要删除头节点或统一处理插入时，创建 dummy.next = head，操作完成后返回 dummy.next，能省大量特判。"
+      },
+      {
+        "name": "快慢指针",
+        "detail": "找中点、找环、找倒数第 k 个节点都能用快慢指针；相遇后让一个指针回头的“找环入口”技巧要会推导。"
+      },
+      {
+        "name": "数学归纳",
+        "detail": "求通项、快速幂、取模、组合数、容斥等场景先推导公式，再在代码里维护迭代变量。"
+      }
+    ],
+    "pitfalls": [
+      "处理头节点变化时使用虚拟头节点",
+      "快指针每次走两步前确认 next 非空",
+      "翻转链表要保存好 next，避免断链"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

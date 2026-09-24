@@ -68,5 +68,69 @@
   "exampleTestcases": "[1,1,1,2,2,3]\n2\n[1]\n1\n[1,2,1,2,1,2,3,1,3,2]\n2",
   "contentHtml": "<p>给你一个整数数组 <code>nums</code> 和一个整数 <code>k</code> ，请你返回其中出现频率前 <code>k</code> 高的元素。你可以按 <strong>任意顺序</strong> 返回答案。</p>\n\n<p>&nbsp;</p>\n\n<p><strong class=\"example\">示例 1：</strong></p>\n\n<div class=\"example-block\">\n<p><span class=\"example-io\"><b>输入：</b>nums = [1,1,1,2,2,3], k = 2</span></p>\n\n<p><strong>输出：</strong><span class=\"example-io\">[1,2]</span></p>\n</div>\n\n<p><strong class=\"example\">示例 2：</strong></p>\n\n<div class=\"example-block\">\n<p><span class=\"example-io\"><b>输入：</b>nums = [1], k = 1</span></p>\n\n<p><span class=\"example-io\"><b>输出：</b>[1]</span></p>\n</div>\n\n<p><strong class=\"example\">示例 3：</strong></p>\n\n<div class=\"example-block\">\n<p><span class=\"example-io\"><b>输入：</b>nums = [1,2,1,2,1,2,3,1,3,2], k = 2</span></p>\n\n<p><strong>输出：</strong><span class=\"example-io\">[1,2]</span></p>\n</div>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= nums.length &lt;= 10<sup>5</sup></code></li>\n\t<li><code>-10<sup>4</sup>&nbsp;&lt;= nums[i] &lt;= 10<sup>4</sup></code></li>\n\t<li><code>k</code> 的取值范围是 <code>[1, 数组中不相同的元素的个数]</code></li>\n\t<li>题目数据保证答案唯一，换句话说，数组中前 <code>k</code> 个高频元素的集合是唯一的</li>\n</ul>\n\n<p>&nbsp;</p>\n\n<p><strong>进阶：</strong>你所设计算法的时间复杂度 <strong>必须</strong> 优于 <code>O(n log n)</code> ，其中 <code>n</code><em>&nbsp;</em>是数组大小。</p>\n",
   "contentEnHtml": "<p>Given an integer array <code>nums</code> and an integer <code>k</code>, return <em>the</em> <code>k</code> <em>most frequent elements</em>. You may return the answer in <strong>any order</strong>.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<div class=\"example-block\">\n<p><strong>Input:</strong> <span class=\"example-io\">nums = [1,1,1,2,2,3], k = 2</span></p>\n\n<p><strong>Output:</strong> <span class=\"example-io\">[1,2]</span></p>\n</div>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<div class=\"example-block\">\n<p><strong>Input:</strong> <span class=\"example-io\">nums = [1], k = 1</span></p>\n\n<p><strong>Output:</strong> <span class=\"example-io\">[1]</span></p>\n</div>\n\n<p><strong class=\"example\">Example 3:</strong></p>\n\n<div class=\"example-block\">\n<p><strong>Input:</strong> <span class=\"example-io\">nums = [1,2,1,2,1,2,3,1,3,2], k = 2</span></p>\n\n<p><strong>Output:</strong> <span class=\"example-io\">[1,2]</span></p>\n</div>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= nums.length &lt;= 10<sup>5</sup></code></li>\n\t<li><code>-10<sup>4</sup> &lt;= nums[i] &lt;= 10<sup>4</sup></code></li>\n\t<li><code>k</code> is in the range <code>[1, the number of unique elements in the array]</code>.</li>\n\t<li>It is <strong>guaranteed</strong> that the answer is <strong>unique</strong>.</li>\n</ul>\n\n<p>&nbsp;</p>\n<p><strong>Follow up:</strong> Your algorithm&#39;s time complexity must be better than <code>O(n log n)</code>, where n is the array&#39;s size.</p>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：哈希表 + 优先队列（小根堆）",
+      "approach": "前 k 个高频元素。全排序为 O(n\\log n)。只需前 k，用频次堆或选择即可。\n先计数，再取频次最高的 k 个。Python 中 Counter.most_common(k) 即小根堆/堆选择，时间 O(n\\log k)。\n我们可以使用一个哈希表 \\textit{cnt} 统计每个元素出现的次数，然后使用一个小根堆（优先队列）来保存前 k 个高频元素。\n我们首先遍历一遍数组，统计每个元素出现的次数，然后遍历哈希表，将元素和出现次数存入小根堆中。如果小根堆的大小超过了 k，我们就将堆顶元素弹出，保证堆的大小始终为 k。\n最后，我们将小根堆中的元素依次弹出，放入结果数组中即可。\npython\nclass Solution:\ndef topKFrequent(self, nums: List[int], k: int) -> List[int]:\ncnt = Counter(nums)\nreturn [x for x, _ in cnt.most_common(k)]\njava\nclass Solution {\npublic int[] topKFrequent(int[] nums, int k) {\nMap<Integer, Integer> cnt = new HashMap<>();\nfor (int x : nums) {\ncnt.merge(x, 1, Integer::sum);\n}\nPriorityQueue<Map.Entry<Integer, Integer>> pq\n= new PriorityQueue<>(Comparator.comparingInt",
+      "complexity": "时间复杂度 $O(n \\times \\log k)$空间复杂度 $O(k)$其中 $n$ 是数组的长度 / 空间复杂度 $O(k)$其中 $n$ 是数组的长度",
+      "javaSnippet": "class Solution {\n    public int[] topKFrequent(int[] nums, int k) {\n        Map<Integer, Integer> cnt = new HashMap<>();\n        for (int x : nums) {\n            cnt.merge(x, 1, Integer::sum);\n        }\n        PriorityQueue<Map.Entry<Integer, Integer>> pq\n            = new PriorityQueue<>(Comparator.comparingInt(Map.Entry::getValue));\n        for (var e : cnt.entrySet()) {\n            pq.offer(e);\n            if (pq.size() > k) {\n                pq.poll();\n            }\n        }\n        return pq.stream().mapToInt(Map.Entry::getKey).toArray();\n    }\n}"
+    },
+    "memory": {
+      "title": "暴力枚举（兜底）",
+      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
+      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
+      "javaSnippet": ""
+    },
+    "keywords": [
+      "前 K 个高频元素",
+      "数组",
+      "哈希表",
+      "分治",
+      "桶排序",
+      "计数",
+      "快速选择",
+      "排序"
+    ],
+    "tech": [
+      {
+        "name": "HashMap / HashSet",
+        "detail": "get、containsKey、put 平均 O(1)。哈希表适合把“查找是否存在”降到常数时间，使用时要决定 key 与 value 各自表达什么，例如“值 -> 下标”还是“元素 -> 出现次数”。"
+      },
+      {
+        "name": "冲突与扩容",
+        "detail": "Java 的 HashMap 在哈希冲突时使用链表或红黑树，整体平均仍是 O(1)。遍历过程中不断扩容可能带来少量开销，但不影响算法复杂度。"
+      },
+      {
+        "name": "分治",
+        "detail": "把问题拆成独立子问题，分别求解后合并。归并排序、最大子数组、二叉搜索树计数都可以用分治思想。"
+      },
+      {
+        "name": "合并函数",
+        "detail": "分治的难点常在 merge 一步：要维护哪些全局信息、如何把左右答案组合。"
+      },
+      {
+        "name": "桶排序",
+        "detail": "数据值域/频次有限时按桶统计，线性完成排序或计数；注意桶的容量与下标换算。"
+      },
+      {
+        "name": "计数数组",
+        "detail": "用数值直接作下标统计出现次数，常见 int[101]、int[26]；能把排序、频次判断降到 O(n)。"
+      }
+    ],
+    "pitfalls": [
+      "注意“先查后插”，避免同一元素被使用两次",
+      "Map 里存下标还是存次数要想清楚",
+      "整数可能为负，不要用数组下标无脑表示 key"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

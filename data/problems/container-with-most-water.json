@@ -39,5 +39,59 @@
   "exampleTestcases": "[1,8,6,2,5,4,8,3,7]\n[1,1]",
   "contentHtml": "<p>给定一个长度为 <code>n</code> 的整数数组&nbsp;<code>height</code>&nbsp;。有&nbsp;<code>n</code>&nbsp;条垂线，第 <code>i</code> 条线的两个端点是&nbsp;<code>(i, 0)</code>&nbsp;和&nbsp;<code>(i, height[i])</code>&nbsp;。</p>\n\n<p>找出其中的两条线，使得它们与&nbsp;<code>x</code>&nbsp;轴共同构成的容器可以容纳最多的水。</p>\n\n<p>返回容器可以储存的最大水量。</p>\n\n<p><strong>说明：</strong>你不能倾斜容器。</p>\n\n<p>&nbsp;</p>\n\n<p><strong>示例 1：</strong></p>\n\n<p><img alt=\"\" src=\"assets/problems/container-with-most-water/img-1.jpg\" /></p>\n\n<pre>\n<strong>输入：</strong>[1,8,6,2,5,4,8,3,7]\n<strong>输出：</strong>49 \n<strong>解释：</strong>图中垂直线代表输入数组 [1,8,6,2,5,4,8,3,7]。在此情况下，容器能够容纳水（表示为蓝色部分）的最大值为&nbsp;49。</pre>\n\n<p><strong>示例 2：</strong></p>\n\n<pre>\n<strong>输入：</strong>height = [1,1]\n<strong>输出：</strong>1\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>n == height.length</code></li>\n\t<li><code>2 &lt;= n &lt;= 10<sup>5</sup></code></li>\n\t<li><code>0 &lt;= height[i] &lt;= 10<sup>4</sup></code></li>\n</ul>\n",
   "contentEnHtml": "<p>You are given an integer array <code>height</code> of length <code>n</code>. There are <code>n</code> vertical lines drawn such that the two endpoints of the <code>i<sup>th</sup></code> line are <code>(i, 0)</code> and <code>(i, height[i])</code>.</p>\n\n<p>Find two lines that together with the x-axis form a container, such that the container contains the most water.</p>\n\n<p>Return <em>the maximum amount of water a container can store</em>.</p>\n\n<p><strong>Notice</strong> that you may not slant the container.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n<img alt=\"\" src=\"https://s3-lc-upload.s3.amazonaws.com/uploads/2018/07/17/question_11.jpg\" style=\"width: 600px; height: 287px;\" />\n<pre>\n<strong>Input:</strong> height = [1,8,6,2,5,4,8,3,7]\n<strong>Output:</strong> 49\n<strong>Explanation:</strong> The above vertical lines are represented by array [1,8,6,2,5,4,8,3,7]. In this case, the max area of water (blue section) the container can contain is 49.\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> height = [1,1]\n<strong>Output:</strong> 1\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>n == height.length</code></li>\n\t<li><code>2 &lt;= n &lt;= 10<sup>5</sup></code></li>\n\t<li><code>0 &lt;= height[i] &lt;= 10<sup>4</sup></code></li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：双指针",
+      "approach": "若枚举所有下标对 (i, j)，面积为 \\min(height[i], height[j]) x (j - i)，时间复杂度为 O(n^2)。n <= 10^5，无法通过。\n容器的高度由较短的那根线决定。从最宽的区间 [0, n-1] 出发：若向内移动较高的一端，宽度减小，高度仍受较短边限制，面积不会变大。因此每次应当舍弃较短的那根，尝试碰到更高的边。用左右指针向中间收缩，每次移动较矮的一侧，每个下标至多访问一次。\n我们使用两个指针 l 和 r 分别指向数组的左右两端，即 l = 0，而 r = n - 1，其中 n 是数组的长度。\n接下来，我们使用变量 \\textit{ans} 记录容器的最大容量，初始化为 0。\n然后，我们开始进行循环，每次循环中，我们计算当前容器的容量，即 \\textit{min}(height[l], height[r]) x (r - l)，并将其与 \\textit{ans} 进行比较，将较大值赋给 \\textit{ans}。然后，我们判断 height[l] 和 height[r] 的大小，如果 \\textit{height}[l] < \\textit{height}[r]，移动 r 指针不会使得结果变得更好，因为容器的高度由较短的那根垂直线决定，所以我们移动 l 指针。反之，我们移动 r 指针。\n遍历结束后，返回 \\textit{ans} 即可。\npython\nclass Solution:\ndef maxArea(self, height: List[int]) -> int:\nl, r = 0, len(height) - 1\nans = 0\n",
+      "complexity": "时间复杂度 为 $O(n^2)$$n \\le 10^5$无法通过 / 空间复杂度 $O(1)$",
+      "javaSnippet": "class Solution {\n    public int maxArea(int[] height) {\n        int l = 0, r = height.length - 1;\n        int ans = 0;\n        while (l < r) {\n            int t = Math.min(height[l], height[r]) * (r - l);\n            ans = Math.max(ans, t);\n            if (height[l] < height[r]) {\n                ++l;\n            } else {\n                --r;\n            }\n        }\n        return ans;\n    }\n}"
+    },
+    "memory": {
+      "title": "暴力枚举（兜底）",
+      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
+      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
+      "javaSnippet": ""
+    },
+    "keywords": [
+      "盛最多水的容器",
+      "贪心",
+      "数组",
+      "双指针"
+    ],
+    "tech": [
+      {
+        "name": "贪心策略",
+        "detail": "在每一步做出当前看起来最优的选择，需要证明局部最优能推出全局最优。常见场景：区间调度、跳跃游戏、分发任务、区间覆盖。"
+      },
+      {
+        "name": "贪心 + 排序",
+        "detail": "很多贪心题先排序再扫描，例如按结束时间排序、按高度排序、按频率排序，排序能让局部决策被简化。"
+      },
+      {
+        "name": "双指针",
+        "detail": "分为相向双指针（有序数组求两数和、接雨水、盛最多水）和同向快慢指针（去重、滑动窗口）。核心是先建立指针移动的不变量，每次只让指针朝一个方向移动，避免重复枚举。"
+      },
+      {
+        "name": "边界处理",
+        "detail": "写好 while 的结束条件，防止 left 与 right 交叉或越界；在比较元素时优先验证索引是否有效。"
+      }
+    ],
+    "pitfalls": [
+      "贪心需要能证明局部最优 -> 全局最优",
+      "排序的依据要与贪心目标一致",
+      "注意覆盖的区间初值",
+      "移动指针前检查越界",
+      "有去重要求时不要跳过重复元素而不更新答案"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

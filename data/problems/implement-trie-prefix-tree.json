@@ -80,5 +80,69 @@
   "exampleTestcases": "[\"Trie\",\"insert\",\"search\",\"search\",\"startsWith\",\"insert\",\"search\"]\n[[],[\"apple\"],[\"apple\"],[\"app\"],[\"app\"],[\"app\"],[\"app\"]]",
   "contentHtml": "<p><strong><a href=\"https://baike.baidu.com/item/字典树/9825209?fr=aladdin\" target=\"_blank\">Trie</a></strong>（发音类似 \"try\"）或者说 <strong>前缀树</strong> 是一种树形数据结构，用于高效地存储和检索字符串数据集中的键。这一数据结构有相当多的应用情景，例如自动补全和拼写检查。</p>\n\n<p>请你实现 Trie 类：</p>\n\n<ul>\n\t<li><code>Trie()</code> 初始化前缀树对象。</li>\n\t<li><code>void insert(String word)</code> 向前缀树中插入字符串 <code>word</code> 。</li>\n\t<li><code>boolean search(String word)</code> 如果字符串 <code>word</code> 在前缀树中，返回 <code>true</code>（即，在检索之前已经插入）；否则，返回 <code>false</code> 。</li>\n\t<li><code>boolean startsWith(String prefix)</code> 如果之前已经插入的字符串&nbsp;<code>word</code> 的前缀之一为 <code>prefix</code> ，返回 <code>true</code> ；否则，返回 <code>false</code> 。</li>\n</ul>\n\n<p>&nbsp;</p>\n\n<p><strong>示例：</strong></p>\n\n<pre>\n<strong>输入</strong>\n[\"Trie\", \"insert\", \"search\", \"search\", \"startsWith\", \"insert\", \"search\"]\n[[], [\"apple\"], [\"apple\"], [\"app\"], [\"app\"], [\"app\"], [\"app\"]]\n<strong>输出</strong>\n[null, null, true, false, true, null, true]\n\n<strong>解释</strong>\nTrie trie = new Trie();\ntrie.insert(\"apple\");\ntrie.search(\"apple\");   // 返回 True\ntrie.search(\"app\");     // 返回 False\ntrie.startsWith(\"app\"); // 返回 True\ntrie.insert(\"app\");\ntrie.search(\"app\");     // 返回 True\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= word.length, prefix.length &lt;= 2000</code></li>\n\t<li><code>word</code> 和 <code>prefix</code> 仅由小写英文字母组成</li>\n\t<li><code>insert</code>、<code>search</code> 和 <code>startsWith</code> 调用次数 <strong>总计</strong> 不超过 <code>3 * 10<sup>4</sup></code> 次</li>\n</ul>\n",
   "contentEnHtml": "<p>A <a href=\"https://en.wikipedia.org/wiki/Trie\" target=\"_blank\"><strong>trie</strong></a> (pronounced as &quot;try&quot;) or <strong>prefix tree</strong> is a tree data structure used to efficiently store and retrieve keys in a dataset of strings. There are various applications of this data structure, such as autocomplete and spellchecker.</p>\n\n<p>Implement the Trie class:</p>\n\n<ul>\n\t<li><code>Trie()</code> Initializes the trie object.</li>\n\t<li><code>void insert(String word)</code> Inserts the string <code>word</code> into the trie.</li>\n\t<li><code>boolean search(String word)</code> Returns <code>true</code> if the string <code>word</code> is in the trie (i.e., was inserted before), and <code>false</code> otherwise.</li>\n\t<li><code>boolean startsWith(String prefix)</code> Returns <code>true</code> if there is a previously inserted string <code>word</code> that has the prefix <code>prefix</code>, and <code>false</code> otherwise.</li>\n</ul>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<pre>\n<strong>Input</strong>\n[&quot;Trie&quot;, &quot;insert&quot;, &quot;search&quot;, &quot;search&quot;, &quot;startsWith&quot;, &quot;insert&quot;, &quot;search&quot;]\n[[], [&quot;apple&quot;], [&quot;apple&quot;], [&quot;app&quot;], [&quot;app&quot;], [&quot;app&quot;], [&quot;app&quot;]]\n<strong>Output</strong>\n[null, null, true, false, true, null, true]\n\n<strong>Explanation</strong>\nTrie trie = new Trie();\ntrie.insert(&quot;apple&quot;);\ntrie.search(&quot;apple&quot;);   // return True\ntrie.search(&quot;app&quot;);     // return False\ntrie.startsWith(&quot;app&quot;); // return True\ntrie.insert(&quot;app&quot;);\ntrie.search(&quot;app&quot;);     // return True\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= word.length, prefix.length &lt;= 2000</code></li>\n\t<li><code>word</code> and <code>prefix</code> consist only of lowercase English letters.</li>\n\t<li>At most <code>3 * 10<sup>4</sup></code> calls <strong>in total</strong> will be made to <code>insert</code>, <code>search</code>, and <code>startsWith</code>.</li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：前缀树",
+      "approach": "多次查询公共前缀时，若对每个单词扫描全部已插入词，则会重复比较相同前缀。字符均为小写，可用 26 叉树按字符分层。\n插入时沿路径创建结点并在末尾置 isEnd；查询前缀走同一路径，search 再检查终点是否为词尾。\n前缀树每个节点包括两部分：\n1. 指向子节点的指针数组 children，对于本题而言，数组长度为 26，即小写英文字母的数量。children[0] 对应小写字母 a，...，children[25] 对应小写字母 z。\n1. 布尔字段 isEnd，表示该节点是否为字符串的结尾。\n1. 插入字符串\n我们从字典树的根开始，插入字符串。对于当前字符对应的子节点，有两种情况：\n- 子节点存在。沿着指针移动到子节点，继续处理下一个字符。\n- 子节点不存在。创建一个新的子节点，记录在 children 数组的对应位置上，然后沿着指针移动到子节点，继续搜索下一个字符。\n重复以上步骤，直到处理字符串的最后一个字符，然后将当前节点标记为字符串的结尾。\n2. 查找前缀\n我们从字典树的根开始，查找前缀。对于当前字符对应的子节点，有两种情况：\n- 子节点存在。沿着指针移动到子节点，继续搜索下一个字符。\n- 子节点不存在。说明字典树中不包含该前缀，返回空指针。\n重复以上步骤，直到返回空指针或搜索完前缀的最后一个字符。\n若搜索到了前缀的末尾，就说明字典树中存在该前缀。此外，若前缀末尾对应节点的 isEnd 为真，则说明字典树中存在该字符串。\npython\nclass Trie:\ndef __init__(self):\nself.children = [None] * 26\nself.is",
+      "complexity": "时间复杂度 方面插入字符串的时间复杂度为 $O(m \\times |\\Sigma|)$查找前缀的时间复杂度为 $O(m)$其中 $m$ 为字符串的长度而 $|\\Sigma|$ 为字符集的大小（本题中为 $26$）空间复杂度为 $O(q \\times m \\times |\\Sigma|)$其中 $q$ 为插入的字符串数量 / 空间复杂度 为 $O(q \\times m \\times |\\Sigma|)$，其中 $q$ 为插入的字符串数量",
+      "javaSnippet": "class Trie {\n    private Trie[] children;\n    private boolean isEnd;\n\n    public Trie() {\n        children = new Trie[26];\n    }\n\n    public void insert(String word) {\n        Trie node = this;\n        for (char c : word.toCharArray()) {\n            int idx = c - 'a';\n            if (node.children[idx] == null) {\n                node.children[idx] = new Trie();\n            }\n            node = node.children[idx];\n        }\n        node.isEnd = true;\n    }\n\n    public boolean search(String word) {\n        Trie node = searchPrefix(word);\n        return node != null && node.isEnd;\n    }\n\n    public boolean startsWith(String prefix) {\n        Trie node = searchPrefix(prefix);\n        return node != null;\n    }\n\n    private Trie searchPrefix(String s) {\n        Trie node = this;\n        for (char c : s.toCharArray()) {\n            int idx = c - 'a';\n            if (node.children[idx] == null) {\n                return null;\n            }\n            node = node.children[idx];\n        }\n        return node;\n    }\n}\n\n/**\n * Your Trie object will be instantiated and called as such:\n * Trie obj = new Trie();\n * obj.insert(word);\n * boolean param_2 = obj.search(word);\n * boolean param_3 = obj.startsWith(prefix);\n */"
+    },
+    "memory": {
+      "title": "暴力查找（兜底）",
+      "approach": "第一层枚举一个元素，第二层线性扫描找目标对应元素；每轮用下标与元素关系做去重。",
+      "complexity": "O(n^2) 时间 / O(1) 空间",
+      "javaSnippet": ""
+    },
+    "keywords": [
+      "实现 Trie (前缀树)",
+      "设计",
+      "字典树",
+      "哈希表",
+      "字符串",
+      "前缀树"
+    ],
+    "tech": [
+      {
+        "name": "设计题",
+        "detail": "先确定核心数据结构，再约束每个方法复杂度。LRU 用 HashMap + 双向链表，最小栈用辅助栈或自定义节点，序列化树用先序 + 分隔符。"
+      },
+      {
+        "name": "字典树",
+        "detail": "每个节点用一个数组/Map 存孩子，并标记是否为单词结尾。插入和查找长度都是 O(len)，适合前缀匹配与自动补全。"
+      },
+      {
+        "name": "HashMap / HashSet",
+        "detail": "get、containsKey、put 平均 O(1)。哈希表适合把“查找是否存在”降到常数时间，使用时要决定 key 与 value 各自表达什么，例如“值 -> 下标”还是“元素 -> 出现次数”。"
+      },
+      {
+        "name": "冲突与扩容",
+        "detail": "Java 的 HashMap 在哈希冲突时使用链表或红黑树，整体平均仍是 O(1)。遍历过程中不断扩容可能带来少量开销，但不影响算法复杂度。"
+      },
+      {
+        "name": "字符串处理",
+        "detail": "注意不可变性：频繁拼接用 StringBuilder；比较时想清楚大小写、数字位数、分隔符和空串；回文类题目常配合中心扩展或马拉车。"
+      },
+      {
+        "name": "字符计数",
+        "detail": "只含小写字母时用 int[26]，需要记录字符种类时维护 diff 变量，避免每次重新扫描。"
+      }
+    ],
+    "pitfalls": [
+      "注意“先查后插”，避免同一元素被使用两次",
+      "Map 里存下标还是存次数要想清楚",
+      "整数可能为负，不要用数组下标无脑表示 key",
+      "字符串下标从 0 开始，子串边界要小心",
+      "统计字符时先确定字符集大小"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

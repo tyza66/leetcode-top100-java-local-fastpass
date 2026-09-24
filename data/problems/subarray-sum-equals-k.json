@@ -43,5 +43,57 @@
   "exampleTestcases": "[1,1,1]\n2\n[1,2,3]\n3",
   "contentHtml": "<p>给你一个整数数组 <code>nums</code> 和一个整数&nbsp;<code>k</code> ，请你统计并返回 <em>该数组中和为&nbsp;<code>k</code><strong>&nbsp;</strong>的子数组的个数&nbsp;</em>。</p>\n\n<p>子数组是数组中元素的连续非空序列。</p>\n\n<p>&nbsp;</p>\n\n<p><strong>示例 1：</strong></p>\n\n<pre>\n<strong>输入：</strong>nums = [1,1,1], k = 2\n<strong>输出：</strong>2\n</pre>\n\n<p><strong>示例 2：</strong></p>\n\n<pre>\n<strong>输入：</strong>nums = [1,2,3], k = 3\n<strong>输出：</strong>2\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= nums.length &lt;= 2 * 10<sup>4</sup></code></li>\n\t<li><code>-1000 &lt;= nums[i] &lt;= 1000</code></li>\n\t<li><code>-10<sup>7</sup> &lt;= k &lt;= 10<sup>7</sup></code></li>\n</ul>\n",
   "contentEnHtml": "<p>Given an array of integers <code>nums</code> and an integer <code>k</code>, return <em>the total number of subarrays whose sum equals to</em> <code>k</code>.</p>\n\n<p>A subarray is a contiguous <strong>non-empty</strong> sequence of elements within an array.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n<pre><strong>Input:</strong> nums = [1,1,1], k = 2\n<strong>Output:</strong> 2\n</pre><p><strong class=\"example\">Example 2:</strong></p>\n<pre><strong>Input:</strong> nums = [1,2,3], k = 3\n<strong>Output:</strong> 2\n</pre>\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= nums.length &lt;= 2 * 10<sup>4</sup></code></li>\n\t<li><code>-1000 &lt;= nums[i] &lt;= 1000</code></li>\n\t<li><code>-10<sup>7</sup> &lt;= k &lt;= 10<sup>7</sup></code></li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：哈希表 + 前缀和",
+      "approach": "统计和为 k 的子数组个数。枚举两端是 O(n^2)，在 n <= 2 x 10^4 时偏紧。\n若前缀和为 s，则需要此前有多少个前缀等于 s-k。哈希表统计已出现的前缀和次数，初值 \\textit{cnt}[0]=1 表示空前缀。边走边查再更新，避免用到当前下标自己。\n我们定义一个哈希表 \\textit{cnt}，用于存储数组 \\textit{nums} 的前缀和出现的次数。初始时，我们将 \\textit{cnt}[0] 的值设为 1，表示前缀和 0 出现了一次。\n我们遍历数组 \\textit{nums}，计算前缀和 \\textit{s}，然后将 \\textit{cnt}[s - k] 的值累加到答案中，并将 \\textit{cnt}[s] 的值增加 1。\n遍历结束后，我们返回答案。\npython\nclass Solution:\ndef subarraySum(self, nums: List[int], k: int) -> int:\ncnt = Counter({0: 1})\nans = s = 0\nfor x in nums:\ns += x\nans += cnt[s - k]\ncnt[s] += 1\nreturn ans\njava\nclass Solution {\npublic int subarraySum(int[] nums, int k) {\nMap<Integer, Integer> cnt = new HashMap<>();\ncnt.put(0, 1);\nint ans = 0, s = 0;\nfor (int x : nums) {\ns += x;\nan",
+      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(n)$其中 $n$ 为数组 $\\textit{nums}$ 的长度 / 空间复杂度 $O(n)$其中 $n$ 为数组 $\\textit{nums}$ 的长度",
+      "javaSnippet": "class Solution {\n    public int subarraySum(int[] nums, int k) {\n        Map<Integer, Integer> cnt = new HashMap<>();\n        cnt.put(0, 1);\n        int ans = 0, s = 0;\n        for (int x : nums) {\n            s += x;\n            ans += cnt.getOrDefault(s - k, 0);\n            cnt.merge(s, 1, Integer::sum);\n        }\n        return ans;\n    }\n}"
+    },
+    "memory": {
+      "title": "暴力枚举（兜底）",
+      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
+      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
+      "javaSnippet": ""
+    },
+    "keywords": [
+      "和为 K 的子数组",
+      "数组",
+      "哈希表",
+      "前缀和"
+    ],
+    "tech": [
+      {
+        "name": "HashMap / HashSet",
+        "detail": "get、containsKey、put 平均 O(1)。哈希表适合把“查找是否存在”降到常数时间，使用时要决定 key 与 value 各自表达什么，例如“值 -> 下标”还是“元素 -> 出现次数”。"
+      },
+      {
+        "name": "冲突与扩容",
+        "detail": "Java 的 HashMap 在哈希冲突时使用链表或红黑树，整体平均仍是 O(1)。遍历过程中不断扩容可能带来少量开销，但不影响算法复杂度。"
+      },
+      {
+        "name": "前缀和",
+        "detail": "前缀和数组 s[i] 表示前 i 个元素之和，区间和 = s[r] - s[l-1]。子数组和为 k 的问题可配合哈希表记录前缀和出现次数。"
+      },
+      {
+        "name": "HashMap 优化",
+        "detail": "求“和为 k 的子数组数”时，一边计算前缀和一边查询 pre - k 的出现次数，并更新当前前缀和计数，一次遍历完成。"
+      }
+    ],
+    "pitfalls": [
+      "注意“先查后插”，避免同一元素被使用两次",
+      "Map 里存下标还是存次数要想清楚",
+      "整数可能为负，不要用数组下标无脑表示 key"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

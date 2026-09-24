@@ -43,5 +43,68 @@
   "exampleTestcases": "\"aa\"\n\"a\"\n\"aa\"\n\"a*\"\n\"ab\"\n\".*\"",
   "contentHtml": "<p>给你一个字符串&nbsp;<code>s</code>&nbsp;和一个字符规律&nbsp;<code>p</code>，请你来实现一个支持 <code>'.'</code>&nbsp;和&nbsp;<code>'*'</code>&nbsp;的正则表达式匹配。</p>\n\n<ul>\n\t<li><code>'.'</code> 匹配任意单个字符</li>\n\t<li><code>'*'</code> 匹配零个或多个前面的那一个元素</li>\n</ul>\n\n<p>返回一个布尔值，表示匹配是否覆盖整个输入字符串（而非部分）。</p>\n&nbsp;\n\n<p><strong>示例 1：</strong></p>\n\n<pre>\n<strong>输入：</strong>s = \"aa\", p = \"a\"\n<strong>输出：</strong>false\n<strong>解释：</strong>\"a\" 无法匹配 \"aa\" 整个字符串。\n</pre>\n\n<p><strong>示例 2:</strong></p>\n\n<pre>\n<strong>输入：</strong>s = \"aa\", p = \"a*\"\n<strong>输出：</strong>true\n<strong>解释：</strong>因为 '*' 代表可以匹配零个或多个前面的那一个元素, 在这里前面的元素就是 'a'。因此，字符串 \"aa\" 可被视为 'a' 重复了一次。\n</pre>\n\n<p><strong>示例&nbsp;3：</strong></p>\n\n<pre>\n<strong>输入：</strong>s = \"ab\", p = \".*\"\n<strong>输出：</strong>true\n<strong>解释：</strong>\".*\" 表示可匹配零个或多个（'*'）任意字符（'.'）。\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= s.length&nbsp;&lt;= 20</code></li>\n\t<li><code>1 &lt;= p.length&nbsp;&lt;= 20</code></li>\n\t<li><code>s</code>&nbsp;只包含从&nbsp;<code>a-z</code>&nbsp;的小写字母。</li>\n\t<li><code>p</code>&nbsp;只包含从&nbsp;<code>a-z</code>&nbsp;的小写字母，以及字符&nbsp;<code>.</code>&nbsp;和&nbsp;<code>*</code>。</li>\n\t<li>保证每次出现字符&nbsp;<code>*</code> 时，前面都匹配到有效的字符</li>\n</ul>\n",
   "contentEnHtml": "<p>Given an input string <code>s</code>&nbsp;and a pattern <code>p</code>, implement regular expression matching with support for <code>&#39;.&#39;</code> and <code>&#39;*&#39;</code> where:</p>\n\n<ul>\n\t<li><code>&#39;.&#39;</code> Matches any single character.​​​​</li>\n\t<li><code>&#39;*&#39;</code> Matches zero or more of the preceding element.</li>\n</ul>\n\n<p>Return a boolean indicating whether the matching covers the entire input string (not partial).</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<pre>\n<strong>Input:</strong> s = &quot;aa&quot;, p = &quot;a&quot;\n<strong>Output:</strong> false\n<strong>Explanation:</strong> &quot;a&quot; does not match the entire string &quot;aa&quot;.\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> s = &quot;aa&quot;, p = &quot;a*&quot;\n<strong>Output:</strong> true\n<strong>Explanation:</strong> &#39;*&#39; means zero or more of the preceding element, &#39;a&#39;. Therefore, by repeating &#39;a&#39; once, it becomes &quot;aa&quot;.\n</pre>\n\n<p><strong class=\"example\">Example 3:</strong></p>\n\n<pre>\n<strong>Input:</strong> s = &quot;ab&quot;, p = &quot;.*&quot;\n<strong>Output:</strong> true\n<strong>Explanation:</strong> &quot;.*&quot; means &quot;zero or more (*) of any character (.)&quot;.\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= s.length&nbsp;&lt;= 20</code></li>\n\t<li><code>1 &lt;= p.length&nbsp;&lt;= 20</code></li>\n\t<li><code>s</code> contains only lowercase English letters.</li>\n\t<li><code>p</code> contains only lowercase English letters, <code>&#39;.&#39;</code>, and&nbsp;<code>&#39;*&#39;</code>.</li>\n\t<li>It is guaranteed for each appearance of the character <code>&#39;*&#39;</code>, there will be a previous valid character to match.</li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：记忆化搜索",
+      "approach": "若对模式中的每个 * 枚举它匹配 0,1,2,\\ldots 个字符，时间复杂度为指数级。s 与 p 最长仅为 20，但同一对位置会被反复计算，直接枚举难以稳定通过。\n* 只作用于其前一个元素：要么匹配 0 次，模式下标前进 2；要么当前字符与该元素相符（含 .），再让同一个 * 继续匹配 s 的下一个字符。普通字符则必须与 s 中对应位置一一匹配。\n因此可以将状态定义为：s 从下标 i 起的后缀与 p 从下标 j 起的后缀能否匹配。递归求解时加以记忆化，即可避免同一对 (i,j) 被重复计算。\n我们设计一个函数 dfs(i, j)，表示从 s 的第 i 个字符开始，和 p 的第 j 个字符开始是否匹配。那么答案就是 dfs(0, 0)。\n函数 dfs(i, j) 的计算过程如下：\n- 如果 j 已经到达 p 的末尾，那么如果 i 也到达了 s 的末尾，那么匹配成功，否则匹配失败。\n- 如果 j 的下一个字符是 '*'，我们可以选择匹配 0 个 s[i] 字符，那么就是 dfs(i, j + 2)。如果此时 i \\lt m 并且 s[i] 和 p[j] 匹配，那么我们可以选择匹配 1 个 s[i] 字符，那么就是 dfs(i + 1, j)。\n- 如果 j 的下一个字符不是 '*'，那么如果 i \\lt m 并且 s[i] 和 p[j] 匹配，那么就是 dfs(i + 1, j + 1)。否则匹配失败。\n过程中，我们可以使用记忆化搜索，避免重复计算。\npython\nclass Solution:\ndef isMatch(self, s: str, p: str) -> bool:",
+      "complexity": "时间复杂度 为指数级$s$ 与 $p$ 最长仅为 $20$但同一对位置会被反复计算直接枚举难以稳定通过 / 空间复杂度 $O(m \\times n)$其中 $m$ 和 $n$ 分别是 $s$ 和 $p$ 的长度",
+      "javaSnippet": "class Solution {\n    private Boolean[][] f;\n    private String s;\n    private String p;\n    private int m;\n    private int n;\n\n    public boolean isMatch(String s, String p) {\n        m = s.length();\n        n = p.length();\n        f = new Boolean[m + 1][n + 1];\n        this.s = s;\n        this.p = p;\n        return dfs(0, 0);\n    }\n\n    private boolean dfs(int i, int j) {\n        if (j >= n) {\n            return i == m;\n        }\n        if (f[i][j] != null) {\n            return f[i][j];\n        }\n        boolean res = false;\n        if (j + 1 < n && p.charAt(j + 1) == '*') {\n            res = dfs(i, j + 2)\n                || (i < m && (s.charAt(i) == p.charAt(j) || p.charAt(j) == '.') && dfs(i + 1, j));\n        } else {\n            res = i < m && (s.charAt(i) == p.charAt(j) || p.charAt(j) == '.') && dfs(i + 1, j + 1);\n        }\n        return f[i][j] = res;\n    }\n}"
+    },
+    "memory": {
+      "title": "方法二：动态规划",
+      "approach": "方法一经记忆化后时间复杂度已是 O(mn)，但仍依赖递归，调用栈与常系数都更大。转移没有后效，可以按 i、j 从小到大填表。\n定义 f[i][j] 表示 s 的前 i 个字符与 p 的前 j 个字符是否匹配。空串与空模式匹配；还须允许 i=0 去匹配形如 a* 这类可以匹配空串的模式，因此外层循环从空串开始。\n* 的转移与方法一相同：跳过两个模式字符，或在当前字符匹配时再消耗 s 的一个字符。迭代填完后直接读取 f[m][n]。\n我们可以将方法一中的记忆化搜索转换为动态规划。\n定义 f[i][j] 表示字符串 s 的前 i 个字符和字符串 p 的前 j 个字符是否匹配。那么答案就是 f[m][n]。初始化 f[0][0] = true，表示空字符串和空正则表达式是匹配的。\n与方法一类似，我们可以分情况来讨论。\n- 如果 p[j - 1] 是 '*'，那么我们可以选择匹配 0 个 s[i - 1] 字符，那么就是 f[i][j] = f[i][j - 2]。如果此时 s[i - 1] 和 p[j - 2] 匹配，那么我们可以选择匹配 1 个 s[i - 1] 字符，那么就是 f[i][j] = f[i][j] \\lor f[i - 1][j]。\n- 如果 p[j - 1] 不是 '*'，那么如果 s[i - 1] 和 p[j - 1] 匹配，那么就是 f[i][j] = f[i - 1][j - 1]。否则匹配失败。\npython\nclass Solution:\ndef isMatch(self, s: str, p: str) -> bool:\nm, n = len(s), l",
+      "complexity": "时间复杂度 已是 $O(mn)$但仍依赖递归调用栈与常系数都更大转移没有后效可以按 $i$、$j$ 从小到大填表 / 空间复杂度 $O(m \\times n)$其中 $m$ 和 $n$ 分别是 $s$ 和 $p$ 的长度",
+      "javaSnippet": "class Solution {\n    public boolean isMatch(String s, String p) {\n        int m = s.length(), n = p.length();\n        boolean[][] f = new boolean[m + 1][n + 1];\n        f[0][0] = true;\n        for (int i = 0; i <= m; ++i) {\n            for (int j = 1; j <= n; ++j) {\n                if (p.charAt(j - 1) == '*') {\n                    f[i][j] = f[i][j - 2];\n                    if (i > 0 && (p.charAt(j - 2) == '.' || p.charAt(j - 2) == s.charAt(i - 1))) {\n                        f[i][j] |= f[i - 1][j];\n                    }\n                } else if (i > 0\n                    && (p.charAt(j - 1) == '.' || p.charAt(j - 1) == s.charAt(i - 1))) {\n                    f[i][j] = f[i - 1][j - 1];\n                }\n            }\n        }\n        return f[m][n];\n    }\n}"
+    },
+    "keywords": [
+      "正则表达式匹配",
+      "递归",
+      "字符串",
+      "动态规划",
+      "记忆化搜索"
+    ],
+    "tech": [
+      {
+        "name": "递归三要素",
+        "detail": "结束条件、缩小问题规模、当前层与递归结果的关系。写递归先默认子调用已经正确返回，再组合当前层逻辑。"
+      },
+      {
+        "name": "字符串处理",
+        "detail": "注意不可变性：频繁拼接用 StringBuilder；比较时想清楚大小写、数字位数、分隔符和空串；回文类题目常配合中心扩展或马拉车。"
+      },
+      {
+        "name": "字符计数",
+        "detail": "只含小写字母时用 int[26]，需要记录字符种类时维护 diff 变量，避免每次重新扫描。"
+      },
+      {
+        "name": "动态规划五步",
+        "detail": "定义 dp 状态 -> 推导转移方程 -> 确定初始值 -> 确定遍历顺序 -> 返回答案。先写小例子验证 dp 表，再压缩空间。"
+      },
+      {
+        "name": "状态压缩",
+        "detail": "很多 dp 只依赖前一两行，可以把二维数组压成一维，甚至只用两个变量；滚动数组不会改变状态含义，只减少空间。"
+      },
+      {
+        "name": "记忆化搜索",
+        "detail": "用递归 + memo 数组/Map 缓存结果，本质上与自底向上 dp 等价，适合状态转移方向不直观的题目。"
+      }
+    ],
+    "pitfalls": [
+      "字符串下标从 0 开始，子串边界要小心",
+      "统计字符时先确定字符集大小",
+      "拼接字符串用 StringBuilder",
+      "dp 数组初始值要区分 0 与“不可达”",
+      "遍历顺序决定能否使用前一轮状态，注意下标从 1 开始"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

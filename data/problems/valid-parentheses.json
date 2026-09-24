@@ -39,5 +39,63 @@
   "exampleTestcases": "\"()\"\n\"()[]{}\"\n\"(]\"\n\"([])\"\n\"([)]\"",
   "contentHtml": "<p>给定一个只包括 <code>'('</code>，<code>')'</code>，<code>'{'</code>，<code>'}'</code>，<code>'['</code>，<code>']'</code>&nbsp;的字符串 <code>s</code> ，判断字符串是否有效。</p>\n\n<p>有效字符串需满足：</p>\n\n<ol>\n\t<li>左括号必须用相同类型的右括号闭合。</li>\n\t<li>左括号必须以正确的顺序闭合。</li>\n\t<li>每个右括号都有一个对应的相同类型的左括号。</li>\n</ol>\n\n<p>&nbsp;</p>\n\n<p><strong class=\"example\">示例 1：</strong></p>\n\n<div class=\"example-block\">\n<p><span class=\"example-io\"><b>输入：</b>s = \"()\"</span></p>\n\n<p><span class=\"example-io\"><b>输出：</b>true</span></p>\n</div>\n\n<p><strong class=\"example\">示例 2：</strong></p>\n\n<div class=\"example-block\">\n<p><span class=\"example-io\"><b>输入：</b>s = \"()[]{}\"</span></p>\n\n<p><span class=\"example-io\"><b>输出：</b>true</span></p>\n</div>\n\n<p><strong class=\"example\">示例 3：</strong></p>\n\n<div class=\"example-block\">\n<p><span class=\"example-io\"><b>输入：</b>s = \"(]\"</span></p>\n\n<p><span class=\"example-io\"><b>输出：</b>false</span></p>\n</div>\n\n<p><strong class=\"example\">示例 4：</strong></p>\n\n<div class=\"example-block\">\n<p><span class=\"example-io\"><b>输入：</b>s = \"([])\"</span></p>\n\n<p><span class=\"example-io\"><b>输出：</b>true</span></p>\n</div>\n\n<p><strong class=\"example\">示例 5：</strong></p>\n\n<div class=\"example-block\">\n<p><span class=\"example-io\"><b>输入：</b>s = \"([)]\"</span></p>\n\n<p><span class=\"example-io\"><b>输出：</b>false</span></p>\n</div>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= s.length &lt;= 10<sup>4</sup></code></li>\n\t<li><code>s</code> 仅由括号 <code>'()[]{}'</code> 组成</li>\n</ul>\n",
   "contentEnHtml": "<p>Given a string <code>s</code> containing just the characters <code>&#39;(&#39;</code>, <code>&#39;)&#39;</code>, <code>&#39;{&#39;</code>, <code>&#39;}&#39;</code>, <code>&#39;[&#39;</code> and <code>&#39;]&#39;</code>, determine if the input string is valid.</p>\n\n<p>An input string is valid if:</p>\n\n<ol>\n\t<li>Open brackets must be closed by the same type of brackets.</li>\n\t<li>Open brackets must be closed in the correct order.</li>\n\t<li>Every close bracket has a corresponding open bracket of the same type.</li>\n</ol>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<div class=\"example-block\">\n<p><strong>Input:</strong> <span class=\"example-io\">s = &quot;()&quot;</span></p>\n\n<p><strong>Output:</strong> <span class=\"example-io\">true</span></p>\n</div>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<div class=\"example-block\">\n<p><strong>Input:</strong> <span class=\"example-io\">s = &quot;()[]{}&quot;</span></p>\n\n<p><strong>Output:</strong> <span class=\"example-io\">true</span></p>\n</div>\n\n<p><strong class=\"example\">Example 3:</strong></p>\n\n<div class=\"example-block\">\n<p><strong>Input:</strong> <span class=\"example-io\">s = &quot;(]&quot;</span></p>\n\n<p><strong>Output:</strong> <span class=\"example-io\">false</span></p>\n</div>\n\n<p><strong class=\"example\">Example 4:</strong></p>\n\n<div class=\"example-block\">\n<p><strong>Input:</strong> <span class=\"example-io\">s = &quot;([])&quot;</span></p>\n\n<p><strong>Output:</strong> <span class=\"example-io\">true</span></p>\n</div>\n\n<p><strong class=\"example\">Example 5:</strong></p>\n\n<div class=\"example-block\">\n<p><strong>Input:</strong> <span class=\"example-io\">s = &quot;([)]&quot;</span></p>\n\n<p><strong>Output:</strong> <span class=\"example-io\">false</span></p>\n</div>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= s.length &lt;= 10<sup>4</sup></code></li>\n\t<li><code>s</code> consists of parentheses only <code>&#39;()[]{}&#39;</code>.</li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：栈",
+      "approach": "反复将配对括号 ()、[]、\\{\\} 从字符串中消去，直到无法再删，最坏时间复杂度为 O(n^2)。n <= 10^4，容易超时。\n括号匹配遵循后进先出：左括号等待与之对应的右括号；遇到右括号时，必须与当前尚未匹配的最近一个左括号成对。扫描结束时若栈非空，说明仍有左括号未闭合。因此用栈存放尚未匹配的左括号，右括号到来时弹出栈顶并判断是否成对。\n遍历括号字符串 s，遇到左括号时，压入当前的左括号；遇到右括号时，弹出栈顶元素（若栈为空，直接返回 false），判断是否匹配，若不匹配，直接返回 false。\n也可以选择遇到左括号时，将右括号压入栈中；遇到右括号时，弹出栈顶元素（若栈为空，直接返回 false），判断是否是相等。若不匹配，直接返回 false。\n两者的区别仅限于括号转换时机，一个是在入栈时，一个是在出栈时。\n遍历结束，若栈为空，说明括号字符串有效，返回 true；否则，返回 false。\npython\nclass Solution:\ndef isValid(self, s: str) -> bool:\nstk = []\nd = {'()', '[]', '{}'}\nfor c in s:\nif c in '({[':\nstk.append(c)\nelif not stk or stk.pop() + c not in d:\nreturn False\nreturn not stk\njava\nclass Solution {\npublic boolean isValid(String s) {\nDeque<Character> stk = new ArrayDeque<>(",
+      "complexity": "时间复杂度 为 $O(n^2)$$n \\le 10^4$容易超时 / 空间复杂度 $O(n)$其中 $n$ 为括号字符串 $s$ 的长度",
+      "javaSnippet": "class Solution {\n    public boolean isValid(String s) {\n        Deque<Character> stk = new ArrayDeque<>();\n        for (char c : s.toCharArray()) {\n            if (c == '(' || c == '{' || c == '[') {\n                stk.push(c);\n            } else if (stk.isEmpty() || !match(stk.pop(), c)) {\n                return false;\n            }\n        }\n        return stk.isEmpty();\n    }\n\n    private boolean match(char l, char r) {\n        return (l == '(' && r == ')') || (l == '{' && r == '}') || (l == '[' && r == ']');\n    }\n}"
+    },
+    "memory": {
+      "title": "两层循环补栈",
+      "approach": "对每个位置扫描其后元素，找到第一个满足条件的值并记录；不再依赖栈时最容易理解。",
+      "complexity": "O(n^2) 时间 / O(1) 空间",
+      "javaSnippet": "// 解法二\n// 对应的另一半一定在栈顶\nclass Solution {\n    public boolean isValid(String s) {\n        Stack<Character> stack = new Stack<>();\n        for(char c : s.toCharArray()){\n            // 有对应的另一半就直接消消乐\n            if(c == ')' && !stack.isEmpty() && stack.peek() == '(')\n                stack.pop();\n            else if(c == '}' && !stack.isEmpty() && stack.peek() == '{')\n                stack.pop();\n            else if(c == ']' && !stack.isEmpty() && stack.peek() == '[')\n                stack.pop();\n            else\n                stack.push(c);// 没有匹配的就放进去\n        }\n\n        return stack.isEmpty();\n    }\n}"
+    },
+    "keywords": [
+      "有效的括号",
+      "栈",
+      "字符串",
+      "括号序列"
+    ],
+    "tech": [
+      {
+        "name": "栈与括号/表达式",
+        "detail": "后进先出天然匹配最近配对：括号匹配、直方图最大矩形、每日温度、字符串解码都依赖单调栈或普通栈保存待处理信息。"
+      },
+      {
+        "name": "单调栈",
+        "detail": "维护栈内元素单调递增或递减，弹出时往往就是答案结算时机；栈中保存下标比保存值更好用。"
+      },
+      {
+        "name": "字符串处理",
+        "detail": "注意不可变性：频繁拼接用 StringBuilder；比较时想清楚大小写、数字位数、分隔符和空串；回文类题目常配合中心扩展或马拉车。"
+      },
+      {
+        "name": "字符计数",
+        "detail": "只含小写字母时用 int[26]，需要记录字符种类时维护 diff 变量，避免每次重新扫描。"
+      },
+      {
+        "name": "括号序列",
+        "detail": "用栈匹配右括号；生成括号用回溯并在递归中限制左括号/右括号数量；最长有效括号可结合栈或两次左右扫描。"
+      }
+    ],
+    "pitfalls": [
+      "栈空时不要贸然 peek/pop",
+      "保存下标比保存值更容易算距离",
+      "记得最后清空剩余栈内容",
+      "字符串下标从 0 开始，子串边界要小心",
+      "统计字符时先确定字符集大小"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

@@ -39,5 +39,69 @@
   "exampleTestcases": "\"()())()\"\n\"(a)())()\"\n\")(\"",
   "contentHtml": "<p>给你一个由若干括号和字母组成的字符串 <code>s</code> ，删除最小数量的无效括号，使得输入的字符串有效。</p>\n\n<p>返回所有可能的结果。答案可以按 <strong>任意顺序</strong> 返回。</p>\n\n<p> </p>\n\n<p><strong>示例 1：</strong></p>\n\n<pre>\n<strong>输入：</strong>s = \"()())()\"\n<strong>输出：</strong>[\"(())()\",\"()()()\"]\n</pre>\n\n<p><strong>示例 2：</strong></p>\n\n<pre>\n<strong>输入：</strong>s = \"(a)())()\"\n<strong>输出：</strong>[\"(a())()\",\"(a)()()\"]\n</pre>\n\n<p><strong>示例 3：</strong></p>\n\n<pre>\n<strong>输入：</strong>s = \")(\"\n<strong>输出：</strong>[\"\"]\n</pre>\n\n<p> </p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>1 <= s.length <= 25</code></li>\n\t<li><code>s</code> 由小写英文字母以及括号 <code>'('</code> 和 <code>')'</code> 组成</li>\n\t<li><code>s</code> 中至多含 <code>20</code> 个括号</li>\n</ul>\n",
   "contentEnHtml": "<p>Given a string <code>s</code> that contains parentheses and letters, remove the minimum number of invalid parentheses to make the input string valid.</p>\n\n<p>Return <em>a list of <strong>unique strings</strong> that are valid with the minimum number of removals</em>. You may return the answer in <strong>any order</strong>.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<pre>\n<strong>Input:</strong> s = &quot;()())()&quot;\n<strong>Output:</strong> [&quot;(())()&quot;,&quot;()()()&quot;]\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> s = &quot;(a)())()&quot;\n<strong>Output:</strong> [&quot;(a())()&quot;,&quot;(a)()()&quot;]\n</pre>\n\n<p><strong class=\"example\">Example 3:</strong></p>\n\n<pre>\n<strong>Input:</strong> s = &quot;)(&quot;\n<strong>Output:</strong> [&quot;&quot;]\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= s.length &lt;= 25</code></li>\n\t<li><code>s</code> consists of lowercase English letters and parentheses <code>&#39;(&#39;</code> and <code>&#39;)&#39;</code>.</li>\n\t<li>There will be at most <code>20</code> parentheses in <code>s</code>.</li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：DFS + 剪枝",
+      "approach": "合法串须删除最少括号且枚举全部最优结果。若对每个括号独立选择删或不删，长度为 n 时分支过多，且多数路径删除次数并不最小。\n先扫描得到必须删除的左、右括号下界 l、r。搜索时维护剩余删除额度与当前左右括号计数：剩余字符不足以删完、或右括号已多于左括号，则剪枝。每个位置优先尝试删除（额度允许时），再选择保留，并用集合去重。因此只展开删除次数恰好为最小的路径。\n我们首先处理得到字符串 s 待删除的左、右括号的最小数量，分别记为 l 和 r。\n然后我们设计一个递归函数 dfs(i, l, r, lcnt, rcnt, t)，其中：\n- i 表示当前处理到字符串 s 的第 i 个字符；\n- l 和 r 分别表示剩余待删除的左、右括号的数量；\n- t 表示当前得到的字符串；\n- lcnt 和 rcnt 分别表示当前得到的字符串中左、右括号的数量。\n递归函数的逻辑如下：\n- 如果 i 等于字符串 s 的长度，且 l 和 r 都等于 0，则将 t 加入答案数组中；\n- 如果剩余的待处理字符数 n-i 小于剩余待删除的左右括号数量 l+r，或者当前得到的字符串中的左括号数量小于右括号数量，直接返回；\n- 如果当前字符是左括号，我们可以选择删除或者保留，如果删除，需要满足 l \\gt 0，然后递归调用 dfs(i+1, l-1, r, lcnt, rcnt, t)；\n- 如果当前字符是右括号，我们可以选择删除或者保留，如果删除，需要满足 r \\gt 0，然后递归调用 dfs(i+1, l, r-1, lcnt, rcnt, t)；\n- 如果选择保留当前字符，我们需要判断当前字符是左括号、右括号还",
+      "complexity": "时间复杂度 $O(n\\times 2^n)$空间复杂度 $O(n)$长度为 $n$ 的字符串有 $2^n$ 种可能的删除方式每种删除方式需要 $O(n)$ 的时间复制字符串因此总时间复杂度为 $O(n\\times 2^n)$ / 空间复杂度 $O(n)$长度为 $n$ 的字符串有 $2^n$ 种可能的删除方式，每种删除方式需要 $O(n)$ 的时间复制字符串因此总时间复杂度为 $O(n\\times 2^n)$",
+      "javaSnippet": "class Solution {\n    private String s;\n    private int n;\n    private Set<String> ans = new HashSet<>();\n\n    public List<String> removeInvalidParentheses(String s) {\n        this.s = s;\n        this.n = s.length();\n        int l = 0, r = 0;\n        for (char c : s.toCharArray()) {\n            if (c == '(') {\n                ++l;\n            } else if (c == ')') {\n                if (l > 0) {\n                    --l;\n                } else {\n                    ++r;\n                }\n            }\n        }\n        dfs(0, l, r, 0, 0, \"\");\n        return new ArrayList<>(ans);\n    }\n\n    private void dfs(int i, int l, int r, int lcnt, int rcnt, String t) {\n        if (i == n) {\n            if (l == 0 && r == 0) {\n                ans.add(t);\n            }\n            return;\n        }\n        if (n - i < l + r || lcnt < rcnt) {\n            return;\n        }\n        char c = s.charAt(i);\n        if (c == '(' && l > 0) {\n            dfs(i + 1, l - 1, r, lcnt, rcnt, t);\n        }\n        if (c == ')' && r > 0) {\n            dfs(i + 1, l, r - 1, lcnt, rcnt, t);\n        }\n        int x = c == '(' ? 1 : 0;\n        int y = c == ')' ? 1 : 0;\n        dfs(i + 1, l, r, lcnt + x, rcnt + y, t + c);\n    }\n}"
+    },
+    "memory": {
+      "title": "逐层扩展 BFS",
+      "approach": "从起点入队，每次处理当前层全部节点再进入下一层，用距离数组记录步数。",
+      "complexity": "O(V+E) 时间 / O(V) 空间",
+      "javaSnippet": ""
+    },
+    "keywords": [
+      "删除无效的括号",
+      "广度优先搜索",
+      "字符串",
+      "回溯",
+      "DFS",
+      "剪枝"
+    ],
+    "tech": [
+      {
+        "name": "BFS 框架",
+        "detail": "用队列做层级遍历，每次取出当前层全部节点再扩展下一层；可以同时处理最短路径、层级序号、多源扩散等场景。"
+      },
+      {
+        "name": "层次计数",
+        "detail": "在 for (int i = size; i > 0; i--) 的循环里计算层数，能保证每次循环只处理同一层节点。"
+      },
+      {
+        "name": "字符串处理",
+        "detail": "注意不可变性：频繁拼接用 StringBuilder；比较时想清楚大小写、数字位数、分隔符和空串；回文类题目常配合中心扩展或马拉车。"
+      },
+      {
+        "name": "字符计数",
+        "detail": "只含小写字母时用 int[26]，需要记录字符种类时维护 diff 变量，避免每次重新扫描。"
+      },
+      {
+        "name": "回溯模板",
+        "detail": "做选择 -> 递归 -> 撤销选择。一般代码为 path.add(x); dfs(pos+1); path.remove(path.size()-1)。组合、排列、子集、棋盘类题目都可套用。"
+      },
+      {
+        "name": "剪枝",
+        "detail": "排序后跳过相邻重复元素、提前判断剩余元素是否足够、用 used 数组标记已选下标，都能大幅减少分支。"
+      }
+    ],
+    "pitfalls": [
+      "字符串下标从 0 开始，子串边界要小心",
+      "统计字符时先确定字符集大小",
+      "拼接字符串用 StringBuilder",
+      "递归结束条件要放在选择之前",
+      "撤销选择必须与选择一一对应"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

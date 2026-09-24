@@ -39,5 +39,63 @@
   "exampleTestcases": "[[1,3,1],[1,5,1],[4,2,1]]\n[[1,2,3],[4,5,6]]",
   "contentHtml": "<p>给定一个包含非负整数的 <code><em>m</em>&nbsp;x&nbsp;<em>n</em></code>&nbsp;网格&nbsp;<code>grid</code> ，请找出一条从左上角到右下角的路径，使得路径上的数字总和为最小。</p>\n\n<p><strong>说明：</strong>每次只能向下或者向右移动一步。</p>\n\n<p>&nbsp;</p>\n\n<p><strong class=\"example\">示例 1：</strong></p>\n<img alt=\"\" src=\"assets/problems/minimum-path-sum/img-1.jpg\" style=\"width: 242px; height: 242px;\" />\n<pre>\n<strong>输入：</strong>grid = [[1,3,1],[1,5,1],[4,2,1]]\n<strong>输出：</strong>7\n<strong>解释：</strong>因为路径 1→3→1→1→1 的总和最小。\n</pre>\n\n<p><strong class=\"example\">示例 2：</strong></p>\n\n<pre>\n<strong>输入：</strong>grid = [[1,2,3],[4,5,6]]\n<strong>输出：</strong>12\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>m == grid.length</code></li>\n\t<li><code>n == grid[i].length</code></li>\n\t<li><code>1 &lt;= m, n &lt;= 200</code></li>\n\t<li><code>0 &lt;= grid[i][j] &lt;= 200</code></li>\n</ul>\n",
   "contentEnHtml": "<p>Given a <code>m x n</code> <code>grid</code> filled with non-negative numbers, find a path from top left to bottom right, which minimizes the sum of all numbers along its path.</p>\n\n<p><strong>Note:</strong> You can only move either down or right at any point in time.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n<img alt=\"\" src=\"https://assets.leetcode.com/uploads/2020/11/05/minpath.jpg\" style=\"width: 242px; height: 242px;\" />\n<pre>\n<strong>Input:</strong> grid = [[1,3,1],[1,5,1],[4,2,1]]\n<strong>Output:</strong> 7\n<strong>Explanation:</strong> Because the path 1 &rarr; 3 &rarr; 1 &rarr; 1 &rarr; 1 minimizes the sum.\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> grid = [[1,2,3],[4,5,6]]\n<strong>Output:</strong> 12\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>m == grid.length</code></li>\n\t<li><code>n == grid[i].length</code></li>\n\t<li><code>1 &lt;= m, n &lt;= 200</code></li>\n\t<li><code>0 &lt;= grid[i][j] &lt;= 200</code></li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：动态规划",
+      "approach": "从左上走到右下、每步只能向右或向下时，若枚举全部路径再取数字和最小者，m, n <= 200，路径条数随格子增长而迅速增加，无法在时限内完成。同一格子会被多条路径反复走到，子问题大量重叠。\n因此走到 (i, j) 的最小路径和，必来自其上方或左方的最优值再加上当前格。用 f[i][j] 记录该值，边界沿唯一方向累加，内部取两侧最小值，按行填表即可。\n我们定义 f[i][j] 表示从左上角走到 (i, j) 位置的最小路径和。初始时 f[0][0] = grid[0][0]，答案为 f[m - 1][n - 1]。\n考虑 f[i][j]：\n- 如果 j = 0，那么 f[i][j] = f[i - 1][j] + grid[i][j]；\n- 如果 i = 0，那么 f[i][j] = f[i][j - 1] + grid[i][j]；\n- 如果 i \\gt 0 且 j \\gt 0，那么 f[i][j] = \\min(f[i - 1][j], f[i][j - 1]) + grid[i][j]。\n最后返回 f[m - 1][n - 1] 即可。\npython\nclass Solution:\ndef minPathSum(self, grid: List[List[int]]) -> int:\nm, n = len(grid), len(grid[0])\nf = [[0] * n for _ in range(m)]\nf[0][0] = grid[0][0]\nfor i in range(1, m):\nf[i][0] = f[i - 1][0] + grid[i][0]\nfor j ",
+      "complexity": "时间复杂度 $O(m \\times n)$空间复杂度 $O(m \\times n)$其中 $m$ 和 $n$ 分别是网格的行数和列数 / 空间复杂度 $O(m \\times n)$其中 $m$ 和 $n$ 分别是网格的行数和列数",
+      "javaSnippet": "class Solution {\n    public int minPathSum(int[][] grid) {\n        int m = grid.length, n = grid[0].length;\n        int[][] f = new int[m][n];\n        f[0][0] = grid[0][0];\n        for (int i = 1; i < m; ++i) {\n            f[i][0] = f[i - 1][0] + grid[i][0];\n        }\n        for (int j = 1; j < n; ++j) {\n            f[0][j] = f[0][j - 1] + grid[0][j];\n        }\n        for (int i = 1; i < m; ++i) {\n            for (int j = 1; j < n; ++j) {\n                f[i][j] = Math.min(f[i - 1][j], f[i][j - 1]) + grid[i][j];\n            }\n        }\n        return f[m - 1][n - 1];\n    }\n}"
+    },
+    "memory": {
+      "title": "暴力枚举（兜底）",
+      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
+      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
+      "javaSnippet": ""
+    },
+    "keywords": [
+      "最小路径和",
+      "数组",
+      "动态规划",
+      "矩阵"
+    ],
+    "tech": [
+      {
+        "name": "动态规划五步",
+        "detail": "定义 dp 状态 -> 推导转移方程 -> 确定初始值 -> 确定遍历顺序 -> 返回答案。先写小例子验证 dp 表，再压缩空间。"
+      },
+      {
+        "name": "状态压缩",
+        "detail": "很多 dp 只依赖前一两行，可以把二维数组压成一维，甚至只用两个变量；滚动数组不会改变状态含义，只减少空间。"
+      },
+      {
+        "name": "记忆化搜索",
+        "detail": "用递归 + memo 数组/Map 缓存结果，本质上与自底向上 dp 等价，适合状态转移方向不直观的题目。"
+      },
+      {
+        "name": "矩阵遍历",
+        "detail": "行列方向用方向数组 dirs={{-1,0},{1,0},{0,-1},{0,1}}；DFS 时先标记再递归，避免重复访问。"
+      },
+      {
+        "name": "矩阵变换",
+        "detail": "原地旋转、螺旋遍历、搜索二维矩阵都要求严格按层或按方向定义边界，写之前先画出下标规律。"
+      }
+    ],
+    "pitfalls": [
+      "dp 数组初始值要区分 0 与“不可达”",
+      "遍历顺序决定能否使用前一轮状态，注意下标从 1 开始",
+      "返回的是 dp[n] 还是 dp 数组最大值",
+      "边界判断顺序：先越界再看内容",
+      "原地修改前先备份会被覆盖的值"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

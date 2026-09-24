@@ -38,5 +38,48 @@
   "exampleTestcases": "[4,5,6,7,0,1,2]\n0\n[4,5,6,7,0,1,2]\n3\n[1]\n0",
   "contentHtml": "<p>整数数组 <code>nums</code> 按升序排列，数组中的值 <strong>互不相同</strong> 。</p>\n\n<p>在传递给函数之前，<code>nums</code> 在预先未知的某个下标 <code>k</code>（<code>0 &lt;= k &lt; nums.length</code>）上进行了 <strong>向左旋转</strong>，使数组变为 <code>[nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]</code>（下标 <strong>从 0 开始</strong> 计数）。例如， <code>[0,1,2,4,5,6,7]</code> 下标&nbsp;<code>3</code>&nbsp;上向左旋转后可能变为&nbsp;<code>[4,5,6,7,0,1,2]</code> 。</p>\n\n<p>给你 <strong>旋转后</strong> 的数组 <code>nums</code> 和一个整数 <code>target</code> ，如果 <code>nums</code> 中存在这个目标值 <code>target</code> ，则返回它的下标，否则返回&nbsp;<code>-1</code>&nbsp;。</p>\n\n<p>你必须设计一个时间复杂度为 <code>O(log n)</code> 的算法解决此问题。</p>\n\n<p>&nbsp;</p>\n\n<p><strong>示例 1：</strong></p>\n\n<pre>\n<strong>输入：</strong>nums = [4,5,6,7,0,1,2], target = 0\n<strong>输出：</strong>4\n</pre>\n\n<p><strong>示例&nbsp;2：</strong></p>\n\n<pre>\n<strong>输入：</strong>nums = [4,5,6,7,0,1,2], target = 3\n<strong>输出：</strong>-1</pre>\n\n<p><strong>示例 3：</strong></p>\n\n<pre>\n<strong>输入：</strong>nums = [1], target = 0\n<strong>输出：</strong>-1\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= nums.length &lt;= 5000</code></li>\n\t<li><code>-10<sup>4</sup> &lt;= nums[i] &lt;= 10<sup>4</sup></code></li>\n\t<li><code>nums</code> 中的每个值都 <strong>独一无二</strong></li>\n\t<li>题目数据保证 <code>nums</code> 在预先未知的某个下标上进行了旋转</li>\n\t<li><code>-10<sup>4</sup> &lt;= target &lt;= 10<sup>4</sup></code></li>\n</ul>\n",
   "contentEnHtml": "<p>There is an integer array <code>nums</code> sorted in ascending order (with <strong>distinct</strong> values).</p>\n\n<p>Prior to being passed to your function, <code>nums</code> is <strong>possibly left rotated</strong> at an unknown index <code>k</code> (<code>1 &lt;= k &lt; nums.length</code>) such that the resulting array is <code>[nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]</code> (<strong>0-indexed</strong>). For example, <code>[0,1,2,4,5,6,7]</code> might be left rotated by&nbsp;<code>3</code>&nbsp;indices and become <code>[4,5,6,7,0,1,2]</code>.</p>\n\n<p>Given the array <code>nums</code> <strong>after</strong> the possible rotation and an integer <code>target</code>, return <em>the index of </em><code>target</code><em> if it is in </em><code>nums</code><em>, or </em><code>-1</code><em> if it is not in </em><code>nums</code>.</p>\n\n<p>You must write an algorithm with <code>O(log n)</code> runtime complexity.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n<pre><strong>Input:</strong> nums = [4,5,6,7,0,1,2], target = 0\n<strong>Output:</strong> 4\n</pre><p><strong class=\"example\">Example 2:</strong></p>\n<pre><strong>Input:</strong> nums = [4,5,6,7,0,1,2], target = 3\n<strong>Output:</strong> -1\n</pre><p><strong class=\"example\">Example 3:</strong></p>\n<pre><strong>Input:</strong> nums = [1], target = 0\n<strong>Output:</strong> -1\n</pre>\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= nums.length &lt;= 5000</code></li>\n\t<li><code>-10<sup>4</sup> &lt;= nums[i] &lt;= 10<sup>4</sup></code></li>\n\t<li>All values of <code>nums</code> are <strong>unique</strong>.</li>\n\t<li><code>nums</code> is an ascending array that is possibly rotated.</li>\n\t<li><code>-10<sup>4</sup> &lt;= target &lt;= 10<sup>4</sup></code></li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：二分查找",
+      "approach": "线性扫描的时间复杂度为 O(n)。题目要求 O(\\log n)，因此不能逐个比较。\n数组被旋转后整体不再有序，普通二分无法直接判断 target 落在哪一半。\n注意到，任取中点将区间一分为二，其中至少有一半保持单调。比较 nums[0] 与 nums[mid] 即可判断左半是否有序；若 target 落在该有序区间内，则丢弃另一半，否则在无序半段中继续查找。因此仍可二分：有序半段用来判定去留，无序半段留给下一轮继续分割。\n我们使用二分，将数组分割成 [left,.. mid], [mid + 1,.. right] 两部分，这时候可以发现，其中有一部分一定是有序的。\n因此，我们可以根据有序的那一部分，判断 target 是否在这一部分中：\n- 若 [0,.. mid] 范围内的元素构成有序数组：\n- 若满足 nums[0] <=q target <=q nums[mid]，那么我们搜索范围可以缩小为 [left,.. mid]；\n- 否则，在 [mid + 1,.. right] 中查找；\n- 若 [mid + 1, n - 1] 范围内的元素构成有序数组：\n- 若满足 nums[mid] \\lt target <=q nums[n - 1]，那么我们搜索范围可以缩小为 [mid + 1,.. right]；\n- 否则，在 [left,.. mid] 中查找。\n二分查找终止条件是 left >=q right，若结束后发现 nums[left] 与 target 不等，说明数组中不存在值为 target 的元素，返回 -1，否则返回下标 left。\npython\nclass S",
+      "complexity": "时间复杂度 为 $O(n)$题目要求 $O(\\log n)$因此不能逐个比较 / 空间复杂度 $O(1)$",
+      "javaSnippet": "class Solution {\n    public int search(int[] nums, int target) {\n        int n = nums.length;\n        int left = 0, right = n - 1;\n        while (left < right) {\n            int mid = (left + right) >> 1;\n            if (nums[0] <= nums[mid]) {\n                if (nums[0] <= target && target <= nums[mid]) {\n                    right = mid;\n                } else {\n                    left = mid + 1;\n                }\n            } else {\n                if (nums[mid] < target && target <= nums[n - 1]) {\n                    left = mid + 1;\n                } else {\n                    right = mid;\n                }\n            }\n        }\n        return nums[left] == target ? left : -1;\n    }\n}"
+    },
+    "memory": {
+      "title": "暴力枚举（兜底）",
+      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
+      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
+      "javaSnippet": ""
+    },
+    "keywords": [
+      "搜索旋转排序数组",
+      "数组",
+      "二分查找"
+    ],
+    "tech": [
+      {
+        "name": "二分查找模板",
+        "detail": "在有序（或满足单调性）的区间里找边界，用 l <= r 与 mid = l + (r - l) / 2。问“第一个满足条件”还是“最后一个满足条件”决定收缩方向。"
+      },
+      {
+        "name": "峰值与旋转数组",
+        "detail": "不一定完全有序，只要比较中点与端点即可排除一半；注意数组长度为 1 和边界索引。"
+      }
+    ],
+    "pitfalls": [
+      "while 条件的 < 与 <= 决定边界怎么写",
+      "mid 用 l+(r-l)/2 防溢出",
+      "更新 l/r 时必须跳过 mid，否则死循环"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

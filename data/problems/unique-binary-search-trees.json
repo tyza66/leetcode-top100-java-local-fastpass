@@ -49,5 +49,69 @@
   "exampleTestcases": "3\n1",
   "contentHtml": "<p>给你一个整数 <code>n</code> ，求恰由 <code>n</code> 个节点组成且节点值从 <code>1</code> 到 <code>n</code> 互不相同的 <strong>二叉搜索树</strong> 有多少种？返回满足题意的二叉搜索树的种数。</p>\n\n<p> </p>\n\n<p><strong>示例 1：</strong></p>\n<img alt=\"\" src=\"assets/problems/unique-binary-search-trees/img-1.jpg\" style=\"width: 600px; height: 148px;\" />\n<pre>\n<strong>输入：</strong>n = 3\n<strong>输出：</strong>5\n</pre>\n\n<p><strong>示例 2：</strong></p>\n\n<pre>\n<strong>输入：</strong>n = 1\n<strong>输出：</strong>1\n</pre>\n\n<p> </p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>1 <= n <= 19</code></li>\n</ul>\n",
   "contentEnHtml": "<p>Given an integer <code>n</code>, return <em>the number of structurally unique <strong>BST&#39;</strong>s (binary search trees) which has exactly </em><code>n</code><em> nodes of unique values from</em> <code>1</code> <em>to</em> <code>n</code>.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n<img alt=\"\" src=\"https://assets.leetcode.com/uploads/2021/01/18/uniquebstn3.jpg\" style=\"width: 600px; height: 148px;\" />\n<pre>\n<strong>Input:</strong> n = 3\n<strong>Output:</strong> 5\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> n = 1\n<strong>Output:</strong> 1\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= n &lt;= 19</code></li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：动态规划",
+      "approach": "上一题要列出所有树，这一题只要个数。结构相同：选定根后，左右子树的形态数相乘，再对根求和。不同之处在于「树的形态」可以换成「节点个数」——任意 i 个连续整数能构成的 BST 数量相同。\n令 f[i] 为 i 个节点的方案数，空树 f[0] = 1，按节点数从小到大递推，避免对同一规模重复搜索。\n我们定义 f[i] 表示 [1, i] 能产生的二叉搜索树的个数，初始时 f[0] = 1，答案为 f[n]。\n我们可以枚举节点数 i，那么左子树节点数 j \\in [0, i - 1]，右子树节点数 k = i - j - 1，左子树节点数和右子树节点数的组合数为 f[j] x f[k]，因此 f[i] = \\sum_{j = 0}^{i - 1} f[j] x f[i - j - 1]。\n最后返回 f[n] 即可。\npython\nclass Solution:\ndef numTrees(self, n: int) -> int:\nf = [1] + [0] * n\nfor i in range(n + 1):\nfor j in range(i):\nf[i] += f[j] * f[i - j - 1]\nreturn f[n]\njava\nclass Solution {\npublic int numTrees(int n) {\nint[] f = new int[n + 1];\nf[0] = 1;\nfor (int i = 1; i <= n; ++i) {\nfor (int j = 0; j < i; ++j) {\nf[i] += f[j] * f[i - j - 1];\n}\n}\n",
+      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(n)$其中 $n$ 为节点数 / 空间复杂度 $O(n)$其中 $n$ 为节点数",
+      "javaSnippet": "class Solution {\n    public int numTrees(int n) {\n        int[] f = new int[n + 1];\n        f[0] = 1;\n        for (int i = 1; i <= n; ++i) {\n            for (int j = 0; j < i; ++j) {\n                f[i] += f[j] * f[i - j - 1];\n            }\n        }\n        return f[n];\n    }\n}"
+    },
+    "memory": {
+      "title": "递归暴力遍历",
+      "approach": "对每个节点执行一次以它为根的完整遍历，把所有子树统计结果汇总；思路简单，适合小规模树。",
+      "complexity": "最坏 O(n^2) 时间",
+      "javaSnippet": ""
+    },
+    "keywords": [
+      "不同的二叉搜索树",
+      "Tree",
+      "二叉搜索树",
+      "数学",
+      "动态规划",
+      "二叉树"
+    ],
+    "tech": [
+      {
+        "name": "BST 性质",
+        "detail": "左子树所有值小于根，右子树所有值大于根，中序遍历得到升序序列。增删查平均 O(log n)。"
+      },
+      {
+        "name": "验证与转换",
+        "detail": "验证 BST 要传上下界，不能只比较当前节点与左右孩子；中序序列是判断和重建的常用桥梁。"
+      },
+      {
+        "name": "数学归纳",
+        "detail": "求通项、快速幂、取模、组合数、容斥等场景先推导公式，再在代码里维护迭代变量。"
+      },
+      {
+        "name": "动态规划五步",
+        "detail": "定义 dp 状态 -> 推导转移方程 -> 确定初始值 -> 确定遍历顺序 -> 返回答案。先写小例子验证 dp 表，再压缩空间。"
+      },
+      {
+        "name": "状态压缩",
+        "detail": "很多 dp 只依赖前一两行，可以把二维数组压成一维，甚至只用两个变量；滚动数组不会改变状态含义，只减少空间。"
+      },
+      {
+        "name": "记忆化搜索",
+        "detail": "用递归 + memo 数组/Map 缓存结果，本质上与自底向上 dp 等价，适合状态转移方向不直观的题目。"
+      }
+    ],
+    "pitfalls": [
+      "dp 数组初始值要区分 0 与“不可达”",
+      "遍历顺序决定能否使用前一轮状态，注意下标从 1 开始",
+      "返回的是 dp[n] 还是 dp 数组最大值",
+      "空节点要单独处理",
+      "递归返回值类型与树的关系要先设计好"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

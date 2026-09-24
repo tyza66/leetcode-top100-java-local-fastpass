@@ -39,5 +39,63 @@
   "exampleTestcases": "\"3[a]2[bc]\"\n\"3[a2[c]]\"\n\"2[abc]3[cd]ef\"",
   "contentHtml": "<p>给定一个经过编码的字符串，返回它解码后的字符串。</p>\n\n<p>编码规则为: <code>k[encoded_string]</code>，表示其中方括号内部的 <code>encoded_string</code> 正好重复 <code>k</code> 次。注意 <code>k</code> 保证为正整数。</p>\n\n<p>你可以认为输入字符串总是有效的；输入字符串中没有额外的空格，且输入的方括号总是符合格式要求的。</p>\n\n<p>此外，你可以认为原始数据不包含数字，所有的数字只表示重复的次数 <code>k</code> ，例如不会出现像&nbsp;<code>3a</code>&nbsp;或&nbsp;<code>2[4]</code>&nbsp;的输入。</p>\n\n<p>测试用例保证输出的长度不会超过&nbsp;<code>10<sup>5</sup></code>。</p>\n\n<p>&nbsp;</p>\n\n<p><strong>示例 1：</strong></p>\n\n<pre>\n<strong>输入：</strong>s = \"3[a]2[bc]\"\n<strong>输出：</strong>\"aaabcbc\"\n</pre>\n\n<p><strong>示例 2：</strong></p>\n\n<pre>\n<strong>输入：</strong>s = \"3[a2[c]]\"\n<strong>输出：</strong>\"accaccacc\"\n</pre>\n\n<p><strong>示例 3：</strong></p>\n\n<pre>\n<strong>输入：</strong>s = \"2[abc]3[cd]ef\"\n<strong>输出：</strong>\"abcabccdcdcdef\"\n</pre>\n\n<p><strong>示例 4：</strong></p>\n\n<pre>\n<strong>输入：</strong>s = \"abc3[cd]xyz\"\n<strong>输出：</strong>\"abccdcdcdxyz\"\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= s.length &lt;= 30</code></li>\n\t<li><meta charset=\"UTF-8\" /><code>s</code>&nbsp;由小写英文字母、数字和方括号<meta charset=\"UTF-8\" />&nbsp;<code>'[]'</code> 组成</li>\n\t<li><code>s</code>&nbsp;保证是一个&nbsp;<strong>有效</strong>&nbsp;的输入。</li>\n\t<li><code>s</code>&nbsp;中所有整数的取值范围为<meta charset=\"UTF-8\" />&nbsp;<code>[1, 300]</code>&nbsp;</li>\n</ul>\n",
   "contentEnHtml": "<p>Given an encoded string, return its decoded string.</p>\n\n<p>The encoding rule is: <code>k[encoded_string]</code>, where the <code>encoded_string</code> inside the square brackets is being repeated exactly <code>k</code> times. Note that <code>k</code> is guaranteed to be a positive integer.</p>\n\n<p>You may assume that the input string is always valid; there are no extra white spaces, square brackets are well-formed, etc. Furthermore, you may assume that the original data does not contain any digits and that digits are only for those repeat numbers, <code>k</code>. For example, there will not be input like <code>3a</code> or <code>2[4]</code>.</p>\n\n<p>The test cases are generated so that the length of the output will never exceed <code>10<sup>5</sup></code>.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<pre>\n<strong>Input:</strong> s = &quot;3[a]2[bc]&quot;\n<strong>Output:</strong> &quot;aaabcbc&quot;\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> s = &quot;3[a2[c]]&quot;\n<strong>Output:</strong> &quot;accaccacc&quot;\n</pre>\n\n<p><strong class=\"example\">Example 3:</strong></p>\n\n<pre>\n<strong>Input:</strong> s = &quot;2[abc]3[cd]ef&quot;\n<strong>Output:</strong> &quot;abcabccdcdcdef&quot;\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= s.length &lt;= 30</code></li>\n\t<li><code>s</code> consists of lowercase English letters, digits, and square brackets <code>&#39;[]&#39;</code>.</li>\n\t<li><code>s</code> is guaranteed to be <strong>a valid</strong> input.</li>\n\t<li>All the integers in <code>s</code> are in the range <code>[1, 300]</code>.</li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一",
+      "approach": "解码 k[encoded] 嵌套重复串。括号匹配可用递归，也可用栈同时记下倍数与外层已拼串。\n数字累入 num，遇 [ 把倍数与当前结果压栈并清空；遇 ] 弹出外层，把当前段重复后接回；字母直接追加。栈保证由内向外展开。\npython\nclass Solution:\ndef decodeString(self, s: str) -> str:\ns1, s2 = [], []\nnum, res = 0, ''\nfor c in s:\nif c.isdigit():\nnum = num * 10 + int(c)\nelif c == '[':\ns1.append(num)\ns2.append(res)\nnum, res = 0, ''\nelif c == ']':\nres = s2.pop() + res * s1.pop()\nelse:\nres += c\nreturn res\njava\nclass Solution {\npublic String decodeString(String s) {\nDeque<Integer> s1 = new ArrayDeque<>();\nDeque<String> s2 = new ArrayDeque<>();\nint num = 0;\nString res = \"\";\nfor (char c : s.toCharArray()) {\nif ('0' <= c && c <= '9') {\nnum = num * 10 + c - '0';\n} else if (c == '[') {\ns1.push(num);\ns2.push(res);",
+      "complexity": "按题面约束估计",
+      "javaSnippet": "class Solution {\n    public String decodeString(String s) {\n        Deque<Integer> s1 = new ArrayDeque<>();\n        Deque<String> s2 = new ArrayDeque<>();\n        int num = 0;\n        String res = \"\";\n        for (char c : s.toCharArray()) {\n            if ('0' <= c && c <= '9') {\n                num = num * 10 + c - '0';\n            } else if (c == '[') {\n                s1.push(num);\n                s2.push(res);\n                num = 0;\n                res = \"\";\n            } else if (c == ']') {\n                StringBuilder t = new StringBuilder();\n                for (int i = 0, n = s1.pop(); i < n; ++i) {\n                    t.append(res);\n                }\n                res = s2.pop() + t.toString();\n            } else {\n                res += String.valueOf(c);\n            }\n        }\n        return res;\n    }\n}"
+    },
+    "memory": {
+      "title": "两层循环补栈",
+      "approach": "对每个位置扫描其后元素，找到第一个满足条件的值并记录；不再依赖栈时最容易理解。",
+      "complexity": "O(n^2) 时间 / O(1) 空间",
+      "javaSnippet": ""
+    },
+    "keywords": [
+      "字符串解码",
+      "栈",
+      "递归",
+      "字符串"
+    ],
+    "tech": [
+      {
+        "name": "栈与括号/表达式",
+        "detail": "后进先出天然匹配最近配对：括号匹配、直方图最大矩形、每日温度、字符串解码都依赖单调栈或普通栈保存待处理信息。"
+      },
+      {
+        "name": "单调栈",
+        "detail": "维护栈内元素单调递增或递减，弹出时往往就是答案结算时机；栈中保存下标比保存值更好用。"
+      },
+      {
+        "name": "递归三要素",
+        "detail": "结束条件、缩小问题规模、当前层与递归结果的关系。写递归先默认子调用已经正确返回，再组合当前层逻辑。"
+      },
+      {
+        "name": "字符串处理",
+        "detail": "注意不可变性：频繁拼接用 StringBuilder；比较时想清楚大小写、数字位数、分隔符和空串；回文类题目常配合中心扩展或马拉车。"
+      },
+      {
+        "name": "字符计数",
+        "detail": "只含小写字母时用 int[26]，需要记录字符种类时维护 diff 变量，避免每次重新扫描。"
+      }
+    ],
+    "pitfalls": [
+      "栈空时不要贸然 peek/pop",
+      "保存下标比保存值更容易算距离",
+      "记得最后清空剩余栈内容",
+      "字符串下标从 0 开始，子串边界要小心",
+      "统计字符时先确定字符集大小"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

@@ -41,5 +41,57 @@
   "exampleTestcases": "[-1,0,1,2,-1,-4]\n[0,1,1]\n[0,0,0]",
   "contentHtml": "<p>给你一个整数数组 <code>nums</code> ，判断是否存在三元组 <code>[nums[i], nums[j], nums[k]]</code> 满足 <code>i != j</code>、<code>i != k</code> 且 <code>j != k</code> ，同时还满足 <code>nums[i] + nums[j] + nums[k] == 0</code> 。请你返回所有和为 <code>0</code> 且不重复的三元组。</p>\n\n<p><strong>注意：</strong>答案中不可以包含重复的三元组。</p>\n\n<p>&nbsp;</p>\n\n<p>&nbsp;</p>\n\n<p><strong>示例 1：</strong></p>\n\n<pre>\n<strong>输入：</strong>nums = [-1,0,1,2,-1,-4]\n<strong>输出：</strong>[[-1,-1,2],[-1,0,1]]\n<strong>解释：</strong>\nnums[0] + nums[1] + nums[2] = (-1) + 0 + 1 = 0 。\nnums[1] + nums[2] + nums[4] = 0 + 1 + (-1) = 0 。\nnums[0] + nums[3] + nums[4] = (-1) + 2 + (-1) = 0 。\n不同的三元组是 [-1,0,1] 和 [-1,-1,2] 。\n注意，输出的顺序和三元组的顺序并不重要。\n</pre>\n\n<p><strong>示例 2：</strong></p>\n\n<pre>\n<strong>输入：</strong>nums = [0,1,1]\n<strong>输出：</strong>[]\n<strong>解释：</strong>唯一可能的三元组和不为 0 。\n</pre>\n\n<p><strong>示例 3：</strong></p>\n\n<pre>\n<strong>输入：</strong>nums = [0,0,0]\n<strong>输出：</strong>[[0,0,0]]\n<strong>解释：</strong>唯一可能的三元组和为 0 。\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>3 &lt;= nums.length &lt;= 3000</code></li>\n\t<li><code>-10<sup>5</sup> &lt;= nums[i] &lt;= 10<sup>5</sup></code></li>\n</ul>\n",
   "contentEnHtml": "<p>Given an integer array nums, return all the triplets <code>[nums[i], nums[j], nums[k]]</code> such that <code>i != j</code>, <code>i != k</code>, and <code>j != k</code>, and <code>nums[i] + nums[j] + nums[k] == 0</code>.</p>\n\n<p>Notice that the solution set must not contain duplicate triplets.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<pre>\n<strong>Input:</strong> nums = [-1,0,1,2,-1,-4]\n<strong>Output:</strong> [[-1,-1,2],[-1,0,1]]\n<strong>Explanation:</strong> \nnums[0] + nums[1] + nums[2] = (-1) + 0 + 1 = 0.\nnums[1] + nums[2] + nums[4] = 0 + 1 + (-1) = 0.\nnums[0] + nums[3] + nums[4] = (-1) + 2 + (-1) = 0.\nThe distinct triplets are [-1,0,1] and [-1,-1,2].\nNotice that the order of the output and the order of the triplets does not matter.\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> nums = [0,1,1]\n<strong>Output:</strong> []\n<strong>Explanation:</strong> The only possible triplet does not sum up to 0.\n</pre>\n\n<p><strong class=\"example\">Example 3:</strong></p>\n\n<pre>\n<strong>Input:</strong> nums = [0,0,0]\n<strong>Output:</strong> [[0,0,0]]\n<strong>Explanation:</strong> The only possible triplet sums up to 0.\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>3 &lt;= nums.length &lt;= 3000</code></li>\n\t<li><code>-10<sup>5</sup> &lt;= nums[i] &lt;= 10<sup>5</sup></code></li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：排序 + 双指针",
+      "approach": "三重循环枚举后再用集合去重，时间复杂度为 O(n^3)。n <= 3000，无法通过。固定一个数后，问题退化为两数之和，哈希表可以将时间降至 O(n^2)，但去重较繁琐，也需要额外空间。\n题目并不要求三元组按原顺序返回。先将数组排序，重复元素会相邻，便于跳过；有序之后，两数之和可以用左右指针在线性时间内完成。若 nums[i] > 0，其后均为正数，三数之和不可能为 0，可以直接结束。因此排序后枚举第一个数，在右侧用双指针夹逼即可。\n我们注意到，题目不要求我们按照顺序返回三元组，因此我们不妨先对数组进行排序，这样就可以方便地跳过重复的元素。\n接下来，我们枚举三元组的第一个元素 nums[i]，其中 0 <=q i \\lt n - 2。对于每个 i，我们可以通过维护两个指针 j = i + 1 和 k = n - 1，从而找到满足 nums[i] + nums[j] + nums[k] = 0 的 j 和 k。在枚举的过程中，我们需要跳过重复的元素，以避免出现重复的三元组。\n具体判断逻辑如下：\n如果 i \\gt 0 并且 nums[i] = nums[i - 1]，则说明当前枚举的元素与上一个元素相同，我们可以直接跳过，因为不会产生新的结果。\n如果 nums[i] \\gt 0，则说明当前枚举的元素大于 0，则三数之和必然无法等于 0，结束枚举。\n否则，我们令左指针 j = i + 1，右指针 k = n - 1，当 j \\lt k 时，执行循环，计算三数之和 x = nums[i] + nums[j] + nums[k]，并与 0 比较：\n- 如果 x \\lt 0，则说明 num",
+      "complexity": "时间复杂度 为 $O(n^3)$$n \\le 3000$无法通过固定一个数后问题退化为两数之和哈希表可以将时间降至 $O(n^2)$但去重较繁琐也需要额外空间 / 空间复杂度 $O(\\log n)$其中 $n$ 为数组的长度",
+      "javaSnippet": "class Solution {\n    public List<List<Integer>> threeSum(int[] nums) {\n        Arrays.sort(nums);\n        List<List<Integer>> ans = new ArrayList<>();\n        int n = nums.length;\n        for (int i = 0; i < n - 2 && nums[i] <= 0; ++i) {\n            if (i > 0 && nums[i] == nums[i - 1]) {\n                continue;\n            }\n            int j = i + 1, k = n - 1;\n            while (j < k) {\n                int x = nums[i] + nums[j] + nums[k];\n                if (x < 0) {\n                    ++j;\n                } else if (x > 0) {\n                    --k;\n                } else {\n                    ans.add(List.of(nums[i], nums[j++], nums[k--]));\n                    while (j < k && nums[j] == nums[j - 1]) {\n                        ++j;\n                    }\n                    while (j < k && nums[k] == nums[k + 1]) {\n                        --k;\n                    }\n                }\n            }\n        }\n        return ans;\n    }\n}"
+    },
+    "memory": {
+      "title": "暴力枚举（兜底）",
+      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
+      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
+      "javaSnippet": ""
+    },
+    "keywords": [
+      "三数之和",
+      "数组",
+      "双指针",
+      "排序"
+    ],
+    "tech": [
+      {
+        "name": "双指针",
+        "detail": "分为相向双指针（有序数组求两数和、接雨水、盛最多水）和同向快慢指针（去重、滑动窗口）。核心是先建立指针移动的不变量，每次只让指针朝一个方向移动，避免重复枚举。"
+      },
+      {
+        "name": "边界处理",
+        "detail": "写好 while 的结束条件，防止 left 与 right 交叉或越界；在比较元素时优先验证索引是否有效。"
+      },
+      {
+        "name": "常用排序",
+        "detail": "快速排序/归并排序 O(n log n)；计数排序适合值域小的整数；TopK/找第 k 大可用快速选择，平均 O(n)。"
+      },
+      {
+        "name": "原地与稳定性",
+        "detail": "需要原地修改且关注空间时用快排或堆排；需要稳定排序且内存充足时用归并。"
+      }
+    ],
+    "pitfalls": [
+      "移动指针前检查越界",
+      "有去重要求时不要跳过重复元素而不更新答案",
+      "相向指针不要交叉"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

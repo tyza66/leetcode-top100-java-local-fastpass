@@ -41,5 +41,52 @@
   "exampleTestcases": "[1,2,4]\n[1,3,4]\n[]\n[]\n[]\n[0]",
   "contentHtml": "<p>将两个升序链表合并为一个新的 <strong>升序</strong> 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。 </p>\n\n<p> </p>\n\n<p><strong>示例 1：</strong></p>\n<img alt=\"\" src=\"assets/problems/merge-two-sorted-lists/img-1.jpg\" style=\"width: 662px; height: 302px;\" />\n<pre>\n<strong>输入：</strong>l1 = [1,2,4], l2 = [1,3,4]\n<strong>输出：</strong>[1,1,2,3,4,4]\n</pre>\n\n<p><strong>示例 2：</strong></p>\n\n<pre>\n<strong>输入：</strong>l1 = [], l2 = []\n<strong>输出：</strong>[]\n</pre>\n\n<p><strong>示例 3：</strong></p>\n\n<pre>\n<strong>输入：</strong>l1 = [], l2 = [0]\n<strong>输出：</strong>[0]\n</pre>\n\n<p> </p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li>两个链表的节点数目范围是 <code>[0, 50]</code></li>\n\t<li><code>-100 <= Node.val <= 100</code></li>\n\t<li><code>l1</code> 和 <code>l2</code> 均按 <strong>非递减顺序</strong> 排列</li>\n</ul>\n",
   "contentEnHtml": "<p>You are given the heads of two sorted linked lists <code>list1</code> and <code>list2</code>.</p>\n\n<p>Merge the two lists into one <strong>sorted</strong> list. The list should be made by splicing together the nodes of the first two lists.</p>\n\n<p>Return <em>the head of the merged linked list</em>.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n<img alt=\"\" src=\"https://assets.leetcode.com/uploads/2020/10/03/merge_ex1.jpg\" style=\"width: 662px; height: 302px;\" />\n<pre>\n<strong>Input:</strong> list1 = [1,2,4], list2 = [1,3,4]\n<strong>Output:</strong> [1,1,2,3,4,4]\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> list1 = [], list2 = []\n<strong>Output:</strong> []\n</pre>\n\n<p><strong class=\"example\">Example 3:</strong></p>\n\n<pre>\n<strong>Input:</strong> list1 = [], list2 = [0]\n<strong>Output:</strong> [0]\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li>The number of nodes in both lists is in the range <code>[0, 50]</code>.</li>\n\t<li><code>-100 &lt;= Node.val &lt;= 100</code></li>\n\t<li>Both <code>list1</code> and <code>list2</code> are sorted in <strong>non-decreasing</strong> order.</li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：递归",
+      "approach": "两条链表均已按非递减排列。若取出全部节点值再排序并重建，时间复杂度为 O((m+n)\\log(m+n))，且没有利用有序这一条件。\n合并时，答案的下一个节点必为当前两个头结点中的较小者。选定之后，剩余部分仍是两条有序链表，与原问题同构；若其中一侧已空，则另一侧整段即为剩余结果。\n因此问题具有最优子结构，可以用递归求解：每次留下较小的头，再合并两条剩余链表。递归深度与节点总数同阶，本题长度不超过 50，额外空间 O(m+n) 可以接受。\n我们先判断链表 l_1 和 l_2 是否为空，若其中一个为空，则返回另一个链表。否则，我们比较 l_1 和 l_2 的头节点：\n- 若 l_1 的头节点的值小于等于 l_2 的头节点的值，则递归调用函数 mergeTwoLists(l_1.next, l_2)，并将 l_1 的头节点与返回的链表头节点相连，返回 l_1 的头节点。\n- 否则，递归调用函数 mergeTwoLists(l_1, l_2.next)，并将 l_2 的头节点与返回的链表头节点相连，返回 l_2 的头节点。\npython\nDefinition for singly-linked list.\nclass ListNode:\ndef __init__(self, val=0, next=None):\nself.val = val\nself.next = next\nclass Solution:\ndef mergeTwoLists(\nself, list1: Optional[ListNode], list2: Optional[ListNode]\n) -> Optional[",
+      "complexity": "时间复杂度 为 $O((m+n)\\log(m+n))$且没有利用有序这一条件 / 空间复杂度 $O(m + n)$其中 $m$ 和 $n$ 分别为两个链表的长度",
+      "javaSnippet": "/**\n * Definition for singly-linked list.\n * public class ListNode {\n *     int val;\n *     ListNode next;\n *     ListNode() {}\n *     ListNode(int val) { this.val = val; }\n *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }\n * }\n */\nclass Solution {\n    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {\n        if (list1 == null) {\n            return list2;\n        }\n        if (list2 == null) {\n            return list1;\n        }\n        if (list1.val <= list2.val) {\n            list1.next = mergeTwoLists(list1.next, list2);\n            return list1;\n        } else {\n            list2.next = mergeTwoLists(list1, list2.next);\n            return list2;\n        }\n    }\n}"
+    },
+    "memory": {
+      "title": "方法二：迭代",
+      "approach": "方法一已经在线性时间内完成合并，但递归栈与节点数同阶。我们可以用常数额外空间完成同一选择过程。\n注意到每一步仍是比较两个头、接上较小者。设置虚拟头与尾指针，在循环中反复执行这一选择，直至某一条耗尽，再把另一条剩余部分接到尾部即可。时间复杂度与方法一相同，空间降至 O(1)。\n我们也可以用迭代的方式来实现两个排序链表的合并。\n我们先定义一个虚拟头节点 dummy，然后循环遍历两个链表，比较两个链表的头节点，将较小的节点添加到 dummy 的末尾，直到其中一个链表为空，然后将另一个链表的剩余部分添加到 dummy 的末尾。\n最后返回 dummy.next 即可。\npython\nDefinition for singly-linked list.\nclass ListNode:\ndef __init__(self, val=0, next=None):\nself.val = val\nself.next = next\nclass Solution:\ndef mergeTwoLists(\nself, list1: Optional[ListNode], list2: Optional[ListNode]\n) -> Optional[ListNode]:\ndummy = ListNode()\ncurr = dummy\nwhile list1 and list2:\nif list1.val <= list2.val:\ncurr.next = list1\nlist1 = list1.next\nelse:\ncurr.next = list2\nlist2 = list2.next\ncurr = c",
+      "complexity": "时间复杂度 与方法一相同空间降至 $O(1)$ / 空间复杂度 $O(1)$",
+      "javaSnippet": "/**\n * Definition for singly-linked list.\n * public class ListNode {\n *     int val;\n *     ListNode next;\n *     ListNode() {}\n *     ListNode(int val) { this.val = val; }\n *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }\n * }\n */\nclass Solution {\n    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {\n        ListNode dummy = new ListNode();\n        ListNode curr = dummy;\n        while (list1 != null && list2 != null) {\n            if (list1.val <= list2.val) {\n                curr.next = list1;\n                list1 = list1.next;\n            } else {\n                curr.next = list2;\n                list2 = list2.next;\n            }\n            curr = curr.next;\n        }\n        curr.next = list1 == null ? list2 : list1;\n        return dummy.next;\n    }\n}"
+    },
+    "keywords": [
+      "合并两个有序链表",
+      "递归",
+      "链表"
+    ],
+    "tech": [
+      {
+        "name": "递归三要素",
+        "detail": "结束条件、缩小问题规模、当前层与递归结果的关系。写递归先默认子调用已经正确返回，再组合当前层逻辑。"
+      },
+      {
+        "name": "虚拟头节点",
+        "detail": "需要删除头节点或统一处理插入时，创建 dummy.next = head，操作完成后返回 dummy.next，能省大量特判。"
+      },
+      {
+        "name": "快慢指针",
+        "detail": "找中点、找环、找倒数第 k 个节点都能用快慢指针；相遇后让一个指针回头的“找环入口”技巧要会推导。"
+      }
+    ],
+    "pitfalls": [
+      "处理头节点变化时使用虚拟头节点",
+      "快指针每次走两步前确认 next 非空",
+      "翻转链表要保存好 next，避免断链"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

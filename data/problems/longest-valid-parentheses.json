@@ -44,5 +44,68 @@
   "exampleTestcases": "\"(()\"\n\")()())\"\n\"\"",
   "contentHtml": "<p>给你一个只包含 <code>'('</code> 和 <code>')'</code> 的字符串，找出最长有效（格式正确且连续）括号 <span data-keyword=\"substring\">子串</span> 的长度。</p>\n\n<p>左右括号匹配，即每个左括号都有对应的右括号将其闭合的字符串是格式正确的，比如&nbsp;<code>\"(()())\"</code>。</p>\n\n<p>&nbsp;</p>\n\n<div class=\"original__bRMd\">\n<div>\n<p><strong>示例 1：</strong></p>\n\n<pre>\n<strong>输入：</strong>s = \"(()\"\n<strong>输出：</strong>2\n<strong>解释：</strong>最长有效括号子串是 \"()\"\n</pre>\n\n<p><strong>示例 2：</strong></p>\n\n<pre>\n<strong>输入：</strong>s = \")()())\"\n<strong>输出：</strong>4\n<strong>解释：</strong>最长有效括号子串是 \"()()\"\n</pre>\n\n<p><strong>示例 3：</strong></p>\n\n<pre>\n<strong>输入：</strong>s = \"\"\n<strong>输出：</strong>0\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>0 &lt;= s.length &lt;= 3 * 10<sup>4</sup></code></li>\n\t<li><code>s[i]</code> 为 <code>'('</code> 或 <code>')'</code></li>\n</ul>\n</div>\n</div>\n",
   "contentEnHtml": "<p>Given a string containing just the characters <code>&#39;(&#39;</code> and <code>&#39;)&#39;</code>, return <em>the length of the longest valid (well-formed) parentheses </em><span data-keyword=\"substring-nonempty\"><em>substring</em></span>.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<pre>\n<strong>Input:</strong> s = &quot;(()&quot;\n<strong>Output:</strong> 2\n<strong>Explanation:</strong> The longest valid parentheses substring is &quot;()&quot;.\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> s = &quot;)()())&quot;\n<strong>Output:</strong> 4\n<strong>Explanation:</strong> The longest valid parentheses substring is &quot;()()&quot;.\n</pre>\n\n<p><strong class=\"example\">Example 3:</strong></p>\n\n<pre>\n<strong>Input:</strong> s = &quot;&quot;\n<strong>Output:</strong> 0\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>0 &lt;= s.length &lt;= 3 * 10<sup>4</sup></code></li>\n\t<li><code>s[i]</code> is <code>&#39;(&#39;</code>, or <code>&#39;)&#39;</code>.</li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：动态规划",
+      "approach": "枚举每个子串再用栈判定是否有效，时间复杂度为 O(n^2) 乃至 O(n^3)。n <= 3 x 10^4，无法通过。\n大量子串互相重叠：以某一位置结尾的最长有效括号，可以由更短的有效段拼接得到。因此可以按结尾位置递推。\n有效括号串只能以右括号结尾。若 s[i-1] 与前一位配成一对，长度即为再往前那段加上 2；若前一位也是右括号，则先跨过已经配好的一段，再判断这段之前是否还能配上一个左括号。我们可以定义 f[i] 为以 s[i-1] 结尾的最长有效长度，按上述两种配对方式转移，答案取 \\max f[i]。\n我们定义 f[i] 表示以 s[i-1] 结尾的最长有效括号的长度，那么答案就是 \\max\\limits_{i=1}^n f[i]。\n- 如果 s[i-1] 是左括号，那么以 s[i-1] 结尾的最长有效括号的长度一定为 0，因此 f[i] = 0。\n- 如果 s[i-1] 是右括号，有以下两种情况：\n- 如果 s[i-2] 是左括号，那么以 s[i-1] 结尾的最长有效括号的长度为 f[i-2] + 2。\n- 如果 s[i-2] 是右括号，那么以 s[i-1] 结尾的最长有效括号的长度为 f[i-1] + 2，但是还需要考虑 s[i-f[i-1]-2] 是否是左括号，如果是左括号，那么以 s[i-1] 结尾的最长有效括号的长度为 f[i-1] + 2 + f[i-f[i-1]-2]。\n因此，我们可以得到状态转移方程：\n\\begin{cases}\nf[i] = 0, & \\textit{if } s[i-1] = '(',\\\\\nf[i] = f[i-2] + 2, & \\t",
+      "complexity": "时间复杂度 为 $O(n^2)$ 乃至 $O(n^3)$$n \\le 3 \\times 10^4$无法通过 / 空间复杂度 $O(n)$其中 $n$ 为字符串的长度",
+      "javaSnippet": "class Solution {\n    public int longestValidParentheses(String s) {\n        int n = s.length();\n        int[] f = new int[n + 1];\n        int ans = 0;\n        for (int i = 2; i <= n; ++i) {\n            if (s.charAt(i - 1) == ')') {\n                if (s.charAt(i - 2) == '(') {\n                    f[i] = f[i - 2] + 2;\n                } else {\n                    int j = i - f[i - 1] - 1;\n                    if (j > 0 && s.charAt(j - 1) == '(') {\n                        f[i] = f[i - 1] + 2 + f[j - 1];\n                    }\n                }\n                ans = Math.max(ans, f[i]);\n            }\n        }\n        return ans;\n    }\n}"
+    },
+    "memory": {
+      "title": "方法二：使用栈",
+      "approach": "方法一已经是 O(n) 时间，但转移需区分「前一位是否为左括号」以及「跨过一段有效括号再向前配对」，下标边界容易遗漏。\n我们需要的并非更低的复杂度，而是更贴合配对过程的记录方式：尚未匹配的左括号下标，以及上一段失效从何处开始。栈恰好维护这两类信息：栈底先放入 -1 作为基准，遇左括号压入下标，遇右括号弹出；若栈空则当前位置成为新基准，否则用栈顶更新长度。\n- 使用栈来存储左括号的索引，栈底元素初始化为 -1，用于辅助计算有效括号的长度。\n- 遍历字符串，对于每个字符：\n- 如果是左括号，将当前位置压入栈。\n- 如果是右括号，弹出栈顶元素表示匹配了一个左括号。\n- 如果栈为空，说明当前右括号无法匹配，将当前位置压入栈作为新的起点。\n- 如果栈不为空，计算当前有效括号子串的长度，更新最大长度。\n- 最终返回最大长度。\n总结：这个算法的关键在于维护一个线，栈内存放的是左括号的索引，通过弹出和压入的操作来更新有效括号子串的长度。\npython\nclass Solution:\ndef longestValidParentheses(self, s: str) -> int:\nstack = [-1]\nans = 0\nfor i in range(len(s)):\nif s[i] == '(':\nstack.append(i)\nelse:\nstack.pop()\nif not stack:\nstack.append(i)\nelse:\nans = max(ans, i - stack[-1])\nreturn ans\ngo\nfunc longestValidParentheses(s stri",
+      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(n)$其中 $n$ 为字符串的长度 / 空间复杂度 $O(n)$其中 $n$ 为字符串的长度",
+      "javaSnippet": ""
+    },
+    "keywords": [
+      "最长有效括号",
+      "栈",
+      "字符串",
+      "动态规划",
+      "括号序列"
+    ],
+    "tech": [
+      {
+        "name": "栈与括号/表达式",
+        "detail": "后进先出天然匹配最近配对：括号匹配、直方图最大矩形、每日温度、字符串解码都依赖单调栈或普通栈保存待处理信息。"
+      },
+      {
+        "name": "单调栈",
+        "detail": "维护栈内元素单调递增或递减，弹出时往往就是答案结算时机；栈中保存下标比保存值更好用。"
+      },
+      {
+        "name": "字符串处理",
+        "detail": "注意不可变性：频繁拼接用 StringBuilder；比较时想清楚大小写、数字位数、分隔符和空串；回文类题目常配合中心扩展或马拉车。"
+      },
+      {
+        "name": "字符计数",
+        "detail": "只含小写字母时用 int[26]，需要记录字符种类时维护 diff 变量，避免每次重新扫描。"
+      },
+      {
+        "name": "动态规划五步",
+        "detail": "定义 dp 状态 -> 推导转移方程 -> 确定初始值 -> 确定遍历顺序 -> 返回答案。先写小例子验证 dp 表，再压缩空间。"
+      },
+      {
+        "name": "状态压缩",
+        "detail": "很多 dp 只依赖前一两行，可以把二维数组压成一维，甚至只用两个变量；滚动数组不会改变状态含义，只减少空间。"
+      }
+    ],
+    "pitfalls": [
+      "栈空时不要贸然 peek/pop",
+      "保存下标比保存值更容易算距离",
+      "记得最后清空剩余栈内容",
+      "字符串下标从 0 开始，子串边界要小心",
+      "统计字符时先确定字符集大小"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

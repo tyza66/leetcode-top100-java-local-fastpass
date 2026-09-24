@@ -43,5 +43,67 @@
   "exampleTestcases": "\"cbaebabacd\"\n\"abc\"\n\"abab\"\n\"ab\"",
   "contentHtml": "<p>给定两个字符串&nbsp;<code>s</code>&nbsp;和 <code>p</code>，找到&nbsp;<code>s</code><strong>&nbsp;</strong>中所有&nbsp;<code>p</code><strong>&nbsp;</strong>的&nbsp;<strong><span data-keyword=\"anagram\">异位词</span>&nbsp;</strong>的子串，返回这些子串的起始索引。不考虑答案输出的顺序。</p>\n\n<p>&nbsp;</p>\n\n<p><strong>示例&nbsp;1:</strong></p>\n\n<pre>\n<strong>输入: </strong>s = \"cbaebabacd\", p = \"abc\"\n<strong>输出: </strong>[0,6]\n<strong>解释:</strong>\n起始索引等于 0 的子串是 \"cba\", 它是 \"abc\" 的异位词。\n起始索引等于 6 的子串是 \"bac\", 它是 \"abc\" 的异位词。\n</pre>\n\n<p><strong>&nbsp;示例 2:</strong></p>\n\n<pre>\n<strong>输入: </strong>s = \"abab\", p = \"ab\"\n<strong>输出: </strong>[0,1,2]\n<strong>解释:</strong>\n起始索引等于 0 的子串是 \"ab\", 它是 \"ab\" 的异位词。\n起始索引等于 1 的子串是 \"ba\", 它是 \"ab\" 的异位词。\n起始索引等于 2 的子串是 \"ab\", 它是 \"ab\" 的异位词。\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= s.length, p.length &lt;= 3 * 10<sup>4</sup></code></li>\n\t<li><code>s</code>&nbsp;和&nbsp;<code>p</code>&nbsp;仅包含小写字母</li>\n</ul>\n",
   "contentEnHtml": "<p>Given two strings <code>s</code> and <code>p</code>, return an array of all the start indices of <code>p</code>&#39;s <span data-keyword=\"anagram\">anagrams</span> in <code>s</code>. You may return the answer in <strong>any order</strong>.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<pre>\n<strong>Input:</strong> s = &quot;cbaebabacd&quot;, p = &quot;abc&quot;\n<strong>Output:</strong> [0,6]\n<strong>Explanation:</strong>\nThe substring with start index = 0 is &quot;cba&quot;, which is an anagram of &quot;abc&quot;.\nThe substring with start index = 6 is &quot;bac&quot;, which is an anagram of &quot;abc&quot;.\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> s = &quot;abab&quot;, p = &quot;ab&quot;\n<strong>Output:</strong> [0,1,2]\n<strong>Explanation:</strong>\nThe substring with start index = 0 is &quot;ab&quot;, which is an anagram of &quot;ab&quot;.\nThe substring with start index = 1 is &quot;ba&quot;, which is an anagram of &quot;ab&quot;.\nThe substring with start index = 2 is &quot;ab&quot;, which is an anagram of &quot;ab&quot;.\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= s.length, p.length &lt;= 3 * 10<sup>4</sup></code></li>\n\t<li><code>s</code> and <code>p</code> consist of lowercase English letters.</li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：滑动窗口",
+      "approach": "异位词是字母计数相同的等长子串。枚举每个起点再排序比较过慢。\n固定长度 n=|p| 的窗口，维护窗口计数与 p 的计数，相等则记录左端。先放入前 n-1 个字符，右端每进一步比较并弹出左端。\n窗口长度始终为 n，只需比较两个长度为 26 的计数。\n我们不妨设字符串 s 的长度为 m，字符串 p 的长度为 n。\n如果 m \\lt n，那么 s 中不可能存在任何一个子串同 p 为异位词，返回空列表即可。\n当 m >= n 时，我们可以使用一个固定长度为 n 的滑动窗口来维护 s 的子串。为了判断子串是否为 p 的异位词，我们可以用一个固定长度为 26 的数组 cnt1 记录 p 中每个字母的出现次数，再用另一个数组 cnt2 记录当前滑动窗口中每个字母的出现次数，如果这两个数组相同，那么当前滑动窗口的子串就是 p 的异位词，我们记录下起始位置。\npython\nclass Solution:\ndef findAnagrams(self, s: str, p: str) -> List[int]:\nm, n = len(s), len(p)\nans = []\nif m < n:\nreturn ans\ncnt1 = Counter(p)\ncnt2 = Counter(s[: n - 1])\nfor i in range(n - 1, m):\ncnt2[s[i]] += 1\nif cnt1 == cnt2:\nans.append(i - n + 1)\ncnt2[s[i - n + 1]] -= 1\nreturn ans\njava\nclass Solution {\npublic List<I",
+      "complexity": "时间复杂度 $O(m \\times C)$空间复杂度 $O(C)$其中 $m$ 是字符串 $s$ 的长度；而 $C$ 是字符集大小在本题中字符集为所有小写字母所以 $C = 26$ / 空间复杂度 $O(C)$其中 $m$ 是字符串 $s$ 的长度；而 $C$ 是字符集大小，在本题中字符集为所有小写字母，所以 $C = 26$",
+      "javaSnippet": "class Solution {\n    public List<Integer> findAnagrams(String s, String p) {\n        int m = s.length(), n = p.length();\n        List<Integer> ans = new ArrayList<>();\n        if (m < n) {\n            return ans;\n        }\n        int[] cnt1 = new int[26];\n        for (int i = 0; i < n; ++i) {\n            ++cnt1[p.charAt(i) - 'a'];\n        }\n        int[] cnt2 = new int[26];\n        for (int i = 0; i < n - 1; ++i) {\n            ++cnt2[s.charAt(i) - 'a'];\n        }\n        for (int i = n - 1; i < m; ++i) {\n            ++cnt2[s.charAt(i) - 'a'];\n            if (Arrays.equals(cnt1, cnt2)) {\n                ans.add(i - n + 1);\n            }\n            --cnt2[s.charAt(i - n + 1) - 'a'];\n        }\n        return ans;\n    }\n}"
+    },
+    "memory": {
+      "title": "方法二：双指针（滑动窗口优化）",
+      "approach": "方法一每次比较整个计数数组。改为右端加入后，若某字母超出 p 的配额则左端收缩，窗口内每字母都不超额。此时长度恰为 n 即异位词。\n比较从 O(|\\Sigma|) 变成检查长度，滑动过程仍是线性。\n我们可以对方法一进行优化，与方法一类似，我们用一个固定长度为 26 的数组 cnt1 记录 p 中每个字母的出现次数，用另一个数组 cnt2 记录当前滑动窗口中每个字母的出现次数，用指针 i 和 j 分别指向滑动窗口的左右边界。每一次移动指针 j，将 cnt2[s[j]] 的值加 1，如果当前 cnt2[s[j]] 的值大于 cnt1[s[j]]，则将指针 i 不断右移，直到 cnt2[s[j]] 的值不大于 cnt1[s[j]]。此时，如果滑动窗口的长度等于 p 的长度，我们就找到了一个异位词，将起始位置加入答案。继续移动指针 j，重复上述操作，直到指针 j 移动到 s 的末尾。\npython\nclass Solution:\ndef findAnagrams(self, s: str, p: str) -> List[int]:\nm, n = len(s), len(p)\nans = []\nif m < n:\nreturn ans\ncnt1 = Counter(p)\ncnt2 = Counter()\nj = 0\nfor i, c in enumerate(s):\ncnt2[c] += 1\nwhile cnt2[c] > cnt1[c]:\ncnt2[s[j]] -= 1\nj += 1\nif i - j + 1 == n:\nans.append(j)\nreturn ans\njava\nc",
+      "complexity": "时间复杂度 $(m + n)$空间复杂度 $O(C)$其中 $m$ 和 $n$ 分别是字符串 $s$ 和 $p$ 的长度；而 $C$ 是字符集大小在本题中字符集为所有小写字母所以 $C = 26$ / 空间复杂度 $O(C)$其中 $m$ 和 $n$ 分别是字符串 $s$ 和 $p$ 的长度；而 $C$ 是字符集大小，在本题中字符集为所有小写字母，所以 $C = 26$",
+      "javaSnippet": "class Solution {\n    public List<Integer> findAnagrams(String s, String p) {\n        int m = s.length(), n = p.length();\n        List<Integer> ans = new ArrayList<>();\n        if (m < n) {\n            return ans;\n        }\n        int[] cnt1 = new int[26];\n        for (int i = 0; i < n; ++i) {\n            ++cnt1[p.charAt(i) - 'a'];\n        }\n        int[] cnt2 = new int[26];\n        for (int i = 0, j = 0; i < m; ++i) {\n            int k = s.charAt(i) - 'a';\n            ++cnt2[k];\n            while (cnt2[k] > cnt1[k]) {\n                --cnt2[s.charAt(j++) - 'a'];\n            }\n            if (i - j + 1 == n) {\n                ans.add(j);\n            }\n        }\n        return ans;\n    }\n}"
+    },
+    "keywords": [
+      "找到字符串中所有字母异位词",
+      "哈希表",
+      "字符串",
+      "滑动窗口"
+    ],
+    "tech": [
+      {
+        "name": "HashMap / HashSet",
+        "detail": "get、containsKey、put 平均 O(1)。哈希表适合把“查找是否存在”降到常数时间，使用时要决定 key 与 value 各自表达什么，例如“值 -> 下标”还是“元素 -> 出现次数”。"
+      },
+      {
+        "name": "冲突与扩容",
+        "detail": "Java 的 HashMap 在哈希冲突时使用链表或红黑树，整体平均仍是 O(1)。遍历过程中不断扩容可能带来少量开销，但不影响算法复杂度。"
+      },
+      {
+        "name": "字符串处理",
+        "detail": "注意不可变性：频繁拼接用 StringBuilder；比较时想清楚大小写、数字位数、分隔符和空串；回文类题目常配合中心扩展或马拉车。"
+      },
+      {
+        "name": "字符计数",
+        "detail": "只含小写字母时用 int[26]，需要记录字符种类时维护 diff 变量，避免每次重新扫描。"
+      },
+      {
+        "name": "滑动窗口",
+        "detail": "用 left/right 维护一个连续区间，右指针扩张加入元素，左指针收缩移除元素。窗口内容通常用计数数组、HashMap 或单调队列维护，使整体复杂度降到 O(n)。"
+      },
+      {
+        "name": "窗口有效性",
+        "detail": "必须先明确窗口何时合法：通常是“满足条件后收缩”还是“不满足条件时扩张”，这决定了 while 循环的位置。"
+      }
+    ],
+    "pitfalls": [
+      "注意“先查后插”，避免同一元素被使用两次",
+      "Map 里存下标还是存次数要想清楚",
+      "整数可能为负，不要用数组下标无脑表示 key",
+      "字符串下标从 0 开始，子串边界要小心",
+      "统计字符时先确定字符集大小"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

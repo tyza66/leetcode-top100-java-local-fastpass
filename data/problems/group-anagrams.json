@@ -45,5 +45,68 @@
   "exampleTestcases": "[\"eat\",\"tea\",\"tan\",\"ate\",\"nat\",\"bat\"]\n[\"\"]\n[\"a\"]",
   "contentHtml": "<p>给你一个字符串数组，请你将 <span data-keyword=\"anagram\">字母异位词</span> 组合在一起。可以按任意顺序返回结果列表。</p>\n\n<p>&nbsp;</p>\n\n<p><strong>示例 1:</strong></p>\n\n<div class=\"example-block\">\n<p><strong>输入:</strong> strs = [\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"]</p>\n\n<p><strong>输出: </strong>[[\"bat\"],[\"nat\",\"tan\"],[\"ate\",\"eat\",\"tea\"]]</p>\n\n<p><strong>解释：</strong></p>\n\n<ul>\n\t<li>在 strs 中没有字符串可以通过重新排列来形成 <code>\"bat\"</code>。</li>\n\t<li>字符串 <code>\"nat\"</code> 和 <code>\"tan\"</code> 是字母异位词，因为它们可以重新排列以形成彼此。</li>\n\t<li>字符串 <code>\"ate\"</code>&nbsp;，<code>\"eat\"</code>&nbsp;和 <code>\"tea\"</code> 是字母异位词，因为它们可以重新排列以形成彼此。</li>\n</ul>\n</div>\n\n<p><strong>示例 2:</strong></p>\n\n<div class=\"example-block\">\n<p><strong>输入:</strong> strs = [\"\"]</p>\n\n<p><strong>输出: </strong>[[\"\"]]</p>\n</div>\n\n<p><strong>示例 3:</strong></p>\n\n<div class=\"example-block\">\n<p><strong>输入:</strong> strs = [\"a\"]</p>\n\n<p><strong>输出: </strong>[[\"a\"]]</p>\n</div>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= strs.length &lt;= 10<sup>4</sup></code></li>\n\t<li><code>0 &lt;= strs[i].length &lt;= 100</code></li>\n\t<li><code>strs[i]</code>&nbsp;仅包含小写字母</li>\n</ul>\n",
   "contentEnHtml": "<p>Given an array of strings <code>strs</code>, group the <span data-keyword=\"anagram\">anagrams</span> together. You can return the answer in <strong>any order</strong>.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<div class=\"example-block\">\n<p><strong>Input:</strong> <span class=\"example-io\">strs = [&quot;eat&quot;,&quot;tea&quot;,&quot;tan&quot;,&quot;ate&quot;,&quot;nat&quot;,&quot;bat&quot;]</span></p>\n\n<p><strong>Output:</strong> <span class=\"example-io\">[[&quot;bat&quot;],[&quot;nat&quot;,&quot;tan&quot;],[&quot;ate&quot;,&quot;eat&quot;,&quot;tea&quot;]]</span></p>\n\n<p><strong>Explanation:</strong></p>\n\n<ul>\n\t<li>There is no string in strs that can be rearranged to form <code>&quot;bat&quot;</code>.</li>\n\t<li>The strings <code>&quot;nat&quot;</code> and <code>&quot;tan&quot;</code> are anagrams as they can be rearranged to form each other.</li>\n\t<li>The strings <code>&quot;ate&quot;</code>, <code>&quot;eat&quot;</code>, and <code>&quot;tea&quot;</code> are anagrams as they can be rearranged to form each other.</li>\n</ul>\n</div>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<div class=\"example-block\">\n<p><strong>Input:</strong> <span class=\"example-io\">strs = [&quot;&quot;]</span></p>\n\n<p><strong>Output:</strong> <span class=\"example-io\">[[&quot;&quot;]]</span></p>\n</div>\n\n<p><strong class=\"example\">Example 3:</strong></p>\n\n<div class=\"example-block\">\n<p><strong>Input:</strong> <span class=\"example-io\">strs = [&quot;a&quot;]</span></p>\n\n<p><strong>Output:</strong> <span class=\"example-io\">[[&quot;a&quot;]]</span></p>\n</div>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= strs.length &lt;= 10<sup>4</sup></code></li>\n\t<li><code>0 &lt;= strs[i].length &lt;= 100</code></li>\n\t<li><code>strs[i]</code> consists of lowercase English letters.</li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：哈希表",
+      "approach": "若两两判断是否字母异位，即使对每个串先排序再比较，时间仍为 O(n^2 \\cdot k \\log k)。n <= 10^4、k <= 100，平方比较容易超时。\n一组异位词排序后得到同一个串，该串可以作为分组的键，不必再成对比较。\n因此以排序后的字符串为键、原串列表为值，扫一遍放入哈希表。同一键自然聚到一起。\n1. 遍历字符串，对每个字符串按照字符字典序排序，得到一个新的字符串。\n2. 以新字符串为 key，[str] 为 value，存入哈希表当中（HashMap<String, List<String>>）。\n3. 后续遍历得到相同 key 时，将其加入到对应的 value 当中即可。\n以 strs = [\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"] 为例，遍历结束时，哈希表的状况：\n| key     | value                   |\n| ------- | ----------------------- |\n| \"aet\" | [\"eat\", \"tea\", \"ate\"] |\n| \"ant\" | [\"tan\", \"nat\"]        |\n| \"abt\" | [\"bat\"]               |\n最后返回哈希表的 value 列表即可。\npython\nclass Solution:\ndef groupAnagrams(self, strs: List[str]) -> List[List[str]]:\nd = defaultdict(list)\nfor s in strs:\nk = ''.join(",
+      "complexity": "时间复杂度 $O(n\\times k\\times \\log k)$其中 $n$ 和 $k$ 分别是字符串数组的长度和字符串的最大长度",
+      "javaSnippet": "class Solution {\n    public List<List<String>> groupAnagrams(String[] strs) {\n        Map<String, List<String>> d = new HashMap<>();\n        for (String s : strs) {\n            char[] t = s.toCharArray();\n            Arrays.sort(t);\n            String k = String.valueOf(t);\n            d.computeIfAbsent(k, key -> new ArrayList<>()).add(s);\n        }\n        return new ArrayList<>(d.values());\n    }\n}"
+    },
+    "memory": {
+      "title": "方法二：计数",
+      "approach": "方法一对每个串排序，单串 O(k \\log k)。字母只有 26 个小写，k <= 100，排序中的对数因子可以省去。\n缺的是更便宜的键。统计每个字母出现次数，以长度为 26 的计数元组作为键，哈希分组方式不变，单串处理变为线性。\n我们也可以将方法一中的排序部分改为计数，也就是说，将每个字符串 s 中的字符以及出现的次数作为 key，将字符串 s 作为 value 存入哈希表当中。\npython\nclass Solution:\ndef groupAnagrams(self, strs: List[str]) -> List[List[str]]:\nd = defaultdict(list)\nfor s in strs:\ncnt = [0] * 26\nfor c in s:\ncnt[ord(c) - ord('a')] += 1\nd[tuple(cnt)].append(s)\nreturn list(d.values())\njava\nclass Solution {\npublic List<List<String>> groupAnagrams(String[] strs) {\nMap<String, List<String>> d = new HashMap<>();\nfor (String s : strs) {\nint[] cnt = new int[26];\nfor (int i = 0; i < s.length(); ++i) {\n++cnt[s.charAt(i) - 'a'];\n}\nStringBuilder sb = new StringBuilder();\nf",
+      "complexity": "时间复杂度 $O(n\\times (k + C))$其中 $n$ 和 $k$ 分别是字符串数组的长度和字符串的最大长度而 $C$ 是字符集的大小本题中 $C = 26$",
+      "javaSnippet": "class Solution {\n    public List<List<String>> groupAnagrams(String[] strs) {\n        Map<String, List<String>> d = new HashMap<>();\n        for (String s : strs) {\n            int[] cnt = new int[26];\n            for (int i = 0; i < s.length(); ++i) {\n                ++cnt[s.charAt(i) - 'a'];\n            }\n            StringBuilder sb = new StringBuilder();\n            for (int i = 0; i < 26; ++i) {\n                if (cnt[i] > 0) {\n                    sb.append((char) ('a' + i)).append(cnt[i]);\n                }\n            }\n            String k = sb.toString();\n            d.computeIfAbsent(k, key -> new ArrayList<>()).add(s);\n        }\n        return new ArrayList<>(d.values());\n    }\n}"
+    },
+    "keywords": [
+      "字母异位词分组",
+      "数组",
+      "哈希表",
+      "字符串",
+      "排序"
+    ],
+    "tech": [
+      {
+        "name": "HashMap / HashSet",
+        "detail": "get、containsKey、put 平均 O(1)。哈希表适合把“查找是否存在”降到常数时间，使用时要决定 key 与 value 各自表达什么，例如“值 -> 下标”还是“元素 -> 出现次数”。"
+      },
+      {
+        "name": "冲突与扩容",
+        "detail": "Java 的 HashMap 在哈希冲突时使用链表或红黑树，整体平均仍是 O(1)。遍历过程中不断扩容可能带来少量开销，但不影响算法复杂度。"
+      },
+      {
+        "name": "字符串处理",
+        "detail": "注意不可变性：频繁拼接用 StringBuilder；比较时想清楚大小写、数字位数、分隔符和空串；回文类题目常配合中心扩展或马拉车。"
+      },
+      {
+        "name": "字符计数",
+        "detail": "只含小写字母时用 int[26]，需要记录字符种类时维护 diff 变量，避免每次重新扫描。"
+      },
+      {
+        "name": "常用排序",
+        "detail": "快速排序/归并排序 O(n log n)；计数排序适合值域小的整数；TopK/找第 k 大可用快速选择，平均 O(n)。"
+      },
+      {
+        "name": "原地与稳定性",
+        "detail": "需要原地修改且关注空间时用快排或堆排；需要稳定排序且内存充足时用归并。"
+      }
+    ],
+    "pitfalls": [
+      "注意“先查后插”，避免同一元素被使用两次",
+      "Map 里存下标还是存次数要想清楚",
+      "整数可能为负，不要用数组下标无脑表示 key",
+      "字符串下标从 0 开始，子串边界要小心",
+      "统计字符时先确定字符集大小"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

@@ -34,5 +34,52 @@
   "exampleTestcases": "[2,3,-2,4]\n[-2,0,-1]",
   "contentHtml": "<p>给你一个整数数组 <code>nums</code>&nbsp;，请你找出数组中乘积最大的非空连续 <span data-keyword=\"subarray-nonempty\">子数组</span>（该子数组中至少包含一个数字），并返回该子数组所对应的乘积。</p>\n\n<p>测试用例的答案是一个&nbsp;<strong>32-位</strong> 整数。</p>\n\n<p><strong>请注意</strong>，一个只包含一个元素的数组的乘积是这个元素的值。</p>\n\n<p>&nbsp;</p>\n\n<p><strong class=\"example\">示例 1:</strong></p>\n\n<pre>\n<strong>输入:</strong> nums = [2,3,-2,4]\n<strong>输出:</strong> <code>6</code>\n<strong>解释:</strong>&nbsp;子数组 [2,3] 有最大乘积 6。\n</pre>\n\n<p><strong class=\"example\">示例 2:</strong></p>\n\n<pre>\n<strong>输入:</strong> nums = [-2,0,-1]\n<strong>输出:</strong> 0\n<strong>解释:</strong>&nbsp;结果不能为 2, 因为 [-2,-1] 不是子数组。</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= nums.length &lt;= 2 * 10<sup>4</sup></code></li>\n\t<li><code>-10 &lt;= nums[i] &lt;= 10</code></li>\n\t<li><code>nums</code> 的任何子数组的乘积都 <strong>保证</strong>&nbsp;是一个 <strong>32-位</strong> 整数</li>\n</ul>\n",
   "contentEnHtml": "<p>Given an integer array <code>nums</code>, find a <span data-keyword=\"subarray-nonempty\">subarray</span> that has the largest product, and return <em>the product</em>.</p>\n\n<p>The test cases are generated so that the answer will fit in a <strong>32-bit</strong> integer.</p>\n\n<p><strong>Note</strong> that the product of an array with a single element is the value of that element.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<pre>\n<strong>Input:</strong> nums = [2,3,-2,4]\n<strong>Output:</strong> 6\n<strong>Explanation:</strong> [2,3] has the largest product 6.\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> nums = [-2,0,-1]\n<strong>Output:</strong> 0\n<strong>Explanation:</strong> The result cannot be 2, because [-2,-1] is not a subarray.\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= nums.length &lt;= 2 * 10<sup>4</sup></code></li>\n\t<li><code>-10 &lt;= nums[i] &lt;= 10</code></li>\n\t<li>The product of any subarray of <code>nums</code> is <strong>guaranteed</strong> to fit in a <strong>32-bit</strong> integer.</li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：动态规划",
+      "approach": "最大子数组和可以用 Kadane，乘积则不同：负数会让最大变最小、最小变最大，零会切断。n<= 2x 10^4。同时维护以当前位置结尾的最大与最小乘积，新数乘上两者或单独成段，三者取最大/最小。答案是扫描过程中最大乘积的最大值。\n我们定义两个变量 f 和 g，其中 f 表示以 nums[i] 结尾的乘积最大子数组的乘积，而 g 表示以 nums[i] 结尾的乘积最小子数组的乘积。初始时 f 和 g 都等于 nums[0]。答案为所有 f 中的最大值。\n从 i=1 开始，我们可以考虑将第 i 个数 nums[i] 添加到前面的乘积最大或者乘积最小的子数组乘积的后面，或者单独作为一个子数组乘积（即此时子数组长度只有 1）。我们将此前的乘积最大值记为 ff，乘积最小值记为 gg，那么 f = \\max(f, ff x nums[i], gg x nums[i])，而 g = \\min(g, ff x nums[i], gg x nums[i])。接下来，我们更新答案 ans = \\max(ans, f)，然后继续计算下一个位置。\n最后的答案即为 ans。\npython\nclass Solution:\ndef maxProduct(self, nums: List[int]) -> int:\nans = f = g = nums[0]\nfor x in nums[1:]:\nff, gg = f, g\nf = max(x, ff * x, gg * x)\ng = min(x, ff * x, gg * x)\nans = max(ans, f)\nreturn ans\njava\nclass ",
+      "complexity": "时间复杂度 $O(n)$其中 $n$ 是数组 $nums$ 的长度我们只需要遍历数组一次即可求得答案空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "javaSnippet": "class Solution {\n    public int maxProduct(int[] nums) {\n        int f = nums[0], g = nums[0], ans = nums[0];\n        for (int i = 1; i < nums.length; ++i) {\n            int ff = f, gg = g;\n            f = Math.max(nums[i], Math.max(ff * nums[i], gg * nums[i]));\n            g = Math.min(nums[i], Math.min(ff * nums[i], gg * nums[i]));\n            ans = Math.max(ans, f);\n        }\n        return ans;\n    }\n}"
+    },
+    "memory": {
+      "title": "暴力枚举（兜底）",
+      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
+      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
+      "javaSnippet": ""
+    },
+    "keywords": [
+      "乘积最大子数组",
+      "数组",
+      "动态规划"
+    ],
+    "tech": [
+      {
+        "name": "动态规划五步",
+        "detail": "定义 dp 状态 -> 推导转移方程 -> 确定初始值 -> 确定遍历顺序 -> 返回答案。先写小例子验证 dp 表，再压缩空间。"
+      },
+      {
+        "name": "状态压缩",
+        "detail": "很多 dp 只依赖前一两行，可以把二维数组压成一维，甚至只用两个变量；滚动数组不会改变状态含义，只减少空间。"
+      },
+      {
+        "name": "记忆化搜索",
+        "detail": "用递归 + memo 数组/Map 缓存结果，本质上与自底向上 dp 等价，适合状态转移方向不直观的题目。"
+      }
+    ],
+    "pitfalls": [
+      "dp 数组初始值要区分 0 与“不可达”",
+      "遍历顺序决定能否使用前一轮状态，注意下标从 1 开始",
+      "返回的是 dp[n] 还是 dp 数组最大值"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

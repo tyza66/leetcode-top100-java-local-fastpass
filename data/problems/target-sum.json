@@ -53,5 +53,69 @@
   "exampleTestcases": "[1,1,1,1,1]\n3\n[1]\n1",
   "contentHtml": "<p>给你一个非负整数数组 <code>nums</code> 和一个整数 <code>target</code> 。</p>\n\n<p>向数组中的每个整数前添加&nbsp;<code>'+'</code> 或 <code>'-'</code> ，然后串联起所有整数，可以构造一个 <strong>表达式</strong> ：</p>\n\n<ul>\n\t<li>例如，<code>nums = [2, 1]</code> ，可以在 <code>2</code> 之前添加 <code>'+'</code> ，在 <code>1</code> 之前添加 <code>'-'</code> ，然后串联起来得到表达式 <code>\"+2-1\"</code> 。</li>\n</ul>\n\n<p>返回可以通过上述方法构造的、运算结果等于 <code>target</code> 的不同 <strong>表达式</strong> 的数目。</p>\n\n<p>&nbsp;</p>\n\n<p><strong>示例 1：</strong></p>\n\n<pre>\n<strong>输入：</strong>nums = [1,1,1,1,1], target = 3\n<strong>输出：</strong>5\n<strong>解释：</strong>一共有 5 种方法让最终目标和为 3 。\n-1 + 1 + 1 + 1 + 1 = 3\n+1 - 1 + 1 + 1 + 1 = 3\n+1 + 1 - 1 + 1 + 1 = 3\n+1 + 1 + 1 - 1 + 1 = 3\n+1 + 1 + 1 + 1 - 1 = 3\n</pre>\n\n<p><strong>示例 2：</strong></p>\n\n<pre>\n<strong>输入：</strong>nums = [1], target = 1\n<strong>输出：</strong>1\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= nums.length &lt;= 20</code></li>\n\t<li><code>0 &lt;= nums[i] &lt;= 1000</code></li>\n\t<li><code>0 &lt;= sum(nums[i]) &lt;= 1000</code></li>\n\t<li><code>-1000 &lt;= target &lt;= 1000</code></li>\n</ul>\n",
   "contentEnHtml": "<p>You are given an integer array <code>nums</code> and an integer <code>target</code>.</p>\n\n<p>You want to build an <strong>expression</strong> out of nums by adding one of the symbols <code>&#39;+&#39;</code> and <code>&#39;-&#39;</code> before each integer in nums and then concatenate all the integers.</p>\n\n<ul>\n\t<li>For example, if <code>nums = [2, 1]</code>, you can add a <code>&#39;+&#39;</code> before <code>2</code> and a <code>&#39;-&#39;</code> before <code>1</code> and concatenate them to build the expression <code>&quot;+2-1&quot;</code>.</li>\n</ul>\n\n<p>Return the number of different <strong>expressions</strong> that you can build, which evaluates to <code>target</code>.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<pre>\n<strong>Input:</strong> nums = [1,1,1,1,1], target = 3\n<strong>Output:</strong> 5\n<strong>Explanation:</strong> There are 5 ways to assign symbols to make the sum of nums be target 3.\n-1 + 1 + 1 + 1 + 1 = 3\n+1 - 1 + 1 + 1 + 1 = 3\n+1 + 1 - 1 + 1 + 1 = 3\n+1 + 1 + 1 - 1 + 1 = 3\n+1 + 1 + 1 + 1 - 1 = 3\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> nums = [1], target = 1\n<strong>Output:</strong> 1\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= nums.length &lt;= 20</code></li>\n\t<li><code>0 &lt;= nums[i] &lt;= 1000</code></li>\n\t<li><code>0 &lt;= sum(nums[i]) &lt;= 1000</code></li>\n\t<li><code>-1000 &lt;= target &lt;= 1000</code></li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：动态规划",
+      "approach": "给每个数加正号或负号使结果为 \\textit{target}。2^n 枚举在 n<= 20 时勉强，但可以化成子集和。\n记负号部分之和为 x，则 (s-x)-x=\\textit{target}，即 x=(s-\\textit{target})/2。s<\\textit{target} 或差为奇数则无解。f[i][j] 为前 i 个数凑出 j 的方案数。\n空集对应 f[0][0]=1。选或不选 x 的转移与 0-1 背包计数相同。\n我们记数组 \\textit{nums} 所有元素的和为 s，添加负号的元素之和为 x，则添加正号的元素之和为 s - x，则有：\n(s - x) - x = \\textit{target} \\Rightarrow x = \\frac{s - \\textit{target}}{2}\n由于 x >=q 0，且 x 为整数，所以 s >=q \\textit{target} 且 s - \\textit{target} 为偶数。如果不满足这两个条件，则直接返回 0。\n接下来，我们可以将问题转化为：在数组 \\textit{nums} 中选取若干元素，使得这些元素之和等于 \\frac{s - \\textit{target}}{2}，问有多少种选取方法。\n我们可以使用动态规划来解决这个问题。定义 f[i][j] 表示在数组 \\textit{nums} 的前 i 个元素中选取若干元素，使得这些元素之和等于 j 的选取方案数。\n对于 \\textit{nums}[i - 1]，我们有两种选择：选取或不选取。如果我们不选取 \\textit{nums}[i - 1]，则 f[i][",
+      "complexity": "时间复杂度 $O(m \\times n)$空间复杂度 $O(m \\times n)$ / 空间复杂度 $O(m \\times n)$",
+      "javaSnippet": "class Solution {\n    public int findTargetSumWays(int[] nums, int target) {\n        int s = Arrays.stream(nums).sum();\n        if (s < target || (s - target) % 2 != 0) {\n            return 0;\n        }\n        int m = nums.length;\n        int n = (s - target) / 2;\n        int[][] f = new int[m + 1][n + 1];\n        f[0][0] = 1;\n        for (int i = 1; i <= m; ++i) {\n            for (int j = 0; j <= n; ++j) {\n                f[i][j] = f[i - 1][j];\n                if (j >= nums[i - 1]) {\n                    f[i][j] += f[i - 1][j - nums[i - 1]];\n                }\n            }\n        }\n        return f[m][n];\n    }\n}"
+    },
+    "memory": {
+      "title": "方法二：动态规划（空间优化）",
+      "approach": "f[i][j] 只依赖上一行，将 j 倒序更新压成一维，空间降为容量大小，同一数字不会用两次。\n我们可以发现，方法一中的状态转移方程中，f[i][j] 的值只和 f[i - 1][j] 以及 f[i - 1][j - \\textit{nums}[i - 1]] 有关，因此我们去掉第一维空间，只使用一维数组即可。\npython\nclass Solution:\ndef findTargetSumWays(self, nums: List[int], target: int) -> int:\ns = sum(nums)\nif s < target or (s - target) % 2:\nreturn 0\nn = (s - target) // 2\nf = [0] * (n + 1)\nf[0] = 1\nfor x in nums:\nfor j in range(n, x - 1, -1):\nf[j] += f[j - x]\nreturn f[n]\njava\nclass Solution {\npublic int findTargetSumWays(int[] nums, int target) {\nint s = Arrays.stream(nums).sum();\nif (s < target || (s - target) % 2 != 0) {\nreturn 0;\n}\nint n = (s - target) / 2;\nint[] f = new int[n + 1];\nf[0] = 1;\nfor (int num : nums) {\nfor (int j = n; j >= ",
+      "complexity": "时间复杂度 $O(m \\times n)$空间复杂度 $O(n)$ / 空间复杂度 $O(n)$",
+      "javaSnippet": "class Solution {\n    public int findTargetSumWays(int[] nums, int target) {\n        int s = Arrays.stream(nums).sum();\n        if (s < target || (s - target) % 2 != 0) {\n            return 0;\n        }\n        int n = (s - target) / 2;\n        int[] f = new int[n + 1];\n        f[0] = 1;\n        for (int num : nums) {\n            for (int j = n; j >= num; --j) {\n                f[j] += f[j - num];\n            }\n        }\n        return f[n];\n    }\n}"
+    },
+    "keywords": [
+      "目标和",
+      "数组",
+      "动态规划",
+      "回溯",
+      "背包问题",
+      "0-1 背包"
+    ],
+    "tech": [
+      {
+        "name": "动态规划五步",
+        "detail": "定义 dp 状态 -> 推导转移方程 -> 确定初始值 -> 确定遍历顺序 -> 返回答案。先写小例子验证 dp 表，再压缩空间。"
+      },
+      {
+        "name": "状态压缩",
+        "detail": "很多 dp 只依赖前一两行，可以把二维数组压成一维，甚至只用两个变量；滚动数组不会改变状态含义，只减少空间。"
+      },
+      {
+        "name": "记忆化搜索",
+        "detail": "用递归 + memo 数组/Map 缓存结果，本质上与自底向上 dp 等价，适合状态转移方向不直观的题目。"
+      },
+      {
+        "name": "回溯模板",
+        "detail": "做选择 -> 递归 -> 撤销选择。一般代码为 path.add(x); dfs(pos+1); path.remove(path.size()-1)。组合、排列、子集、棋盘类题目都可套用。"
+      },
+      {
+        "name": "剪枝",
+        "detail": "排序后跳过相邻重复元素、提前判断剩余元素是否足够、用 used 数组标记已选下标，都能大幅减少分支。"
+      },
+      {
+        "name": "背包问题",
+        "detail": "先抽象出“物品、容量、价值”，再确定恰好装满还是不超过容量，初始值用 -inf 还是 0 会直接改变答案。"
+      }
+    ],
+    "pitfalls": [
+      "dp 数组初始值要区分 0 与“不可达”",
+      "遍历顺序决定能否使用前一轮状态，注意下标从 1 开始",
+      "返回的是 dp[n] 还是 dp 数组最大值",
+      "递归结束条件要放在选择之前",
+      "撤销选择必须与选择一一对应"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

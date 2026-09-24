@@ -39,5 +39,67 @@
   "exampleTestcases": "\"abc\"\n\"aaa\"",
   "contentHtml": "<p>给你一个字符串 <code>s</code> ，请你统计并返回这个字符串中 <strong>回文子串</strong> 的数目。</p>\n\n<p><strong>回文字符串</strong> 是正着读和倒过来读一样的字符串。</p>\n\n<p><strong>子字符串</strong> 是字符串中的由连续字符组成的一个序列。</p>\n\n<p>&nbsp;</p>\n\n<p><strong class=\"example\">示例 1：</strong></p>\n\n<pre>\n<strong>输入：</strong>s = \"abc\"\n<strong>输出：</strong>3\n<strong>解释：</strong>三个回文子串: \"a\", \"b\", \"c\"\n</pre>\n\n<p><strong class=\"example\">示例 2：</strong></p>\n\n<pre>\n<strong>输入：</strong>s = \"aaa\"\n<strong>输出：</strong>6\n<strong>解释：</strong>6个回文子串: \"a\", \"a\", \"a\", \"aa\", \"aa\", \"aaa\"</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= s.length &lt;= 1000</code></li>\n\t<li><code>s</code> 由小写英文字母组成</li>\n</ul>\n",
   "contentEnHtml": "<p>Given a string <code>s</code>, return <em>the number of <strong>palindromic substrings</strong> in it</em>.</p>\n\n<p>A string is a <strong>palindrome</strong> when it reads the same backward as forward.</p>\n\n<p>A <strong>substring</strong> is a contiguous sequence of characters within the string.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<pre>\n<strong>Input:</strong> s = &quot;abc&quot;\n<strong>Output:</strong> 3\n<strong>Explanation:</strong> Three palindromic strings: &quot;a&quot;, &quot;b&quot;, &quot;c&quot;.\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> s = &quot;aaa&quot;\n<strong>Output:</strong> 6\n<strong>Explanation:</strong> Six palindromic strings: &quot;a&quot;, &quot;a&quot;, &quot;a&quot;, &quot;aa&quot;, &quot;aa&quot;, &quot;aaa&quot;.\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= s.length &lt;= 1000</code></li>\n\t<li><code>s</code> consists of lowercase English letters.</li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：从中心向两侧扩展回文串",
+      "approach": "统计回文子串个数。DP 填 n^2 个区间位也能做，但只需计数、不必存表。\n枚举 2n-1 个中心（奇偶长度），向两侧扩展直到失配，每成功一步计一个回文。\n我们可以枚举回文串的中心位置，然后向两侧扩展，统计回文串的数量。对于长度为 n 的字符串，回文串的中心位置共有 2n-1 个（包括奇数长度和偶数长度的回文串）。对于每个中心位置，我们向两侧扩展，直到不满足回文串的条件为止，统计回文串的数量。\npython\nclass Solution:\ndef countSubstrings(self, s: str) -> int:\nans, n = 0, len(s)\nfor k in range(n * 2 - 1):\ni, j = k // 2, (k + 1) // 2\nwhile ~i and j < n and s[i] == s[j]:\nans += 1\ni, j = i - 1, j + 1\nreturn ans\njava\nclass Solution {\npublic int countSubstrings(String s) {\nint ans = 0;\nint n = s.length();\nfor (int k = 0; k < n * 2 - 1; ++k) {\nint i = k / 2, j = (k + 1) / 2;\nwhile (i >= 0 && j < n && s.charAt(i) == s.charAt(j)) {\n++ans;\n--i;\n++j;\n}\n}\nreturn ans;\n}\n}\ncpp\nclass Solution {\npublic:",
+      "complexity": "时间复杂度 $O(n^2)$其中 $n$ 是字符串 $s$ 的长度空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "javaSnippet": "class Solution {\n    public int countSubstrings(String s) {\n        int ans = 0;\n        int n = s.length();\n        for (int k = 0; k < n * 2 - 1; ++k) {\n            int i = k / 2, j = (k + 1) / 2;\n            while (i >= 0 && j < n && s.charAt(i) == s.charAt(j)) {\n                ++ans;\n                --i;\n                ++j;\n            }\n        }\n        return ans;\n    }\n}"
+    },
+    "memory": {
+      "title": "方法二：Manacher 算法",
+      "approach": "中心扩展最坏仍是 O(n^2)。Manacher 在插入分隔符后线性求出每个中心的臂长 p[i]，该中心贡献 \\lfloor p[i]/2\\rfloor 个回文。\n在 Manacher 算法的计算过程中，用 p[i]-1 表示以第 i 位为中心的最大回文长度，以第 i 位为中心的回文串数量为 <=ft \\lceil \\frac{p[i]-1}{2}  \\right \\rceil。\npython\nclass Solution:\ndef countSubstrings(self, s: str) -> int:\nt = '^#' + '#'.join(s) + '#'\nn = len(t)\np = [0 for _ in range(n)]\npos, maxRight = 0, 0\nans = 0\nfor i in range(1, n - 1):\np[i] = min(maxRight - i, p[2 * pos - i]) if maxRight > i else 1\nwhile t[i - p[i]] == t[i + p[i]]:\np[i] += 1\nif i + p[i] > maxRight:\nmaxRight = i + p[i]\npos = i\nans += p[i] // 2\nreturn ans\njava\nclass Solution {\npublic int countSubstrings(String s) {\nStringBuilder sb = new StringBuilder(\"^#\");\nfor (char ch : s.toCharArray(",
+      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(n)$其中 $n$ 是字符串 $s$ 的长度 / 空间复杂度 $O(n)$其中 $n$ 是字符串 $s$ 的长度",
+      "javaSnippet": "class Solution {\n    public int countSubstrings(String s) {\n        StringBuilder sb = new StringBuilder(\"^#\");\n        for (char ch : s.toCharArray()) {\n            sb.append(ch).append('#');\n        }\n        String t = sb.append('$').toString();\n        int n = t.length();\n        int[] p = new int[n];\n        int pos = 0, maxRight = 0;\n        int ans = 0;\n        for (int i = 1; i < n - 1; i++) {\n            p[i] = maxRight > i ? Math.min(maxRight - i, p[2 * pos - i]) : 1;\n            while (t.charAt(i - p[i]) == t.charAt(i + p[i])) {\n                p[i]++;\n            }\n            if (i + p[i] > maxRight) {\n                maxRight = i + p[i];\n                pos = i;\n            }\n            ans += p[i] / 2;\n        }\n        return ans;\n    }\n}"
+    },
+    "keywords": [
+      "回文子串",
+      "双指针",
+      "字符串",
+      "动态规划"
+    ],
+    "tech": [
+      {
+        "name": "双指针",
+        "detail": "分为相向双指针（有序数组求两数和、接雨水、盛最多水）和同向快慢指针（去重、滑动窗口）。核心是先建立指针移动的不变量，每次只让指针朝一个方向移动，避免重复枚举。"
+      },
+      {
+        "name": "边界处理",
+        "detail": "写好 while 的结束条件，防止 left 与 right 交叉或越界；在比较元素时优先验证索引是否有效。"
+      },
+      {
+        "name": "字符串处理",
+        "detail": "注意不可变性：频繁拼接用 StringBuilder；比较时想清楚大小写、数字位数、分隔符和空串；回文类题目常配合中心扩展或马拉车。"
+      },
+      {
+        "name": "字符计数",
+        "detail": "只含小写字母时用 int[26]，需要记录字符种类时维护 diff 变量，避免每次重新扫描。"
+      },
+      {
+        "name": "动态规划五步",
+        "detail": "定义 dp 状态 -> 推导转移方程 -> 确定初始值 -> 确定遍历顺序 -> 返回答案。先写小例子验证 dp 表，再压缩空间。"
+      },
+      {
+        "name": "状态压缩",
+        "detail": "很多 dp 只依赖前一两行，可以把二维数组压成一维，甚至只用两个变量；滚动数组不会改变状态含义，只减少空间。"
+      }
+    ],
+    "pitfalls": [
+      "移动指针前检查越界",
+      "有去重要求时不要跳过重复元素而不更新答案",
+      "相向指针不要交叉",
+      "字符串下标从 0 开始，子串边界要小心",
+      "统计字符时先确定字符集大小"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

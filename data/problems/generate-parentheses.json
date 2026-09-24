@@ -44,5 +44,70 @@
   "exampleTestcases": "3\n1",
   "contentHtml": "<p>数字 <code>n</code>&nbsp;代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且 <strong>有效的 </strong>括号组合。</p>\n\n<p>&nbsp;</p>\n\n<p><strong>示例 1：</strong></p>\n\n<pre>\n<strong>输入：</strong>n = 3\n<strong>输出：</strong>[\"((()))\",\"(()())\",\"(())()\",\"()(())\",\"()()()\"]\n</pre>\n\n<p><strong>示例 2：</strong></p>\n\n<pre>\n<strong>输入：</strong>n = 1\n<strong>输出：</strong>[\"()\"]\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= n &lt;= 8</code></li>\n</ul>\n",
   "contentEnHtml": "<p>Given <code>n</code> pairs of parentheses, write a function to <em>generate all combinations of well-formed parentheses</em>.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n<pre><strong>Input:</strong> n = 3\n<strong>Output:</strong> [\"((()))\",\"(()())\",\"(())()\",\"()(())\",\"()()()\"]\n</pre><p><strong class=\"example\">Example 2:</strong></p>\n<pre><strong>Input:</strong> n = 1\n<strong>Output:</strong> [\"()\"]\n</pre>\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= n &lt;= 8</code></li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：DFS + 剪枝",
+      "approach": "合法括号串的长度固定为 2n。若先枚举所有由左、右括号组成的串再筛出合法者，方案数为 2^{2n}。n <= 8 时可以接受，但绝大多数前缀已经不可能构成合法序列。\n一旦某前缀中右括号多于左括号，或某一侧的个数超过 n，则无论后续如何补全都无法得到合法串。因此只需维护已放入的左、右括号个数 l、r，并始终保证 l >= r 且二者均不超过 n；当 l = r = n 时收入答案。\n为此我们用 DFS 依次尝试追加左括号或右括号，以上述不等式剪枝。搜索空间远小于全枚举，额外空间仅为当前串的 O(n)。\n题目中 n 的范围为 [1, 8]，因此我们直接通过“暴力搜索 + 剪枝”的方式通过本题。\n我们设计一个函数 dfs(l, r, t)，其中 l 和 r 分别表示左括号和右括号的数量，而 t 表示当前的括号序列。那么我们可以得到如下的递归结构：\n- 如果 l \\gt n 或者 r \\gt n 或者 l \\lt r，那么当前括号组合 t 不合法，直接返回；\n- 如果 l = n 且 r = n，那么当前括号组合 t 合法，将其加入答案数组 ans 中，直接返回；\n- 我们可以选择添加一个左括号，递归执行 dfs(l + 1, r, t + \"(\")；\n- 我们也可以选择添加一个右括号，递归执行 dfs(l, r + 1, t + \")\")。\npython\nclass Solution:\ndef generateParenthesis(self, n: int) -> List[str]:\ndef dfs(l: int, r: int, t: str):\nif l > n or r >",
+      "complexity": "时间复杂度 $O(2^{n\\times 2} \\times n)$空间复杂度 $O(n)$ / 空间复杂度 $O(n)$",
+      "javaSnippet": "class Solution {\n    private List<String> ans = new ArrayList<>();\n    private int n;\n\n    public List<String> generateParenthesis(int n) {\n        this.n = n;\n        dfs(0, 0, \"\");\n        return ans;\n    }\n\n    private void dfs(int l, int r, String t) {\n        if (l > n || r > n || l < r) {\n            return;\n        }\n        if (l == n && r == n) {\n            ans.add(t);\n            return;\n        }\n        dfs(l + 1, r, t + \"(\");\n        dfs(l, r + 1, t + \")\");\n    }\n}"
+    },
+    "memory": {
+      "title": "枚举子串 + 计数",
+      "approach": "枚举字符串所有起点，逐步扩展右端点并维护计数，扩展过程中判断是否满足条件；写起来直观。",
+      "complexity": "O(n^2) 时间 / O(字符集) 空间",
+      "javaSnippet": ""
+    },
+    "keywords": [
+      "括号生成",
+      "字符串",
+      "动态规划",
+      "回溯",
+      "括号序列",
+      "DFS",
+      "剪枝"
+    ],
+    "tech": [
+      {
+        "name": "字符串处理",
+        "detail": "注意不可变性：频繁拼接用 StringBuilder；比较时想清楚大小写、数字位数、分隔符和空串；回文类题目常配合中心扩展或马拉车。"
+      },
+      {
+        "name": "字符计数",
+        "detail": "只含小写字母时用 int[26]，需要记录字符种类时维护 diff 变量，避免每次重新扫描。"
+      },
+      {
+        "name": "动态规划五步",
+        "detail": "定义 dp 状态 -> 推导转移方程 -> 确定初始值 -> 确定遍历顺序 -> 返回答案。先写小例子验证 dp 表，再压缩空间。"
+      },
+      {
+        "name": "状态压缩",
+        "detail": "很多 dp 只依赖前一两行，可以把二维数组压成一维，甚至只用两个变量；滚动数组不会改变状态含义，只减少空间。"
+      },
+      {
+        "name": "记忆化搜索",
+        "detail": "用递归 + memo 数组/Map 缓存结果，本质上与自底向上 dp 等价，适合状态转移方向不直观的题目。"
+      },
+      {
+        "name": "回溯模板",
+        "detail": "做选择 -> 递归 -> 撤销选择。一般代码为 path.add(x); dfs(pos+1); path.remove(path.size()-1)。组合、排列、子集、棋盘类题目都可套用。"
+      }
+    ],
+    "pitfalls": [
+      "字符串下标从 0 开始，子串边界要小心",
+      "统计字符时先确定字符集大小",
+      "拼接字符串用 StringBuilder",
+      "dp 数组初始值要区分 0 与“不可达”",
+      "遍历顺序决定能否使用前一轮状态，注意下标从 1 开始"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

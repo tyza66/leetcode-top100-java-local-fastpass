@@ -49,5 +49,67 @@
   "exampleTestcases": "12\n13",
   "contentHtml": "<p>给你一个整数 <code>n</code> ，返回 <em>和为 <code>n</code> 的完全平方数的最少数量</em> 。</p>\n\n<p><strong>完全平方数</strong> 是一个整数，其值等于另一个整数的平方；换句话说，其值等于一个整数自乘的积。例如，<code>1</code>、<code>4</code>、<code>9</code> 和 <code>16</code> 都是完全平方数，而 <code>3</code> 和 <code>11</code> 不是。</p>\n\n<p>&nbsp;</p>\n\n<p><strong>示例&nbsp;1：</strong></p>\n\n<pre>\n<strong>输入：</strong>n = <code>12</code>\n<strong>输出：</strong>3 \n<strong>解释：</strong><code>12 = 4 + 4 + 4</code></pre>\n\n<p><strong>示例 2：</strong></p>\n\n<pre>\n<strong>输入：</strong>n = <code>13</code>\n<strong>输出：</strong>2\n<strong>解释：</strong><code>13 = 4 + 9</code></pre>\n&nbsp;\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= n &lt;= 10<sup>4</sup></code></li>\n</ul>\n",
   "contentEnHtml": "<p>Given an integer <code>n</code>, return <em>the least number of perfect square numbers that sum to</em> <code>n</code>.</p>\n\n<p>A <strong>perfect square</strong> is an integer that is the square of an integer; in other words, it is the product of some integer with itself. For example, <code>1</code>, <code>4</code>, <code>9</code>, and <code>16</code> are perfect squares while <code>3</code> and <code>11</code> are not.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n\n<pre>\n<strong>Input:</strong> n = 12\n<strong>Output:</strong> 3\n<strong>Explanation:</strong> 12 = 4 + 4 + 4.\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> n = 13\n<strong>Output:</strong> 2\n<strong>Explanation:</strong> 13 = 4 + 9.\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= n &lt;= 10<sup>4</sup></code></li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：动态规划(完全背包)",
+      "approach": "完全平方数可重复使用，求组成 n 的最少个数，即完全背包。物品为 1^2,\\ldots,m^2（m=\\lfloor\\sqrt{n}\\rfloor）。\nf[i][j] 表示用前 i 种平方数凑 j 的最少个数，转移为不选或再加一个 i^2。\n我们定义 f[i][j] 表示使用数字 1, 2, \\cdots, i 的完全平方数组成和为 j 的最少数量。初始时 f[0][0] = 0，其余位置的值均为正无穷。\n我们可以枚举使用的最后一个数字的数量 k，那么：\nf[i][j] = \\min(f[i - 1][j], f[i - 1][j - i^2] + 1, \\cdots, f[i - 1][j - k x i^2] + k)\n其中 i^2 表示最后一个数字 i 的完全平方数。\n不妨令 j = j - i^2，那么有：\nf[i][j - i^2] = \\min(f[i - 1][j - i^2], f[i - 1][j - 2 x i^2] + 1, \\cdots, f[i - 1][j - k x i^2] + k - 1)\n将二式代入一式，我们可以得到以下状态转移方程：\nf[i][j] = \\min(f[i - 1][j], f[i][j - i^2] + 1)\n最后答案即为 f[m][n]。\n相似题目：\n- 322. 零钱兑换\npython\nclass Solution:\ndef numSquares(self, n: int) -> int:\nm = int(sqrt(n))\nf = [[inf] * (n + 1) for _ in range(m + 1)]\nf[0][0",
+      "complexity": "时间复杂度 $O(m \\times n)$空间复杂度 $O(m \\times n)$其中 $m$ 为 $sqrt(n)$ 的整数部分 / 空间复杂度 $O(m \\times n)$其中 $m$ 为 $sqrt(n)$ 的整数部分",
+      "javaSnippet": "class Solution {\n    public int numSquares(int n) {\n        int m = (int) Math.sqrt(n);\n        int[][] f = new int[m + 1][n + 1];\n        for (var g : f) {\n            Arrays.fill(g, 1 << 30);\n        }\n        f[0][0] = 0;\n        for (int i = 1; i <= m; ++i) {\n            for (int j = 0; j <= n; ++j) {\n                f[i][j] = f[i - 1][j];\n                if (j >= i * i) {\n                    f[i][j] = Math.min(f[i][j], f[i][j - i * i] + 1);\n                }\n            }\n        }\n        return f[m][n];\n    }\n}"
+    },
+    "memory": {
+      "title": "方法二：动态规划优化",
+      "approach": "二维表中 f[i][j] 只依赖 f[i-1][j] 与 f[i][j-i^2]，可压成一维，按 j 从小到大更新。\nf[i][j] 只与 f[i - 1][j] 和 f[i][j - i^2] 有关，因此可以将二维数组优化为一维数组，空间复杂度降为 O(n)。时间复杂度仍为 O(m x n)。\npython\nclass Solution:\ndef numSquares(self, n: int) -> int:\nm = int(sqrt(n))\nf = [0] + [inf] * n\nfor i in range(1, m + 1):\nfor j in range(i * i, n + 1):\nf[j] = min(f[j], f[j - i * i] + 1)\nreturn f[n]\njava\nclass Solution {\npublic int numSquares(int n) {\nint m = (int) Math.sqrt(n);\nint[] f = new int[n + 1];\nArrays.fill(f, 1 << 30);\nf[0] = 0;\nfor (int i = 1; i <= m; ++i) {\nfor (int j = i * i; j <= n; ++j) {\nf[j] = Math.min(f[j], f[j - i * i] + 1);\n}\n}\nreturn f[n];\n}\n}\ncpp\nclass Solution {\npublic:\nint numSquares(int n) {\nint m = sqrt(n);\nint f[n + 1",
+      "complexity": "时间复杂度 仍为 $O(m \\times n)$ / 空间复杂度 降为 $O(n)$时间复杂度仍为 $O(m \\times n)$",
+      "javaSnippet": "class Solution {\n    public int numSquares(int n) {\n        int m = (int) Math.sqrt(n);\n        int[] f = new int[n + 1];\n        Arrays.fill(f, 1 << 30);\n        f[0] = 0;\n        for (int i = 1; i <= m; ++i) {\n            for (int j = i * i; j <= n; ++j) {\n                f[j] = Math.min(f[j], f[j - i * i] + 1);\n            }\n        }\n        return f[n];\n    }\n}"
+    },
+    "keywords": [
+      "完全平方数",
+      "广度优先搜索",
+      "数学",
+      "动态规划",
+      "背包问题",
+      "完全背包"
+    ],
+    "tech": [
+      {
+        "name": "BFS 框架",
+        "detail": "用队列做层级遍历，每次取出当前层全部节点再扩展下一层；可以同时处理最短路径、层级序号、多源扩散等场景。"
+      },
+      {
+        "name": "层次计数",
+        "detail": "在 for (int i = size; i > 0; i--) 的循环里计算层数，能保证每次循环只处理同一层节点。"
+      },
+      {
+        "name": "数学归纳",
+        "detail": "求通项、快速幂、取模、组合数、容斥等场景先推导公式，再在代码里维护迭代变量。"
+      },
+      {
+        "name": "动态规划五步",
+        "detail": "定义 dp 状态 -> 推导转移方程 -> 确定初始值 -> 确定遍历顺序 -> 返回答案。先写小例子验证 dp 表，再压缩空间。"
+      },
+      {
+        "name": "状态压缩",
+        "detail": "很多 dp 只依赖前一两行，可以把二维数组压成一维，甚至只用两个变量；滚动数组不会改变状态含义，只减少空间。"
+      },
+      {
+        "name": "记忆化搜索",
+        "detail": "用递归 + memo 数组/Map 缓存结果，本质上与自底向上 dp 等价，适合状态转移方向不直观的题目。"
+      }
+    ],
+    "pitfalls": [
+      "dp 数组初始值要区分 0 与“不可达”",
+      "遍历顺序决定能否使用前一轮状态，注意下标从 1 开始",
+      "返回的是 dp[n] 还是 dp 数组最大值"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

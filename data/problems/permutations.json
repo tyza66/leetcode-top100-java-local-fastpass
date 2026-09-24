@@ -36,5 +36,49 @@
   "exampleTestcases": "[1,2,3]\n[0,1]\n[1]",
   "contentHtml": "<p>给定一个不含重复数字的数组 <code>nums</code> ，返回其 <em>所有可能的全排列</em> 。你可以 <strong>按任意顺序</strong> 返回答案。</p>\n\n<p>&nbsp;</p>\n\n<p><strong>示例 1：</strong></p>\n\n<pre>\n<strong>输入：</strong>nums = [1,2,3]\n<strong>输出：</strong>[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]\n</pre>\n\n<p><strong>示例 2：</strong></p>\n\n<pre>\n<strong>输入：</strong>nums = [0,1]\n<strong>输出：</strong>[[0,1],[1,0]]\n</pre>\n\n<p><strong>示例 3：</strong></p>\n\n<pre>\n<strong>输入：</strong>nums = [1]\n<strong>输出：</strong>[[1]]\n</pre>\n\n<p>&nbsp;</p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= nums.length &lt;= 6</code></li>\n\t<li><code>-10 &lt;= nums[i] &lt;= 10</code></li>\n\t<li><code>nums</code> 中的所有整数 <strong>互不相同</strong></li>\n</ul>\n",
   "contentEnHtml": "<p>Given an array <code>nums</code> of distinct integers, return all the possible <span data-keyword=\"permutation-array\">permutations</span>. You can return the answer in <strong>any order</strong>.</p>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n<pre><strong>Input:</strong> nums = [1,2,3]\n<strong>Output:</strong> [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]\n</pre><p><strong class=\"example\">Example 2:</strong></p>\n<pre><strong>Input:</strong> nums = [0,1]\n<strong>Output:</strong> [[0,1],[1,0]]\n</pre><p><strong class=\"example\">Example 3:</strong></p>\n<pre><strong>Input:</strong> nums = [1]\n<strong>Output:</strong> [[1]]\n</pre>\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li><code>1 &lt;= nums.length &lt;= 6</code></li>\n\t<li><code>-10 &lt;= nums[i] &lt;= 10</code></li>\n\t<li>All the integers of <code>nums</code> are <strong>unique</strong>.</li>\n</ul>\n",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：DFS（回溯）",
+      "approach": "n <= 6，排列共 n! 个，规模允许全部枚举。调用语言自带的全排列，或写死若干层循环，都可以生成结果；但 n 不固定，循环层数无法预先写死。\n每个位置须选一个尚未使用的数，重复使用会破坏排列，因此需要标记。生成过程是「按位置填数」，自然对应深度优先搜索。\n为此用布尔数组标记已选下标，按位置递归填写：未使用则放入当前位并继续，返回后撤销标记。n 很小，时间 O(n \\cdot n!) 与输出规模相符。\n我们设计一个函数 dfs(i) 表示已经填完了前 i 个位置，现在需要填第 i+1 个位置。枚举所有可能的数，如果这个数没有被填过，就填入这个数，然后继续填下一个位置，直到填完所有的位置。\n相似题目：\n- 47. 全排列 II\npython\nclass Solution:\ndef permute(self, nums: List[int]) -> List[List[int]]:\ndef dfs(i: int):\nif i >= n:\nans.append(t[:])\nreturn\nfor j, x in enumerate(nums):\nif not vis[j]:\nvis[j] = True\nt[i] = x\ndfs(i + 1)\nvis[j] = False\nn = len(nums)\nvis = [False] * n\nt = [0] * n\nans = []\ndfs(0)\nreturn ans\njava\nclass Solution {\nprivate List<List<Integer>> ans = new ArrayList<>();\nprivate List<",
+      "complexity": "时间复杂度 $O(n \\times n!)$其中 $n$ 是数组的长度一共有 $n!$ 个排列每个排列需要 $O(n)$ 的时间来构造",
+      "javaSnippet": "class Solution {\n    private List<List<Integer>> ans = new ArrayList<>();\n    private List<Integer> t = new ArrayList<>();\n    private boolean[] vis;\n    private int[] nums;\n\n    public List<List<Integer>> permute(int[] nums) {\n        this.nums = nums;\n        vis = new boolean[nums.length];\n        dfs(0);\n        return ans;\n    }\n\n    private void dfs(int i) {\n        if (i == nums.length) {\n            ans.add(new ArrayList<>(t));\n            return;\n        }\n        for (int j = 0; j < nums.length; ++j) {\n            if (!vis[j]) {\n                vis[j] = true;\n                t.add(nums[j]);\n                dfs(i + 1);\n                t.remove(t.size() - 1);\n                vis[j] = false;\n            }\n        }\n    }\n}"
+    },
+    "memory": {
+      "title": "暴力枚举（兜底）",
+      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
+      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
+      "javaSnippet": "// 解法2：通过判断path中是否存在数字，排除已经选择的数字\nclass Solution {\n    List<List<Integer>> result = new ArrayList<>();\n    LinkedList<Integer> path = new LinkedList<>();\n    public List<List<Integer>> permute(int[] nums) {\n        if (nums.length == 0) return result;\n        backtrack(nums, path);\n        return result;\n    }\n    public void backtrack(int[] nums, LinkedList<Integer> path) {\n        if (path.size() == nums.length) {\n            result.add(new ArrayList<>(path));\n            return;\n        }\n        for (int i =0; i < nums.length; i++) {\n            // 如果path中已有，则跳过\n            if (path.contains(nums[i])) {\n                continue;\n            } \n            path.add(nums[i]);\n            backtrack(nums, path);\n            path.removeLast();\n        }\n    }\n}"
+    },
+    "keywords": [
+      "全排列",
+      "数组",
+      "回溯",
+      "DFS（回溯）"
+    ],
+    "tech": [
+      {
+        "name": "回溯模板",
+        "detail": "做选择 -> 递归 -> 撤销选择。一般代码为 path.add(x); dfs(pos+1); path.remove(path.size()-1)。组合、排列、子集、棋盘类题目都可套用。"
+      },
+      {
+        "name": "剪枝",
+        "detail": "排序后跳过相邻重复元素、提前判断剩余元素是否足够、用 used 数组标记已选下标，都能大幅减少分支。"
+      }
+    ],
+    "pitfalls": [
+      "递归结束条件要放在选择之前",
+      "撤销选择必须与选择一一对应",
+      "排序去重时跳过相邻重复元素的条件要写对"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }

@@ -52,5 +52,70 @@
   "exampleTestcases": "[1,2,5,3,4,null,6]\n[]\n[0]",
   "contentHtml": "<p>给你二叉树的根结点 <code>root</code> ，请你将它展开为一个单链表：</p>\n\n<ul>\n\t<li>展开后的单链表应该同样使用 <code>TreeNode</code> ，其中 <code>right</code> 子指针指向链表中下一个结点，而左子指针始终为 <code>null</code> 。</li>\n\t<li>展开后的单链表应该与二叉树 <a href=\"https://baike.baidu.com/item/%E5%85%88%E5%BA%8F%E9%81%8D%E5%8E%86/6442839?fr=aladdin\" target=\"_blank\"><strong>先序遍历</strong></a> 顺序相同。</li>\n</ul>\n\n<p> </p>\n\n<p><strong>示例 1：</strong></p>\n<img alt=\"\" src=\"assets/problems/flatten-binary-tree-to-linked-list/img-1.jpg\" style=\"width: 500px; height: 226px;\" />\n<pre>\n<strong>输入：</strong>root = [1,2,5,3,4,null,6]\n<strong>输出：</strong>[1,null,2,null,3,null,4,null,5,null,6]\n</pre>\n\n<p><strong>示例 2：</strong></p>\n\n<pre>\n<strong>输入：</strong>root = []\n<strong>输出：</strong>[]\n</pre>\n\n<p><strong>示例 3：</strong></p>\n\n<pre>\n<strong>输入：</strong>root = [0]\n<strong>输出：</strong>[0]\n</pre>\n\n<p> </p>\n\n<p><strong>提示：</strong></p>\n\n<ul>\n\t<li>树中结点数在范围 <code>[0, 2000]</code> 内</li>\n\t<li><code>-100 <= Node.val <= 100</code></li>\n</ul>\n\n<p> </p>\n\n<p><strong>进阶：</strong>你可以使用原地算法（<code>O(1)</code> 额外空间）展开这棵树吗？</p>\n",
   "contentEnHtml": "<p>Given the <code>root</code> of a binary tree, flatten the tree into a &quot;linked list&quot;:</p>\n\n<ul>\n\t<li>The &quot;linked list&quot; should use the same <code>TreeNode</code> class where the <code>right</code> child pointer points to the next node in the list and the <code>left</code> child pointer is always <code>null</code>.</li>\n\t<li>The &quot;linked list&quot; should be in the same order as a <a href=\"https://en.wikipedia.org/wiki/Tree_traversal#Pre-order,_NLR\" target=\"_blank\"><strong>pre-order</strong><strong> traversal</strong></a> of the binary tree.</li>\n</ul>\n\n<p>&nbsp;</p>\n<p><strong class=\"example\">Example 1:</strong></p>\n<img alt=\"\" src=\"https://assets.leetcode.com/uploads/2021/01/14/flaten.jpg\" style=\"width: 500px; height: 226px;\" />\n<pre>\n<strong>Input:</strong> root = [1,2,5,3,4,null,6]\n<strong>Output:</strong> [1,null,2,null,3,null,4,null,5,null,6]\n</pre>\n\n<p><strong class=\"example\">Example 2:</strong></p>\n\n<pre>\n<strong>Input:</strong> root = []\n<strong>Output:</strong> []\n</pre>\n\n<p><strong class=\"example\">Example 3:</strong></p>\n\n<pre>\n<strong>Input:</strong> root = [0]\n<strong>Output:</strong> [0]\n</pre>\n\n<p>&nbsp;</p>\n<p><strong>Constraints:</strong></p>\n\n<ul>\n\t<li>The number of nodes in the tree is in the range <code>[0, 2000]</code>.</li>\n\t<li><code>-100 &lt;= Node.val &lt;= 100</code></li>\n</ul>\n\n<p>&nbsp;</p>\n<strong>Follow up:</strong> Can you flatten the tree in-place (with <code>O(1)</code> extra space)?",
-  "hints": null
+  "hints": {
+    "optimal": {
+      "title": "方法一：寻找前驱节点",
+      "approach": "先序展开可以用递归或栈先建出新链，但进阶要求 O(1) 额外空间且原地修改。n <= 2000。\n先序中，左子树走完后的下一个节点就是原右子树的根。左子树最右节点恰是这段的前驱：把它的右指针接到原右子树，再把左子树整体接到当前右指针上并清空左指针。沿右链继续，无需递归栈。\n先序遍历的访问顺序是“根、左子树、右子树”，左子树最后一个节点访问完后，接着会访问根节点的右子树节点。\n因此，对于当前节点，如果其左子节点不为空，我们找到左子树的最右节点，作为前驱节点，然后将当前节点的右子节点赋给前驱节点的右子节点。然后将当前节点的左子节点赋给当前节点的右子节点，并将当前节点的左子节点置为空。然后将当前节点的右子节点作为下一个节点，继续处理，直至所有节点处理完毕。\npython\nDefinition for a binary tree node.\nclass TreeNode:\ndef __init__(self, val=0, left=None, right=None):\nself.val = val\nself.left = left\nself.right = right\nclass Solution:\ndef flatten(self, root: Optional[TreeNode]) -> None:\n\"\"\"\nDo not return anything, modify root in-place instead.\n\"\"\"\nwhile root:\nif root.left:\npre = root.left\nwhile pre.right:\npre = pre.right\npre.r",
+      "complexity": "时间复杂度 $O(n)$其中 $n$ 是树中节点的个数空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "javaSnippet": "/**\n * Definition for a binary tree node.\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n *     TreeNode() {}\n *     TreeNode(int val) { this.val = val; }\n *     TreeNode(int val, TreeNode left, TreeNode right) {\n *         this.val = val;\n *         this.left = left;\n *         this.right = right;\n *     }\n * }\n */\nclass Solution {\n    public void flatten(TreeNode root) {\n        while (root != null) {\n            if (root.left != null) {\n                // 找到当前节点左子树的最右节点\n                TreeNode pre = root.left;\n                while (pre.right != null) {\n                    pre = pre.right;\n                }\n\n                // 将左子树的最右节点指向原来的右子树\n                pre.right = root.right;\n\n                // 将当前节点指向左子树\n                root.right = root.left;\n                root.left = null;\n            }\n            root = root.right;\n        }\n    }\n}"
+    },
+    "memory": {
+      "title": "方法二",
+      "approach": "方法一已经是 O(1) 空间的前驱拼接。本写法只是同一过程的另一种实现：先取出左右孩子，再把左子树接到右侧、最右节点接回原右子树，沿右指针前进。\ngo\n/\n* Definition for a binary tree node.\n* type TreeNode struct {\n*     Val int\n*     Left *TreeNode\n*     Right *TreeNode\n* }\n*/\nfunc flatten(root *TreeNode) {\nfor root != nil {\nleft, right := root.Left, root.Right\nroot.Left = nil\nif left != nil {\nroot.Right = left\nfor left.Right != nil {\nleft = left.Right\n}\nleft.Right = right\n}\nroot = root.Right\n}\n}",
+      "complexity": "O(1)",
+      "javaSnippet": ""
+    },
+    "keywords": [
+      "二叉树展开为链表",
+      "栈",
+      "Tree",
+      "深度优先搜索",
+      "链表",
+      "二叉树",
+      "寻找前驱节点"
+    ],
+    "tech": [
+      {
+        "name": "栈与括号/表达式",
+        "detail": "后进先出天然匹配最近配对：括号匹配、直方图最大矩形、每日温度、字符串解码都依赖单调栈或普通栈保存待处理信息。"
+      },
+      {
+        "name": "单调栈",
+        "detail": "维护栈内元素单调递增或递减，弹出时往往就是答案结算时机；栈中保存下标比保存值更好用。"
+      },
+      {
+        "name": "DFS 框架",
+        "detail": "递归进入子树/邻居之前先处理当前节点，返回结果时用子树信息汇总。树上的路径和、最大路径、最近公共祖先都依赖后序返回值。"
+      },
+      {
+        "name": "访问标记",
+        "detail": "图中需要 visited 集合避免走回头路；树天然无环，但要注意空节点和越界条件。"
+      },
+      {
+        "name": "虚拟头节点",
+        "detail": "需要删除头节点或统一处理插入时，创建 dummy.next = head，操作完成后返回 dummy.next，能省大量特判。"
+      },
+      {
+        "name": "快慢指针",
+        "detail": "找中点、找环、找倒数第 k 个节点都能用快慢指针；相遇后让一个指针回头的“找环入口”技巧要会推导。"
+      }
+    ],
+    "pitfalls": [
+      "栈空时不要贸然 peek/pop",
+      "保存下标比保存值更容易算距离",
+      "记得最后清空剩余栈内容",
+      "处理头节点变化时使用虚拟头节点",
+      "快指针每次走两步前确认 next 非空"
+    ],
+    "references": [
+      {
+        "name": "Doocs LeetCode",
+        "url": "https://github.com/doocs/leetcode"
+      },
+      {
+        "name": "代码随想录",
+        "url": "https://github.com/youngyangyang04/leetcode-master"
+      }
+    ]
+  }
 }
