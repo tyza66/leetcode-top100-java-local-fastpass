@@ -80,15 +80,15 @@
   "hints": {
     "optimal": {
       "title": "方法一",
-      "approach": "已知 a/b 的值，查询其他比值。建图后 BFS/DFS 求路径乘积即可，变量多时并查集带权更省。\nw[x] 表示 x 相对根的比值。find 路径压缩时把权乘到根。合并 a/b=v 时按 w[pa]=w[b]\\cdot v/w[a] 接上。查询若不同根或不存在则 -1，否则 w[c]/w[d]。\npython\nclass Solution:\ndef calcEquation(\nself, equations: List[List[str]], values: List[float], queries: List[List[str]]\n) -> List[float]:\ndef find(x):\nif p[x] != x:\norigin = p[x]\np[x] = find(p[x])\nw[x] *= w[origin]\nreturn p[x]\nw = defaultdict(lambda: 1)\np = defaultdict()\nfor a, b in equations:\np[a], p[b] = a, b\nfor i, v in enumerate(values):\na, b = equations[i]\npa, pb = find(a), find(b)\nif pa == pb:\ncontinue\np[pa] = pb\nw[pa] = w[b] * v / w[a]\nreturn [\n-1 if c not in p or d not in p or find(c) != find(d) else w[c] / w[d]\nfor c, d in queries\n]\nj",
+      "approach": "已知 a/b 的值，查询其他比值。建图后 BFS/DFS 求路径乘积即可，变量多时并查集带权更省。\nw[x] 表示 x 相对根的比值。find 路径压缩时把权乘到根。合并 a/b=v 时按 w[pa]=w[b]\\cdot v/w[a] 接上。查询若不同根或不存在则 -1，否则 w[c]/w[d]。",
       "complexity": "按题面约束估计",
       "javaSnippet": "class Solution {\n    private Map<String, String> p;\n    private Map<String, Double> w;\n\n    public double[] calcEquation(\n        List<List<String>> equations, double[] values, List<List<String>> queries) {\n        int n = equations.size();\n        p = new HashMap<>();\n        w = new HashMap<>();\n        for (List<String> e : equations) {\n            p.put(e.get(0), e.get(0));\n            p.put(e.get(1), e.get(1));\n            w.put(e.get(0), 1.0);\n            w.put(e.get(1), 1.0);\n        }\n        for (int i = 0; i < n; ++i) {\n            List<String> e = equations.get(i);\n            String a = e.get(0), b = e.get(1);\n            String pa = find(a), pb = find(b);\n            if (Objects.equals(pa, pb)) {\n                continue;\n            }\n            p.put(pa, pb);\n            w.put(pa, w.get(b) * values[i] / w.get(a));\n        }\n        int m = queries.size();\n        double[] ans = new double[m];\n        for (int i = 0; i < m; ++i) {\n            String c = queries.get(i).get(0), d = queries.get(i).get(1);\n            ans[i] = !p.containsKey(c) || !p.containsKey(d) || !Objects.equals(find(c), find(d))\n                ? -1.0\n                : w.get(c) / w.get(d);\n        }\n        return ans;\n    }\n\n    private String find(String x) {\n        if (!Objects.equals(p.get(x), x)) {\n            String origin = p.get(x);\n            p.put(x, find(p.get(x)));\n            w.put(x, w.get(x) * w.get(origin));\n        }\n        return p.get(x);\n    }\n}"
     },
     "memory": {
-      "title": "对所有起点 DFS",
-      "approach": "把每个点/节点都当作起点走一遍搜索，用 visited 防止绕圈，每次搜索维护全局计数。",
-      "complexity": "O(n) 到 O(n^2) 取决于图结构",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一」拆成三步记忆：第一步定核心结构（DFS 框架、访问标记、BFS 框架、层次计数、并查集、图遍历），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "按题面约束估计",
+      "javaSnippet": "class Solution {\n    private Map<String, String> p;\n    private Map<String, Double> w;\n\n    public double[] calcEquation(\n        List<List<String>> equations, double[] values, List<List<String>> queries) {\n        int n = equations.size();\n        p = new HashMap<>();\n        w = new HashMap<>();\n        for (List<String> e : equations) {\n            p.put(e.get(0), e.get(0));\n            p.put(e.get(1), e.get(1));\n            w.put(e.get(0), 1.0);\n            w.put(e.get(1), 1.0);\n        }\n        for (int i = 0; i < n; ++i) {\n            List<String> e = equations.get(i);\n            String a = e.get(0), b = e.get(1);\n            String pa = find(a), pb = find(b);\n            if (Objects.equals(pa, pb)) {\n                continue;\n            }\n            p.put(pa, pb);\n            w.put(pa, w.get(b) * values[i] / w.get(a));\n        }\n        int m = queries.size();\n        double[] ans = new double[m];\n        for (int i = 0; i < m; ++i) {\n            String c = queries.get(i).get(0), d = queries.get(i).get(1);\n            ans[i] = !p.containsKey(c) || !p.containsKey(d) || !Objects.equals(find(c), find(d))\n                ? -1.0\n                : w.get(c) / w.get(d);\n        }\n        return ans;\n    }\n\n    private String find(String x) {\n        if (!Objects.equals(p.get(x), x)) {\n            String origin = p.get(x);\n            p.put(x, find(p.get(x)));\n            w.put(x, w.get(x) * w.get(origin));\n        }\n        return p.get(x);\n    }\n}"
     },
     "keywords": [
       "除法求值",
@@ -141,5 +141,31 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[[\"a\",\"b\"],[\"b\",\"c\"]]",
+        "[2.0,3.0]",
+        "[[\"a\",\"c\"],[\"b\",\"a\"],[\"a\",\"e\"],[\"a\",\"a\"],[\"x\",\"x\"]]"
+      ],
+      "expected": "[6.00000,0.50000,-1.00000,1.00000,-1.00000]"
+    },
+    {
+      "input": [
+        "[[\"a\",\"b\"],[\"b\",\"c\"],[\"bc\",\"cd\"]]",
+        "[1.5,2.5,5.0]",
+        "[[\"a\",\"c\"],[\"c\",\"b\"],[\"bc\",\"cd\"],[\"cd\",\"bc\"]]"
+      ],
+      "expected": "[3.75000,0.40000,5.00000,0.20000]"
+    },
+    {
+      "input": [
+        "[[\"a\",\"b\"]]",
+        "[0.5]",
+        "[[\"a\",\"b\"],[\"b\",\"a\"],[\"a\",\"c\"],[\"x\",\"y\"]]"
+      ],
+      "expected": "[0.50000,2.00000,-1.00000,-1.00000]"
+    }
+  ]
 }

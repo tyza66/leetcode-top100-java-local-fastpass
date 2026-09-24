@@ -42,15 +42,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：贪心",
-      "approach": "题目只关心最后一个下标是否可达。从每个位置展开全部跳跃，或用动态规划判断每个下标能否到达，最坏时间均为 O(n^2)。n <= 10^4 偏紧，且不必记下中间每一步如何跳。\n能到达的下标构成一段前缀：维护当前最远可达位置 mx，若出现 i > mx，则之后均不可达。\n因此从左扫描，用 i + \\textit{nums}[i] 更新 mx；若能扫完全部下标，终点即可达。\n我们用变量 mx 维护当前能够到达的最远下标，初始时 mx = 0。\n我们从左到右遍历数组，对于遍历到的每个位置 i，如果 mx \\lt i，说明当前位置无法到达，直接返回 false。否则，我们可以通过跳跃从位置 i 到达的最远位置为 i+nums[i]，我们用 i+nums[i] 更新 mx 的值，即 mx = \\max(mx, i + nums[i])。\n遍历结束，直接返回 true。\n相似题目：\n- 45. 跳跃游戏 II\n- 1024. 视频拼接\n- 1326. 灌溉花园的最少水龙头数目\npython\nclass Solution:\ndef canJump(self, nums: List[int]) -> bool:\nmx = 0\nfor i, x in enumerate(nums):\nif mx < i:\nreturn False\nmx = max(mx, i + x)\nreturn True\njava\nclass Solution {\npublic boolean canJump(int[] nums) {\nint mx = 0;\nfor (int i = 0; i < nums.length;",
-      "complexity": "时间复杂度 $O(n)$其中 $n$ 为数组的长度空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "approach": "题目只关心最后一个下标是否可达。从每个位置展开全部跳跃，或用动态规划判断每个下标能否到达，最坏时间均为 O(n^2)。n\n能到达的下标构成一段前缀：维护当前最远可达位置 mx，若出现 i > mx，则之后均不可达。\n因此从左扫描，用 i + nums[i] 更新 mx；若能扫完全部下标，终点即可达。\n我们用变量 mx 维护当前能够到达的最远下标，初始时 mx = 0。\n我们从左到右遍历数组，对于遍历到的每个位置 i，如果 mx \\lt i，说明当前位置无法到达，直接返回 false。否则，我们可以通过跳跃从位置 i 到达的最远位置为 i+nums[i]，我们用 i+nums[i] 更新 mx 的值，即 mx = max(mx, i + nums[i])。\n遍历结束，直接返回 true。\n相似题目：\n- 45. 跳跃游戏 II\n- 1024. 视频拼接\n- 1326. 灌溉花园的最少水龙头数目",
+      "complexity": "时间复杂度 O(n)其中 n 为数组的长度 / 空间复杂度 O(1)",
       "javaSnippet": "class Solution {\n    public boolean canJump(int[] nums) {\n        int mx = 0;\n        for (int i = 0; i < nums.length; ++i) {\n            if (mx < i) {\n                return false;\n            }\n            mx = Math.max(mx, i + nums[i]);\n        }\n        return true;\n    }\n}"
     },
     "memory": {
-      "title": "暴力枚举（兜底）",
-      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
-      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：贪心」拆成三步记忆：第一步定核心结构（贪心策略、贪心 + 排序、动态规划五步、状态压缩、记忆化搜索），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "时间复杂度 O(n)其中 n 为数组的长度 / 空间复杂度 O(1)",
+      "javaSnippet": "class Solution {\n    public boolean canJump(int[] nums) {\n        int mx = 0;\n        for (int i = 0; i < nums.length; ++i) {\n            if (mx < i) {\n                return false;\n            }\n            mx = Math.max(mx, i + nums[i]);\n        }\n        return true;\n    }\n}"
     },
     "keywords": [
       "跳跃游戏",
@@ -97,5 +97,19 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[2,3,1,1,4]"
+      ],
+      "expected": "true"
+    },
+    {
+      "input": [
+        "[3,2,1,0,4]"
+      ],
+      "expected": "false"
+    }
+  ]
 }

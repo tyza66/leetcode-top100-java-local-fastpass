@@ -43,14 +43,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：哈希表",
-      "approach": "若枚举所有数对，时间复杂度为 O(n^2)。在 n <= 10^4 的数据范围下可以接受，但题目进阶要求更优的算法。\n对当前元素 x，我们需要判断此前是否出现过 target - x。这是一个查找问题，使用哈希表可以将查找从线性扫描降至期望常数时间。遍历数组的同时，将「值 -> 下标」写入哈希表：遇到 x 时先查询 target - x 是否已经出现，若已出现则返回两个下标，否则再将 x 插入。\n插入的时机需要注意：必须先查询、再插入。若先插入再查询，当 nums = [3,3] 且 target = 6 时，会把同一个下标使用两次。先查后插，配到的一定是更早出现的下标。\n我们可以使用一个哈希表 \\textit{d} 来存储每个元素及其对应的索引。\n遍历数组 \\textit{nums}，对于当前元素 \\textit{nums}[i]，我们首先判断 \\textit{target} - \\textit{nums}[i] 是否在哈希表 \\textit{d} 中，如果在 \\textit{d} 中，说明 \\textit{target} 值已经找到，返回 \\textit{target} - \\textit{nums}[i] 的索引和 i 即可。\npython\nclass Solution:\ndef twoSum(self, nums: List[int], target: int) -> List[int]:\nd = {}\nfor i, x in enumerate(nums):\nif (y := target - x) in d:\nreturn [d[y], i]\nd[x] = i\nja",
-      "complexity": "时间复杂度 为 $O(n^2)$在 $n \\le 10^4$ 的数据范围下可以接受但题目进阶要求更优的算法 / 空间复杂度 $O(n)$，其中 $n$ 为数组 $\\textit{nums}$ 的长度",
+      "approach": "若枚举所有数对，时间复杂度为 O(n^2)。在 n\n对当前元素 x，我们需要判断此前是否出现过 target - x。这是一个查找问题，使用哈希表可以将查找从线性扫描降至期望常数时间。遍历数组的同时，将「值 -> 下标」写入哈希表：遇到 x 时先查询 target - x 是否已经出现，若已出现则返回两个下标，否则再将 x 插入。\n插入的时机需要注意：必须先查询、再插入。若先插入再查询，当 nums = [3,3] 且 target = 6 时，会把同一个下标使用两次。先查后插，配到的一定是更早出现的下标。\n我们可以使用一个哈希表 d 来存储每个元素及其对应的索引。\n遍历数组 nums，对于当前元素 nums[i]，我们首先判断 target - nums[i] 是否在哈希表 d 中，如果在 d 中，说明 target 值已经找到，返回 target - nums[i] 的索引和 i 即可。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(n)，其中 n 为数组 nums 的长度",
       "javaSnippet": "class Solution {\n    public int[] twoSum(int[] nums, int target) {\n        Map<Integer, Integer> d = new HashMap<>();\n        for (int i = 0;; ++i) {\n            int x = nums[i];\n            int y = target - x;\n            if (d.containsKey(y)) {\n                return new int[] {d.get(y), i};\n            }\n            d.put(x, i);\n        }\n    }\n}"
     },
     "memory": {
-      "title": "暴力枚举（兜底）",
-      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
-      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
+      "title": "题解直出记忆版",
+      "approach": "优先背题解里这段最直白的 Java 实现：记住容器/指针/状态变量，主流程结束后补返回值与边界。想先保正确性时，可以先用文字里的兜底思路过一遍再优化。",
+      "complexity": "以代码注释与题解为准",
       "javaSnippet": "//使用哈希表方法2\npublic int[] twoSum(int[] nums, int target) {\n    Map<Integer, Integer> indexMap = new HashMap<>();\n    \n    for(int i = 0; i < nums.length; i++){\n        int balance = target - nums[i];  // 记录当前的目标值的余数\n        if(indexMap.containsKey(balance)){  // 查找当前的map中是否有满足要求的值\n            return new int []{i, indexMap.get(balance)}; //  如果有，返回目标值\n        } else{\n            indexMap.put(nums[i], i); //  如果没有，把访问过的元素和下标加入map中\n        }\n    }\n    return null;\n}"
     },
     "keywords": [
@@ -83,5 +83,28 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[2,7,11,15]",
+        "9"
+      ],
+      "expected": "[0,1]"
+    },
+    {
+      "input": [
+        "[3,2,4]",
+        "6"
+      ],
+      "expected": "[1,2]"
+    },
+    {
+      "input": [
+        "[3,3]",
+        "6"
+      ],
+      "expected": "[0,1]"
+    }
+  ]
 }

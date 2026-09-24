@@ -53,14 +53,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：DFS",
-      "approach": "若将网格中每个值为 1 的格子单独计为一座岛，则四连通的陆地会被重复计数。m,n <= 300，整图遍历可行，但须在同一次搜索中把同一连通块全部消掉。\n注意到上下左右相邻的陆地构成一个连通分量，从任一尚未访问的陆地出发即可覆盖整座岛。为此扫描每个格子，遇到 1 便启动 DFS，沿途把陆地改写为 0，每启动一次搜索将答案加一。\n我们可以使用深度优先搜索（DFS）来遍历每个岛屿。遍历网格中的每个单元格 (i, j)，如果该单元格的值为 '1'，则说明我们找到了一个新的岛屿。我们可以从该单元格开始进行 DFS，将与之相连的所有陆地单元格的值都标记为 '0'，以避免重复计数。每次找到一个新的岛屿时，我们将岛屿数量加 1。\npython\nclass Solution:\ndef numIslands(self, grid: List[List[str]]) -> int:\ndef dfs(i, j):\ngrid[i][j] = '0'\nfor a, b in pairwise(dirs):\nx, y = i + a, j + b\nif 0 <= x < m and 0 <= y < n and grid[x][y] == '1':\ndfs(x, y)\nans = 0\ndirs = (-1, 0, 1, 0, -1)\nm, n = len(grid), len(grid[0])\nfor i in range(m):\nfor j in range(n):\nif grid[i][j] == '1':\ndfs(i, j)\nans += 1\nreturn ans\njava\nclass Solutio",
-      "complexity": "时间复杂度 $O(m \\times n)$空间复杂度 $O(m \\times n)$其中 $m$ 和 $n$ 分别为网格的行数和列数 / 空间复杂度 $O(m \\times n)$其中 $m$ 和 $n$ 分别为网格的行数和列数",
+      "approach": "若将网格中每个值为 1 的格子单独计为一座岛，则四连通的陆地会被重复计数。m,n\n注意到上下左右相邻的陆地构成一个连通分量，从任一尚未访问的陆地出发即可覆盖整座岛。为此扫描每个格子，遇到 1 便启动 DFS，沿途把陆地改写为 0，每启动一次搜索将答案加一。\n我们可以使用深度优先搜索（DFS）来遍历每个岛屿。遍历网格中的每个单元格 (i, j)，如果该单元格的值为 '1'，则说明我们找到了一个新的岛屿。我们可以从该单元格开始进行 DFS，将与之相连的所有陆地单元格的值都标记为 '0'，以避免重复计数。每次找到一个新的岛屿时，我们将岛屿数量加 1。",
+      "complexity": "时间复杂度 O(m x n) / 空间复杂度 O(m x n)其中 m 和 n 分别为网格的行数和列数",
       "javaSnippet": "class Solution {\n    private char[][] grid;\n    private int m;\n    private int n;\n\n    public int numIslands(char[][] grid) {\n        m = grid.length;\n        n = grid[0].length;\n        this.grid = grid;\n        int ans = 0;\n        for (int i = 0; i < m; ++i) {\n            for (int j = 0; j < n; ++j) {\n                if (grid[i][j] == '1') {\n                    dfs(i, j);\n                    ++ans;\n                }\n            }\n        }\n        return ans;\n    }\n\n    private void dfs(int i, int j) {\n        grid[i][j] = '0';\n        int[] dirs = {-1, 0, 1, 0, -1};\n        for (int k = 0; k < 4; ++k) {\n            int x = i + dirs[k];\n            int y = j + dirs[k + 1];\n            if (x >= 0 && x < m && y >= 0 && y < n && grid[x][y] == '1') {\n                dfs(x, y);\n            }\n        }\n    }\n}"
     },
     "memory": {
       "title": "方法二：BFS",
-      "approach": "方法一已按连通分量计数，递归深度在最坏情况下可达 O(mn)。同一四连通定义下，用队列按层扩展邻接陆地，同样能一次性抹掉一座岛。\n扫描顺序与方法一相同，仅将递归改为显式 BFS，空间仍由队列规模决定。\n我们也可以使用广度优先搜索（BFS）来遍历每个岛屿。遍历网格中的每个单元格 (i, j)，如果该单元格的值为 '1'，则说明我们找到了一个新的岛屿。我们可以从该单元格开始进行 BFS，将与之相连的所有陆地单元格的值都标记为 '0'，以避免重复计数。每次找到一个新的岛屿时，我们将岛屿数量加 1。\nBFS 的具体过程如下：\n1. 将起始单元格 (i, j) 入队，并将其值标记为 '0'。\n2. 当队列不为空时，执行以下操作：\n- 出队一个单元格 p。\n- 遍历 p 的四个相邻单元格 (x, y)，如果 (x, y) 在网格范围内且值为 '1'，则将其入队并将其值标记为 '0'。\npython\nclass Solution:\ndef numIslands(self, grid: List[List[str]]) -> int:\ndef bfs(i, j):\ngrid[i][j] = '0'\nq = deque([(i, j)])\nwhile q:\ni, j = q.popleft()\nfor a, b in pairwise(dirs):\nx, y = i + a, j + b\nif 0 <= x < m and 0 <= y < n and grid[x][y] == '1':\nq.append((x, y))\ngrid[x][y] = 0\nans = 0\ndirs = (-1, 0",
-      "complexity": "时间复杂度 $O(m \\times n)$空间复杂度 $O(m \\times n)$其中 $m$ 和 $n$ 分别为网格的行数和列数 / 空间复杂度 $O(m \\times n)$其中 $m$ 和 $n$ 分别为网格的行数和列数",
+      "approach": "方法一已按连通分量计数，递归深度在最坏情况下可达 O(mn)。同一四连通定义下，用队列按层扩展邻接陆地，同样能一次性抹掉一座岛。\n扫描顺序与方法一相同，仅将递归改为显式 BFS，空间仍由队列规模决定。\n我们也可以使用广度优先搜索（BFS）来遍历每个岛屿。遍历网格中的每个单元格 (i, j)，如果该单元格的值为 '1'，则说明我们找到了一个新的岛屿。我们可以从该单元格开始进行 BFS，将与之相连的所有陆地单元格的值都标记为 '0'，以避免重复计数。每次找到一个新的岛屿时，我们将岛屿数量加 1。\nBFS 的具体过程如下：\n1. 将起始单元格 (i, j) 入队，并将其值标记为 '0'。\n2. 当队列不为空时，执行以下操作：\n- 出队一个单元格 p。\n- 遍历 p 的四个相邻单元格 (x, y)，如果 (x, y) 在网格范围内且值为 '1'，则将其入队并将其值标记为 '0'。",
+      "complexity": "时间复杂度 O(m x n) / 空间复杂度 O(m x n)其中 m 和 n 分别为网格的行数和列数",
       "javaSnippet": "class Solution {\n    private char[][] grid;\n    private int m;\n    private int n;\n\n    public int numIslands(char[][] grid) {\n        m = grid.length;\n        n = grid[0].length;\n        this.grid = grid;\n        int ans = 0;\n        for (int i = 0; i < m; ++i) {\n            for (int j = 0; j < n; ++j) {\n                if (grid[i][j] == '1') {\n                    bfs(i, j);\n                    ++ans;\n                }\n            }\n        }\n        return ans;\n    }\n\n    private void bfs(int i, int j) {\n        grid[i][j] = '0';\n        Deque<int[]> q = new ArrayDeque<>();\n        q.offer(new int[] {i, j});\n        int[] dirs = {-1, 0, 1, 0, -1};\n        while (!q.isEmpty()) {\n            int[] p = q.poll();\n            for (int k = 0; k < 4; ++k) {\n                int x = p[0] + dirs[k];\n                int y = p[1] + dirs[k + 1];\n                if (x >= 0 && x < m && y >= 0 && y < n && grid[x][y] == '1') {\n                    q.offer(new int[] {x, y});\n                    grid[x][y] = '0';\n                }\n            }\n        }\n    }\n}"
     },
     "keywords": [
@@ -113,5 +113,19 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[[\"1\",\"1\",\"1\",\"1\",\"0\"],[\"1\",\"1\",\"0\",\"1\",\"0\"],[\"1\",\"1\",\"0\",\"0\",\"0\"],[\"0\",\"0\",\"0\",\"0\",\"0\"]]"
+      ],
+      "expected": "1"
+    },
+    {
+      "input": [
+        "[[\"1\",\"1\",\"0\",\"0\",\"0\"],[\"1\",\"1\",\"0\",\"0\",\"0\"],[\"0\",\"0\",\"1\",\"0\",\"0\"],[\"0\",\"0\",\"0\",\"1\",\"1\"]]"
+      ],
+      "expected": "3"
+    }
+  ]
 }

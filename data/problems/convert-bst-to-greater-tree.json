@@ -48,14 +48,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：递归",
-      "approach": "把每个节点改成「不小于它的所有值之和」。BST 中这些值正好是反中序（右-根-左）已经走过的节点。\n反中序累加到 s，再写回当前节点。右子树先于左子树处理，保证用到的都是更大的键。一次遍历完成。\n按照“右根左”的顺序，递归遍历二叉搜索树，累加遍历到的所有节点值到 s 中，然后每次赋值给对应的 node 节点。\npython\nDefinition for a binary tree node.\nclass TreeNode:\ndef __init__(self, val=0, left=None, right=None):\nself.val = val\nself.left = left\nself.right = right\nclass Solution:\ndef convertBST(self, root: TreeNode) -> TreeNode:\ndef dfs(root):\nnonlocal s\nif root is None:\nreturn\ndfs(root.right)\ns += root.val\nroot.val = s\ndfs(root.left)\ns = 0\ndfs(root)\nreturn root\njava\n/\n* Definition for a binary tree node.\n* public class TreeNode {\n*     int val;\n*     TreeNode left;\n*     TreeNode right;\n*     TreeNode() {}\n*     TreeNode(int val) { this.val ",
-      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(n)$其中 $n$ 是二叉搜索树的节点数 / 空间复杂度 $O(n)$其中 $n$ 是二叉搜索树的节点数",
+      "approach": "把每个节点改成「不小于它的所有值之和」。BST 中这些值正好是反中序（右-根-左）已经走过的节点。\n反中序累加到 s，再写回当前节点。右子树先于左子树处理，保证用到的都是更大的键。一次遍历完成。\n按照“右根左”的顺序，递归遍历二叉搜索树，累加遍历到的所有节点值到 s 中，然后每次赋值给对应的 node 节点。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(n)其中 n 是二叉搜索树的节点数",
       "javaSnippet": "/**\n * Definition for a binary tree node.\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n *     TreeNode() {}\n *     TreeNode(int val) { this.val = val; }\n *     TreeNode(int val, TreeNode left, TreeNode right) {\n *         this.val = val;\n *         this.left = left;\n *         this.right = right;\n *     }\n * }\n */\nclass Solution {\n    private int s;\n\n    public TreeNode convertBST(TreeNode root) {\n        dfs(root);\n        return root;\n    }\n\n    private void dfs(TreeNode root) {\n        if (root == null) {\n            return;\n        }\n        dfs(root.right);\n        s += root.val;\n        root.val = s;\n        dfs(root.left);\n    }\n}"
     },
     "memory": {
       "title": "方法二：Morris 遍历",
-      "approach": "递归反中序需要 O(h) 栈。Morris 用右子树的最左空指针暂存后继，把递归栈省掉。\n向右走时穿线，回到节点时累加并写回，再拆线向左。访问顺序仍是右-根-左，语义与方法一相同，额外空间为常数。\nMorris 遍历无需使用栈，时间复杂度 O(n)，空间复杂度为 O(1)。核心思想是：\n定义 s 表示二叉搜索树节点值累加和。遍历二叉树节点：\n1. 若当前节点 root 的右子树为空，将当前节点值添加至 s 中，更新当前节点值为 s，并将当前节点更新为 root.left。\n2. 若当前节点 root 的右子树不为空，找到右子树的最左节点 next（也即是 root 节点在中序遍历下的后继节点）：\n- 若后继节点 next 的左子树为空，将后继节点的左子树指向当前节点 root，并将当前节点更新为 root.right。\n- 若后继节点 next 的左子树不为空，将当前节点值添加 s 中，更新当前节点值为 s，然后将后继节点左子树指向空（即解除 next 与 root 的指向关系），并将当前节点更新为 root.left。\n3. 循环以上步骤，直至二叉树节点为空，遍历结束。\n4. 最后返回二叉搜索树根节点即可。\nMorris 反序中序遍历跟 Morris 中序遍历思路一致，只是将中序遍历的“左根右”变为“右根左”。\npython\nDefinition for a binary tree node.\nclass TreeNode:\ndef __init__(self, val=0, left=None, right=None):\nself.val = val\nself.left =",
-      "complexity": "时间复杂度 $O(n)$空间复杂度为 $O(1)$核心思想是： / 空间复杂度 为 $O(1)$核心思想是：",
+      "approach": "递归反中序需要 O(h) 栈。Morris 用右子树的最左空指针暂存后继，把递归栈省掉。\n向右走时穿线，回到节点时累加并写回，再拆线向左。访问顺序仍是右-根-左，语义与方法一相同，额外空间为常数。\nMorris 遍历无需使用栈，时间复杂度 O(n)，空间复杂度为 O(1)。核心思想是：\n定义 s 表示二叉搜索树节点值累加和。遍历二叉树节点：\n1. 若当前节点 root 的右子树为空，将当前节点值添加至 s 中，更新当前节点值为 s，并将当前节点更新为 root.left。\n2. 若当前节点 root 的右子树不为空，找到右子树的最左节点 next（也即是 root 节点在中序遍历下的后继节点）：\n- 若后继节点 next 的左子树为空，将后继节点的左子树指向当前节点 root，并将当前节点更新为 root.right。\n- 若后继节点 next 的左子树不为空，将当前节点值添加 s 中，更新当前节点值为 s，然后将后继节点左子树指向空（即解除 next 与 root 的指向关系），并将当前节点更新为 root.left。\n3. 循环以上步骤，直至二叉树节点为空，遍历结束。\n4. 最后返回二叉搜索树根节点即可。\nMorris 反序中序遍历跟 Morris 中序遍历思路一致，只是将中序遍历的“左根右”变为“右根左”。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 为 O(1)核心思想是：",
       "javaSnippet": "/**\n * Definition for a binary tree node.\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n *     TreeNode() {}\n *     TreeNode(int val) { this.val = val; }\n *     TreeNode(int val, TreeNode left, TreeNode right) {\n *         this.val = val;\n *         this.left = left;\n *         this.right = right;\n *     }\n * }\n */\nclass Solution {\n    public TreeNode convertBST(TreeNode root) {\n        int s = 0;\n        TreeNode node = root;\n        while (root != null) {\n            if (root.right == null) {\n                s += root.val;\n                root.val = s;\n                root = root.left;\n            } else {\n                TreeNode next = root.right;\n                while (next.left != null && next.left != root) {\n                    next = next.left;\n                }\n                if (next.left == null) {\n                    next.left = root;\n                    root = root.right;\n                } else {\n                    s += root.val;\n                    root.val = s;\n                    next.left = null;\n                    root = root.left;\n                }\n            }\n        }\n        return node;\n    }\n}"
     },
     "keywords": [
@@ -107,5 +107,19 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[4,1,6,0,2,5,7,null,null,null,3,null,null,null,8]"
+      ],
+      "expected": "[30,36,21,36,35,26,15,null,null,null,33,null,null,null,8]"
+    },
+    {
+      "input": [
+        "[0,null,1]"
+      ],
+      "expected": "[1,null,1]"
+    }
+  ]
 }

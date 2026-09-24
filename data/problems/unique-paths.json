@@ -46,14 +46,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：动态规划",
-      "approach": "机器人每步只能向右或向下。若从起点直接搜索全部路径，格点规模 m, n <= 100，路径条数可达组合数级别，同一格子会被反复走到，时间无法接受。\n注意到到达 (i, j) 的路径只可能来自上方或左方，且两类来源互不重叠。因此可以用 f[i][j] 记录走到该格的方案数，按行列顺序填表，保证转移所依赖的状态已经计算完毕。\n我们定义 f[i][j] 表示从左上角走到 (i, j) 的路径数量，初始时 f[0][0] = 1，答案为 f[m - 1][n - 1]。\n考虑 f[i][j]：\n- 如果 i \\gt 0，那么 f[i][j] 可以从 f[i - 1][j] 走一步到达，因此 f[i][j] = f[i][j] + f[i - 1][j]；\n- 如果 j \\gt 0，那么 f[i][j] 可以从 f[i][j - 1] 走一步到达，因此 f[i][j] = f[i][j] + f[i][j - 1]。\n因此，我们有如下的状态转移方程：\nf[i][j] = \\begin{cases}\n1 & i = 0, j = 0 \\\\\nf[i - 1][j] + f[i][j - 1] & \\textit{otherwise}\n\\end{cases}\n最终的答案即为 f[m - 1][n - 1]。\npython\nclass Solution:\ndef uniquePaths(self, m: int, n: int) -> int:\nf = [[0] * n for _ in range(m)]\nf[0][0] = 1\nfor i in range(m):\nfor j in rang",
-      "complexity": "时间复杂度 $O(m \\times n)$空间复杂度 $O(m \\times n)$其中 $m$ 和 $n$ 分别是网格的行数和列数 / 空间复杂度 $O(m \\times n)$其中 $m$ 和 $n$ 分别是网格的行数和列数",
+      "approach": "机器人每步只能向右或向下。若从起点直接搜索全部路径，格点规模 m, n\n注意到到达 (i, j) 的路径只可能来自上方或左方，且两类来源互不重叠。因此可以用 f[i][j] 记录走到该格的方案数，按行列顺序填表，保证转移所依赖的状态已经计算完毕。\n我们定义 f[i][j] 表示从左上角走到 (i, j) 的路径数量，初始时 f[0][0] = 1，答案为 f[m - 1][n - 1]。\n考虑 f[i][j]：\n- 如果 i \\gt 0，那么 f[i][j] 可以从 f[i - 1][j] 走一步到达，因此 f[i][j] = f[i][j] + f[i - 1][j]；\n- 如果 j \\gt 0，那么 f[i][j] 可以从 f[i][j - 1] 走一步到达，因此 f[i][j] = f[i][j] + f[i][j - 1]。\n因此，我们有如下的状态转移方程：\nf[i][j] =\n最终的答案即为 f[m - 1][n - 1]。",
+      "complexity": "时间复杂度 O(m x n) / 空间复杂度 O(m x n)其中 m 和 n 分别是网格的行数和列数",
       "javaSnippet": "class Solution {\n    public int uniquePaths(int m, int n) {\n        var f = new int[m][n];\n        f[0][0] = 1;\n        for (int i = 0; i < m; ++i) {\n            for (int j = 0; j < n; ++j) {\n                if (i > 0) {\n                    f[i][j] += f[i - 1][j];\n                }\n                if (j > 0) {\n                    f[i][j] += f[i][j - 1];\n                }\n            }\n        }\n        return f[m - 1][n - 1];\n    }\n}"
     },
     "memory": {
       "title": "方法二：动态规划（预处理边界）",
-      "approach": "方法一对每个格子都要判断上方、左方是否存在，边界处反复走分支。第一行只能从左侧到达、第一列只能从上方到达，这些格子的路径数均为 1。预先填好边界后，内部格子即可直接相加，实现更为简洁，渐近复杂度不变。\n先把第一行、第一列全部置为 1，再只填内部格子 f[i][j] = f[i-1][j] + f[i][j-1]。时间和空间复杂度仍为 O(m x n)。\npython\nclass Solution:\ndef uniquePaths(self, m: int, n: int) -> int:\nf = [[1] * n for _ in range(m)]\nfor i in range(1, m):\nfor j in range(1, n):\nf[i][j] = f[i - 1][j] + f[i][j - 1]\nreturn f[-1][-1]\njava\nclass Solution {\npublic int uniquePaths(int m, int n) {\nvar f = new int[m][n];\nfor (var g : f) {\nArrays.fill(g, 1);\n}\nfor (int i = 1; i < m; ++i) {\nfor (int j = 1; j < n; j++) {\nf[i][j] = f[i - 1][j] + f[i][j - 1];\n}\n}\nreturn f[m - 1][n - 1];\n}\n}\ncpp\nclass Solution {\npublic:\nint uniquePaths(int m, int n) {\nvector<vect",
-      "complexity": "空间复杂度 仍为 $O(m \\times n)$",
+      "approach": "方法一对每个格子都要判断上方、左方是否存在，边界处反复走分支。第一行只能从左侧到达、第一列只能从上方到达，这些格子的路径数均为 1。预先填好边界后，内部格子即可直接相加，实现更为简洁，渐近复杂度不变。\n先把第一行、第一列全部置为 1，再只填内部格子 f[i][j] = f[i-1][j] + f[i][j-1]。时间和空间复杂度仍为 O(m x n)。",
+      "complexity": "空间复杂度 仍为 O(m x n)",
       "javaSnippet": "class Solution {\n    public int uniquePaths(int m, int n) {\n        var f = new int[m][n];\n        for (var g : f) {\n            Arrays.fill(g, 1);\n        }\n        for (int i = 1; i < m; ++i) {\n            for (int j = 1; j < n; j++) {\n                f[i][j] = f[i - 1][j] + f[i][j - 1];\n            }\n        }\n        return f[m - 1][n - 1];\n    }\n}"
     },
     "keywords": [
@@ -99,5 +99,21 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "3",
+        "7"
+      ],
+      "expected": "28"
+    },
+    {
+      "input": [
+        "3",
+        "2"
+      ],
+      "expected": "3"
+    }
+  ]
 }

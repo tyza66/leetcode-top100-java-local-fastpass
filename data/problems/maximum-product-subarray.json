@@ -37,15 +37,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：动态规划",
-      "approach": "最大子数组和可以用 Kadane，乘积则不同：负数会让最大变最小、最小变最大，零会切断。n<= 2x 10^4。同时维护以当前位置结尾的最大与最小乘积，新数乘上两者或单独成段，三者取最大/最小。答案是扫描过程中最大乘积的最大值。\n我们定义两个变量 f 和 g，其中 f 表示以 nums[i] 结尾的乘积最大子数组的乘积，而 g 表示以 nums[i] 结尾的乘积最小子数组的乘积。初始时 f 和 g 都等于 nums[0]。答案为所有 f 中的最大值。\n从 i=1 开始，我们可以考虑将第 i 个数 nums[i] 添加到前面的乘积最大或者乘积最小的子数组乘积的后面，或者单独作为一个子数组乘积（即此时子数组长度只有 1）。我们将此前的乘积最大值记为 ff，乘积最小值记为 gg，那么 f = \\max(f, ff x nums[i], gg x nums[i])，而 g = \\min(g, ff x nums[i], gg x nums[i])。接下来，我们更新答案 ans = \\max(ans, f)，然后继续计算下一个位置。\n最后的答案即为 ans。\npython\nclass Solution:\ndef maxProduct(self, nums: List[int]) -> int:\nans = f = g = nums[0]\nfor x in nums[1:]:\nff, gg = f, g\nf = max(x, ff * x, gg * x)\ng = min(x, ff * x, gg * x)\nans = max(ans, f)\nreturn ans\njava\nclass ",
-      "complexity": "时间复杂度 $O(n)$其中 $n$ 是数组 $nums$ 的长度我们只需要遍历数组一次即可求得答案空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "approach": "最大子数组和可以用 Kadane，乘积则不同：负数会让最大变最小、最小变最大，零会切断。n<= 2x 10^4。同时维护以当前位置结尾的最大与最小乘积，新数乘上两者或单独成段，三者取最大/最小。答案是扫描过程中最大乘积的最大值。\n我们定义两个变量 f 和 g，其中 f 表示以 nums[i] 结尾的乘积最大子数组的乘积，而 g 表示以 nums[i] 结尾的乘积最小子数组的乘积。初始时 f 和 g 都等于 nums[0]。答案为所有 f 中的最大值。\n从 i=1 开始，我们可以考虑将第 i 个数 nums[i] 添加到前面的乘积最大或者乘积最小的子数组乘积的后面，或者单独作为一个子数组乘积（即此时子数组长度只有 1）。我们将此前的乘积最大值记为 ff，乘积最小值记为 gg，那么 f = max(f, ff x nums[i], gg x nums[i])，而 g = min(g, ff x nums[i], gg x nums[i])。接下来，我们更新答案 ans = max(ans, f)，然后继续计算下一个位置。\n最后的答案即为 ans。",
+      "complexity": "时间复杂度 O(n)其中 n 是数组 nums 的长度我们只需要遍历数组一次即可求得答案 / 空间复杂度 O(1)",
       "javaSnippet": "class Solution {\n    public int maxProduct(int[] nums) {\n        int f = nums[0], g = nums[0], ans = nums[0];\n        for (int i = 1; i < nums.length; ++i) {\n            int ff = f, gg = g;\n            f = Math.max(nums[i], Math.max(ff * nums[i], gg * nums[i]));\n            g = Math.min(nums[i], Math.min(ff * nums[i], gg * nums[i]));\n            ans = Math.max(ans, f);\n        }\n        return ans;\n    }\n}"
     },
     "memory": {
-      "title": "暴力枚举（兜底）",
-      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
-      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：动态规划」拆成三步记忆：第一步定核心结构（动态规划五步、状态压缩、记忆化搜索），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "时间复杂度 O(n)其中 n 是数组 nums 的长度我们只需要遍历数组一次即可求得答案 / 空间复杂度 O(1)",
+      "javaSnippet": "class Solution {\n    public int maxProduct(int[] nums) {\n        int f = nums[0], g = nums[0], ans = nums[0];\n        for (int i = 1; i < nums.length; ++i) {\n            int ff = f, gg = g;\n            f = Math.max(nums[i], Math.max(ff * nums[i], gg * nums[i]));\n            g = Math.min(nums[i], Math.min(ff * nums[i], gg * nums[i]));\n            ans = Math.max(ans, f);\n        }\n        return ans;\n    }\n}"
     },
     "keywords": [
       "乘积最大子数组",
@@ -81,5 +81,19 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[2,3,-2,4]"
+      ],
+      "expected": "6"
+    },
+    {
+      "input": [
+        "[-2,0,-1]"
+      ],
+      "expected": "0"
+    }
+  ]
 }

@@ -75,15 +75,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：双指针",
-      "approach": "找两链表第一个公共节点。哈希记下一条链再扫另一条是 O(m+n) 时间、O(m) 空间；进阶要 O(1) 内存。m,n<= 3x 10^4。\n两条指针走完各自的链后改走另一条，路程都是 a+b，若有交点则在交点相遇，否则同时走到空。不必先算长度。\n我们使用两个指针 a, b 分别指向两个链表 \\textit{headA}, \\textit{headB}。\n同时遍历链表，当 a 到达链表 \\textit{headA} 的末尾时，重新定位到链表 \\textit{headB} 的头节点；当 b 到达链表 \\textit{headB} 的末尾时，重新定位到链表 \\textit{headA} 的头节点。\n若两指针相遇，所指向的结点就是第一个公共节点。若没相遇，说明两链表无公共节点，此时两个指针都指向 null，返回其中一个即可。\npython\nDefinition for singly-linked list.\nclass ListNode:\ndef __init__(self, x):\nself.val = x\nself.next = None\nclass Solution:\ndef getIntersectionNode(self, headA: ListNode, headB: ListNode) -> ListNode:\na, b = headA, headB\nwhile a != b:\na = a.next if a else headB\nb = b.next if b else headA\nreturn a\njava\n/\n* Definition for singly-lin",
-      "complexity": "时间复杂度 $O(m + n)$其中 $m$ 和 $n$ 分别是链表 $\\textit{headA}$ 和 $\\textit{headB}$ 的长度空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "approach": "找两链表第一个公共节点。哈希记下一条链再扫另一条是 O(m+n) 时间、O(m) 空间；进阶要 O(1) 内存。m,n\n两条指针走完各自的链后改走另一条，路程都是 a+b，若有交点则在交点相遇，否则同时走到空。不必先算长度。\n我们使用两个指针 a, b 分别指向两个链表 headA, headB。\n同时遍历链表，当 a 到达链表 headA 的末尾时，重新定位到链表 headB 的头节点；当 b 到达链表 headB 的末尾时，重新定位到链表 headA 的头节点。\n若两指针相遇，所指向的结点就是第一个公共节点。若没相遇，说明两链表无公共节点，此时两个指针都指向 null，返回其中一个即可。",
+      "complexity": "时间复杂度 O(m + n)其中 m 和 n 分别是链表 headA 和 headB 的长度 / 空间复杂度 O(1)",
       "javaSnippet": "/**\n * Definition for singly-linked list.\n * public class ListNode {\n *     int val;\n *     ListNode next;\n *     ListNode(int x) {\n *         val = x;\n *         next = null;\n *     }\n * }\n */\npublic class Solution {\n    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {\n        ListNode a = headA, b = headB;\n        while (a != b) {\n            a = a == null ? headB : a.next;\n            b = b == null ? headA : b.next;\n        }\n        return a;\n    }\n}"
     },
     "memory": {
-      "title": "暴力查找（兜底）",
-      "approach": "第一层枚举一个元素，第二层线性扫描找目标对应元素；每轮用下标与元素关系做去重。",
-      "complexity": "O(n^2) 时间 / O(1) 空间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：双指针」拆成三步记忆：第一步定核心结构（HashMap / HashSet、冲突与扩容、虚拟头节点、快慢指针、双指针、边界处理），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "时间复杂度 O(m + n)其中 m 和 n 分别是链表 headA 和 headB 的长度 / 空间复杂度 O(1)",
+      "javaSnippet": "/**\n * Definition for singly-linked list.\n * public class ListNode {\n *     int val;\n *     ListNode next;\n *     ListNode(int x) {\n *         val = x;\n *         next = null;\n *     }\n * }\n */\npublic class Solution {\n    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {\n        ListNode a = headA, b = headB;\n        while (a != b) {\n            a = a == null ? headB : a.next;\n            b = b == null ? headA : b.next;\n        }\n        return a;\n    }\n}"
     },
     "keywords": [
       "相交链表",
@@ -134,5 +134,37 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "8",
+        "[4,1,8,4,5]",
+        "[5,6,1,8,4,5]",
+        "2",
+        "3"
+      ],
+      "expected": "[8,4,5]"
+    },
+    {
+      "input": [
+        "2",
+        "[1,9,1,2,4]",
+        "[3,2,4]",
+        "3",
+        "1"
+      ],
+      "expected": "[2,4]"
+    },
+    {
+      "input": [
+        "0",
+        "[2,6,4]",
+        "[1,5]",
+        "3",
+        "2"
+      ],
+      "expected": "[]"
+    }
+  ]
 }

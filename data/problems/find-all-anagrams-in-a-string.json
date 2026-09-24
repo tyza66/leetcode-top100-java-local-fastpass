@@ -46,14 +46,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：滑动窗口",
-      "approach": "异位词是字母计数相同的等长子串。枚举每个起点再排序比较过慢。\n固定长度 n=|p| 的窗口，维护窗口计数与 p 的计数，相等则记录左端。先放入前 n-1 个字符，右端每进一步比较并弹出左端。\n窗口长度始终为 n，只需比较两个长度为 26 的计数。\n我们不妨设字符串 s 的长度为 m，字符串 p 的长度为 n。\n如果 m \\lt n，那么 s 中不可能存在任何一个子串同 p 为异位词，返回空列表即可。\n当 m >= n 时，我们可以使用一个固定长度为 n 的滑动窗口来维护 s 的子串。为了判断子串是否为 p 的异位词，我们可以用一个固定长度为 26 的数组 cnt1 记录 p 中每个字母的出现次数，再用另一个数组 cnt2 记录当前滑动窗口中每个字母的出现次数，如果这两个数组相同，那么当前滑动窗口的子串就是 p 的异位词，我们记录下起始位置。\npython\nclass Solution:\ndef findAnagrams(self, s: str, p: str) -> List[int]:\nm, n = len(s), len(p)\nans = []\nif m < n:\nreturn ans\ncnt1 = Counter(p)\ncnt2 = Counter(s[: n - 1])\nfor i in range(n - 1, m):\ncnt2[s[i]] += 1\nif cnt1 == cnt2:\nans.append(i - n + 1)\ncnt2[s[i - n + 1]] -= 1\nreturn ans\njava\nclass Solution {\npublic List<I",
-      "complexity": "时间复杂度 $O(m \\times C)$空间复杂度 $O(C)$其中 $m$ 是字符串 $s$ 的长度；而 $C$ 是字符集大小在本题中字符集为所有小写字母所以 $C = 26$ / 空间复杂度 $O(C)$其中 $m$ 是字符串 $s$ 的长度；而 $C$ 是字符集大小，在本题中字符集为所有小写字母，所以 $C = 26$",
+      "approach": "异位词是字母计数相同的等长子串。枚举每个起点再排序比较过慢。\n固定长度 n=|p| 的窗口，维护窗口计数与 p 的计数，相等则记录左端。先放入前 n-1 个字符，右端每进一步比较并弹出左端。\n窗口长度始终为 n，只需比较两个长度为 26 的计数。\n我们不妨设字符串 s 的长度为 m，字符串 p 的长度为 n。\n如果 m \\lt n，那么 s 中不可能存在任何一个子串同 p 为异位词，返回空列表即可。\n当 m >= n 时，我们可以使用一个固定长度为 n 的滑动窗口来维护 s 的子串。为了判断子串是否为 p 的异位词，我们可以用一个固定长度为 26 的数组 cnt1 记录 p 中每个字母的出现次数，再用另一个数组 cnt2 记录当前滑动窗口中每个字母的出现次数，如果这两个数组相同，那么当前滑动窗口的子串就是 p 的异位词，我们记录下起始位置。",
+      "complexity": "时间复杂度 O(m x C) / 空间复杂度 O(C)其中 m 是字符串 s 的长度；而 C 是字符集大小，在本题中字符集为所有小写字母，所以 C = 26",
       "javaSnippet": "class Solution {\n    public List<Integer> findAnagrams(String s, String p) {\n        int m = s.length(), n = p.length();\n        List<Integer> ans = new ArrayList<>();\n        if (m < n) {\n            return ans;\n        }\n        int[] cnt1 = new int[26];\n        for (int i = 0; i < n; ++i) {\n            ++cnt1[p.charAt(i) - 'a'];\n        }\n        int[] cnt2 = new int[26];\n        for (int i = 0; i < n - 1; ++i) {\n            ++cnt2[s.charAt(i) - 'a'];\n        }\n        for (int i = n - 1; i < m; ++i) {\n            ++cnt2[s.charAt(i) - 'a'];\n            if (Arrays.equals(cnt1, cnt2)) {\n                ans.add(i - n + 1);\n            }\n            --cnt2[s.charAt(i - n + 1) - 'a'];\n        }\n        return ans;\n    }\n}"
     },
     "memory": {
       "title": "方法二：双指针（滑动窗口优化）",
-      "approach": "方法一每次比较整个计数数组。改为右端加入后，若某字母超出 p 的配额则左端收缩，窗口内每字母都不超额。此时长度恰为 n 即异位词。\n比较从 O(|\\Sigma|) 变成检查长度，滑动过程仍是线性。\n我们可以对方法一进行优化，与方法一类似，我们用一个固定长度为 26 的数组 cnt1 记录 p 中每个字母的出现次数，用另一个数组 cnt2 记录当前滑动窗口中每个字母的出现次数，用指针 i 和 j 分别指向滑动窗口的左右边界。每一次移动指针 j，将 cnt2[s[j]] 的值加 1，如果当前 cnt2[s[j]] 的值大于 cnt1[s[j]]，则将指针 i 不断右移，直到 cnt2[s[j]] 的值不大于 cnt1[s[j]]。此时，如果滑动窗口的长度等于 p 的长度，我们就找到了一个异位词，将起始位置加入答案。继续移动指针 j，重复上述操作，直到指针 j 移动到 s 的末尾。\npython\nclass Solution:\ndef findAnagrams(self, s: str, p: str) -> List[int]:\nm, n = len(s), len(p)\nans = []\nif m < n:\nreturn ans\ncnt1 = Counter(p)\ncnt2 = Counter()\nj = 0\nfor i, c in enumerate(s):\ncnt2[c] += 1\nwhile cnt2[c] > cnt1[c]:\ncnt2[s[j]] -= 1\nj += 1\nif i - j + 1 == n:\nans.append(j)\nreturn ans\njava\nc",
-      "complexity": "时间复杂度 $(m + n)$空间复杂度 $O(C)$其中 $m$ 和 $n$ 分别是字符串 $s$ 和 $p$ 的长度；而 $C$ 是字符集大小在本题中字符集为所有小写字母所以 $C = 26$ / 空间复杂度 $O(C)$其中 $m$ 和 $n$ 分别是字符串 $s$ 和 $p$ 的长度；而 $C$ 是字符集大小，在本题中字符集为所有小写字母，所以 $C = 26$",
+      "approach": "方法一每次比较整个计数数组。改为右端加入后，若某字母超出 p 的配额则左端收缩，窗口内每字母都不超额。此时长度恰为 n 即异位词。\n比较从 O(|\\Sigma|) 变成检查长度，滑动过程仍是线性。\n我们可以对方法一进行优化，与方法一类似，我们用一个固定长度为 26 的数组 cnt1 记录 p 中每个字母的出现次数，用另一个数组 cnt2 记录当前滑动窗口中每个字母的出现次数，用指针 i 和 j 分别指向滑动窗口的左右边界。每一次移动指针 j，将 cnt2[s[j]] 的值加 1，如果当前 cnt2[s[j]] 的值大于 cnt1[s[j]]，则将指针 i 不断右移，直到 cnt2[s[j]] 的值不大于 cnt1[s[j]]。此时，如果滑动窗口的长度等于 p 的长度，我们就找到了一个异位词，将起始位置加入答案。继续移动指针 j，重复上述操作，直到指针 j 移动到 s 的末尾。",
+      "complexity": "时间复杂度 (m + n) / 空间复杂度 O(C)其中 m 和 n 分别是字符串 s 和 p 的长度；而 C 是字符集大小，在本题中字符集为所有小写字母，所以 C = 26",
       "javaSnippet": "class Solution {\n    public List<Integer> findAnagrams(String s, String p) {\n        int m = s.length(), n = p.length();\n        List<Integer> ans = new ArrayList<>();\n        if (m < n) {\n            return ans;\n        }\n        int[] cnt1 = new int[26];\n        for (int i = 0; i < n; ++i) {\n            ++cnt1[p.charAt(i) - 'a'];\n        }\n        int[] cnt2 = new int[26];\n        for (int i = 0, j = 0; i < m; ++i) {\n            int k = s.charAt(i) - 'a';\n            ++cnt2[k];\n            while (cnt2[k] > cnt1[k]) {\n                --cnt2[s.charAt(j++) - 'a'];\n            }\n            if (i - j + 1 == n) {\n                ans.add(j);\n            }\n        }\n        return ans;\n    }\n}"
     },
     "keywords": [
@@ -105,5 +105,21 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "\"cbaebabacd\"",
+        "\"abc\""
+      ],
+      "expected": "[0,6]"
+    },
+    {
+      "input": [
+        "\"abab\"",
+        "\"ab\""
+      ],
+      "expected": "[0,1,2]"
+    }
+  ]
 }

@@ -54,15 +54,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：归并排序",
-      "approach": "链表排序，进阶要求 O(n\\log n) 时间、常数空间。随机访问缺失，快排交换不方便；n<= 5x 10^4。归并只需要顺序访问：快慢指针断开中点，递归排序两半再线性合并。递归栈是 O(\\log n)，满足时间要求。\n我们可以用归并排序的思想来解决。\n首先，我们利用快慢指针找到链表的中点，将链表从中点处断开，形成两个独立的子链表 \\textit{l1} 和 \\textit{l2}。\n然后，我们递归地对 \\textit{l1} 和 \\textit{l2} 进行排序，最后将 \\textit{l1} 和 \\textit{l2} 合并为一个有序链表。\npython\nDefinition for singly-linked list.\nclass ListNode:\ndef __init__(self, val=0, next=None):\nself.val = val\nself.next = next\nclass Solution:\ndef sortList(self, head: Optional[ListNode]) -> Optional[ListNode]:\nif head is None or head.next is None:\nreturn head\nslow, fast = head, head.next\nwhile fast and fast.next:\nslow = slow.next\nfast = fast.next.next\nl1, l2 = head, slow.next\nslow.next = None\nl1, l2 = self.sortList(l1)",
-      "complexity": "时间复杂度 $O(n \\times \\log n)$空间复杂度 $O(\\log n)$其中 $n$ 是链表的长度 / 空间复杂度 $O(\\log n)$其中 $n$ 是链表的长度",
+      "approach": "链表排序，进阶要求 O(n\\log n) 时间、常数空间。随机访问缺失，快排交换不方便；n<= 5x 10^4。归并只需要顺序访问：快慢指针断开中点，递归排序两半再线性合并。递归栈是 O(\\log n)，满足时间要求。\n我们可以用归并排序的思想来解决。\n首先，我们利用快慢指针找到链表的中点，将链表从中点处断开，形成两个独立的子链表 l1 和 l2。\n然后，我们递归地对 l1 和 l2 进行排序，最后将 l1 和 l2 合并为一个有序链表。",
+      "complexity": "时间复杂度 O(n x \\log n) / 空间复杂度 O(\\log n)其中 n 是链表的长度",
       "javaSnippet": "/**\n * Definition for singly-linked list.\n * public class ListNode {\n *     int val;\n *     ListNode next;\n *     ListNode() {}\n *     ListNode(int val) { this.val = val; }\n *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }\n * }\n */\nclass Solution {\n    public ListNode sortList(ListNode head) {\n        if (head == null || head.next == null) {\n            return head;\n        }\n        ListNode slow = head, fast = head.next;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        ListNode l1 = head, l2 = slow.next;\n        slow.next = null;\n        l1 = sortList(l1);\n        l2 = sortList(l2);\n        ListNode dummy = new ListNode();\n        ListNode tail = dummy;\n        while (l1 != null && l2 != null) {\n            if (l1.val <= l2.val) {\n                tail.next = l1;\n                l1 = l1.next;\n            } else {\n                tail.next = l2;\n                l2 = l2.next;\n            }\n            tail = tail.next;\n        }\n        tail.next = l1 != null ? l1 : l2;\n        return dummy.next;\n    }\n}"
     },
     "memory": {
-      "title": "转数组再处理",
-      "approach": "先遍历链表把值放入数组，用数组完成判断或计算，再按需重建链表；逻辑直观，面试中可先给该解法。",
-      "complexity": "O(n) 时间 / O(n) 空间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：归并排序」拆成三步记忆：第一步定核心结构（虚拟头节点、快慢指针、双指针、边界处理、分治、合并函数），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "时间复杂度 O(n x \\log n) / 空间复杂度 O(\\log n)其中 n 是链表的长度",
+      "javaSnippet": "/**\n * Definition for singly-linked list.\n * public class ListNode {\n *     int val;\n *     ListNode next;\n *     ListNode() {}\n *     ListNode(int val) { this.val = val; }\n *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }\n * }\n */\nclass Solution {\n    public ListNode sortList(ListNode head) {\n        if (head == null || head.next == null) {\n            return head;\n        }\n        ListNode slow = head, fast = head.next;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        ListNode l1 = head, l2 = slow.next;\n        slow.next = null;\n        l1 = sortList(l1);\n        l2 = sortList(l2);\n        ListNode dummy = new ListNode();\n        ListNode tail = dummy;\n        while (l1 != null && l2 != null) {\n            if (l1.val <= l2.val) {\n                tail.next = l1;\n                l1 = l1.next;\n            } else {\n                tail.next = l2;\n                l2 = l2.next;\n            }\n            tail = tail.next;\n        }\n        tail.next = l1 != null ? l1 : l2;\n        return dummy.next;\n    }\n}"
     },
     "keywords": [
       "排序链表",
@@ -115,5 +115,25 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[4,2,1,3]"
+      ],
+      "expected": "[1,2,3,4]"
+    },
+    {
+      "input": [
+        "[-1,5,3,4,0]"
+      ],
+      "expected": "[-1,0,3,4,5]"
+    },
+    {
+      "input": [
+        "[]"
+      ],
+      "expected": "[]"
+    }
+  ]
 }

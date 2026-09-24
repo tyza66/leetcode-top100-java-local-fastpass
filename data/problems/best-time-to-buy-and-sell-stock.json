@@ -37,14 +37,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：枚举 + 维护前缀最小值",
-      "approach": "只能买卖一次，枚举所有买入卖出下标对是 O(n^2)；n 可达 10^5。对固定卖出日，最优买入价是它之前的最低价。扫描时维护前缀最小值，用当天价格减它更新答案，再把当天纳入前缀最小。\n我们可以枚举数组 nums 每个元素作为卖出价格，那么我们需要在前面找到一个最小值作为买入价格，这样才能使得利润最大化。\n因此，我们用一个变量 mi 维护数组 nums 的前缀最小值。接下来遍历数组 nums，对于每个元素 v，计算其与前面元素的最小值 mi 的差值，更新答案为差值的最大值。然后更新 mi = min(mi, v)。继续遍历数组 nums，直到遍历结束。\n最后返回答案即可。\npython\nclass Solution:\ndef maxProfit(self, prices: List[int]) -> int:\nans, mi = 0, inf\nfor v in prices:\nans = max(ans, v - mi)\nmi = min(mi, v)\nreturn ans\njava\nclass Solution {\npublic int maxProfit(int[] prices) {\nint ans = 0, mi = prices[0];\nfor (int v : prices) {\nans = Math.max(ans, v - mi);\nmi = Math.min(mi, v);\n}\nreturn ans;\n}\n}\ncpp\nclass Solution {\npublic:\nint maxProfit(vector<int>& prices) {\nint ans = ",
-      "complexity": "时间复杂度 $O(n)$其中 $n$ 是数组 $nums$ 的长度空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "approach": "只能买卖一次，枚举所有买入卖出下标对是 O(n^2)；n 可达 10^5。对固定卖出日，最优买入价是它之前的最低价。扫描时维护前缀最小值，用当天价格减它更新答案，再把当天纳入前缀最小。\n我们可以枚举数组 nums 每个元素作为卖出价格，那么我们需要在前面找到一个最小值作为买入价格，这样才能使得利润最大化。\n因此，我们用一个变量 mi 维护数组 nums 的前缀最小值。接下来遍历数组 nums，对于每个元素 v，计算其与前面元素的最小值 mi 的差值，更新答案为差值的最大值。然后更新 mi = min(mi, v)。继续遍历数组 nums，直到遍历结束。\n最后返回答案即可。",
+      "complexity": "时间复杂度 O(n)其中 n 是数组 nums 的长度 / 空间复杂度 O(1)",
       "javaSnippet": "class Solution {\n    public int maxProfit(int[] prices) {\n        int ans = 0, mi = prices[0];\n        for (int v : prices) {\n            ans = Math.max(ans, v - mi);\n            mi = Math.min(mi, v);\n        }\n        return ans;\n    }\n}"
     },
     "memory": {
-      "title": "暴力枚举（兜底）",
-      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
-      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
+      "title": "题解直出记忆版",
+      "approach": "优先背题解里这段最直白的 Java 实现：记住容器/指针/状态变量，主流程结束后补返回值与边界。想先保正确性时，可以先用文字里的兜底思路过一遍再优化。",
+      "complexity": "以代码注释与题解为准",
       "javaSnippet": "// 解法1\nclass Solution {\n    public int maxProfit(int[] prices) {\n        if (prices == null || prices.length == 0) return 0;\n        int length = prices.length;\n        // dp[i][0]代表第i天持有股票的最大收益\n        // dp[i][1]代表第i天不持有股票的最大收益\n        int[][] dp = new int[length][2];\n        int result = 0;\n        dp[0][0] = -prices[0];\n        dp[0][1] = 0;\n        for (int i = 1; i < length; i++) {\n            dp[i][0] = Math.max(dp[i - 1][0], -prices[i]);\n            dp[i][1] = Math.max(dp[i - 1][0] + prices[i], dp[i - 1][1]);\n        }\n        return dp[length - 1][1];\n    }\n}"
     },
     "keywords": [
@@ -83,5 +83,19 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[7,1,5,3,6,4]"
+      ],
+      "expected": "5"
+    },
+    {
+      "input": [
+        "[7,6,4,3,1]"
+      ],
+      "expected": "0"
+    }
+  ]
 }

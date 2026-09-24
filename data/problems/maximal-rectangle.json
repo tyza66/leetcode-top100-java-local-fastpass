@@ -52,15 +52,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：单调栈",
-      "approach": "若枚举矩形的左上、右下两个角点，再检查内部是否全为 1，时间复杂度为 O(m^2 n^2)。m, n <= 200，无法通过。\n同一片区域会被反复检查。注意到：固定底边所在行 i 后，第 j 列向上连续 1 的个数，恰好是一根柱子的高度。因此每一行都可以化成一道「柱状图中最大的矩形」，而后者已由第 84 题用单调栈在线性时间内解决。\n为此我们逐行维护 \\textit{heights}[j]：当前格为 1 则高度加一，为 0 则清零，再对当前直方图求最大矩形。总时间 O(mn)。\n我们把每一行视为柱状图的底部，对每一行求柱状图的最大面积即可。\n具体地，我们维护一个与矩阵列数相同的数组 \\textit{heights}，其中 \\textit{heights}[j] 表示以当前行为底部、以第 j 列为高度的柱子的高度。对于每一行，我们遍历每一列：\n- 如果当前元素为 '1'，则将 \\textit{heights}[j] 加 1。\n- 如果当前元素为 '0'，则将 \\textit{heights}[j] 置为 0。\n然后，我们使用单调栈算法计算当前柱状图的最大矩形面积，并更新答案。\n单调栈的具体做法如下：\n1. 初始化一个空栈 \\textit{stk}，用于存储柱子的索引。\n2. 初始化两个数组 \\textit{left} 和 \\textit{right}，分别表示每个柱子左侧和右侧第一个小于当前柱子的柱子的索引。\n3. 遍历柱子高度数组 \\textit{heights}，首先计算每个柱子左侧第一个小于当前柱子的柱子的索引，并存储在 \\textit{left} 中。\n4. 然后反向遍历",
-      "complexity": "时间复杂度 为 $O(m^2 n^2)$$m n \\le 200$无法通过",
+      "approach": "若枚举矩形的左上、右下两个角点，再检查内部是否全为 1，时间复杂度为 O(m^2 n^2)。m, n\n同一片区域会被反复检查。注意到：固定底边所在行 i 后，第 j 列向上连续 1 的个数，恰好是一根柱子的高度。因此每一行都可以化成一道「柱状图中最大的矩形」，而后者已由第 84 题用单调栈在线性时间内解决。\n为此我们逐行维护 heights[j]：当前格为 1 则高度加一，为 0 则清零，再对当前直方图求最大矩形。总时间 O(mn)。\n我们把每一行视为柱状图的底部，对每一行求柱状图的最大面积即可。\n具体地，我们维护一个与矩阵列数相同的数组 heights，其中 heights[j] 表示以当前行为底部、以第 j 列为高度的柱子的高度。对于每一行，我们遍历每一列：\n- 如果当前元素为 '1'，则将 heights[j] 加 1。\n- 如果当前元素为 '0'，则将 heights[j] 置为 0。\n然后，我们使用单调栈算法计算当前柱状图的最大矩形面积，并更新答案。\n单调栈的具体做法如下：\n1. 初始化一个空栈 stk，用于存储柱子的索引。\n2. 初始化两个数组 left 和 right，分别表示每个柱子左侧和右侧第一个小于当前柱子的柱子的索引。\n3. 遍历柱子高度数组 heights，首先计算每个柱子左侧第一个小于当前柱子的柱子的索引，并存储在 left 中。\n4. 然后反向遍历柱子高度数组 heights，计算每个柱子右侧第一个小于当前柱子的柱子的索引，并存储在 right 中。\n5. 最后，计算每个柱子的最大矩形面积，并更新答案。",
+      "complexity": "时间复杂度 O(m x n)其中 m 表示 matrix 的行数n 表示 matrix 的列数",
       "javaSnippet": "class Solution {\n    public int maximalRectangle(char[][] matrix) {\n        int n = matrix[0].length;\n        int[] heights = new int[n];\n        int ans = 0;\n        for (var row : matrix) {\n            for (int j = 0; j < n; ++j) {\n                if (row[j] == '1') {\n                    heights[j] += 1;\n                } else {\n                    heights[j] = 0;\n                }\n            }\n            ans = Math.max(ans, largestRectangleArea(heights));\n        }\n        return ans;\n    }\n\n    private int largestRectangleArea(int[] heights) {\n        int res = 0, n = heights.length;\n        Deque<Integer> stk = new ArrayDeque<>();\n        int[] left = new int[n];\n        int[] right = new int[n];\n        Arrays.fill(right, n);\n        for (int i = 0; i < n; ++i) {\n            while (!stk.isEmpty() && heights[stk.peek()] >= heights[i]) {\n                right[stk.pop()] = i;\n            }\n            left[i] = stk.isEmpty() ? -1 : stk.peek();\n            stk.push(i);\n        }\n        for (int i = 0; i < n; ++i) {\n            res = Math.max(res, heights[i] * (right[i] - left[i] - 1));\n        }\n        return res;\n    }\n}"
     },
     "memory": {
-      "title": "两层循环补栈",
-      "approach": "对每个位置扫描其后元素，找到第一个满足条件的值并记录；不再依赖栈时最容易理解。",
-      "complexity": "O(n^2) 时间 / O(1) 空间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：单调栈」拆成三步记忆：第一步定核心结构（栈与括号/表达式、单调栈、动态规划五步、状态压缩、记忆化搜索、矩阵遍历），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "时间复杂度 O(m x n)其中 m 表示 matrix 的行数n 表示 matrix 的列数",
+      "javaSnippet": "class Solution {\n    public int maximalRectangle(char[][] matrix) {\n        int n = matrix[0].length;\n        int[] heights = new int[n];\n        int ans = 0;\n        for (var row : matrix) {\n            for (int j = 0; j < n; ++j) {\n                if (row[j] == '1') {\n                    heights[j] += 1;\n                } else {\n                    heights[j] = 0;\n                }\n            }\n            ans = Math.max(ans, largestRectangleArea(heights));\n        }\n        return ans;\n    }\n\n    private int largestRectangleArea(int[] heights) {\n        int res = 0, n = heights.length;\n        Deque<Integer> stk = new ArrayDeque<>();\n        int[] left = new int[n];\n        int[] right = new int[n];\n        Arrays.fill(right, n);\n        for (int i = 0; i < n; ++i) {\n            while (!stk.isEmpty() && heights[stk.peek()] >= heights[i]) {\n                right[stk.pop()] = i;\n            }\n            left[i] = stk.isEmpty() ? -1 : stk.peek();\n            stk.push(i);\n        }\n        for (int i = 0; i < n; ++i) {\n            res = Math.max(res, heights[i] * (right[i] - left[i] - 1));\n        }\n        return res;\n    }\n}"
     },
     "keywords": [
       "最大矩形",
@@ -113,5 +113,25 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[[\"1\",\"0\",\"1\",\"0\",\"0\"],[\"1\",\"0\",\"1\",\"1\",\"1\"],[\"1\",\"1\",\"1\",\"1\",\"1\"],[\"1\",\"0\",\"0\",\"1\",\"0\"]]"
+      ],
+      "expected": "6"
+    },
+    {
+      "input": [
+        "[[\"0\"]]"
+      ],
+      "expected": "0"
+    },
+    {
+      "input": [
+        "[[\"1\"]]"
+      ],
+      "expected": "1"
+    }
+  ]
 }

@@ -40,14 +40,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：双指针",
-      "approach": "要把 0 移到末尾且保持非零相对次序，可用双指针： k 指向下一个非零应放的位置。\n遇到非零就与 nums[k] 交换并右移 k，则前 k 位为原相对顺序的非零。\n我们用一个指针 k 记录当前待插入的位置，初始时 k = 0。\n然后我们遍历数组 \\textit{nums}，每次遇到一个非零数，就将其与 \\textit{nums}[k] 交换，同时将 k 的值加 1。\n这样我们就可以保证 \\textit{nums} 的前 k 个元素都是非零的，且它们的相对顺序与原数组一致。\npython\nclass Solution:\ndef moveZeroes(self, nums: List[int]) -> None:\nk = 0\nfor i, x in enumerate(nums):\nif x:\nnums[k], nums[i] = nums[i], nums[k]\nk += 1\njava\nclass Solution {\npublic void moveZeroes(int[] nums) {\nint k = 0, n = nums.length;\nfor (int i = 0; i < n; ++i) {\nif (nums[i] != 0) {\nint t = nums[i];\nnums[i] = nums[k];\nnums[k++] = t;\n}\n}\n}\n}\ncpp\nclass Solution {\npublic:\nvoid moveZeroes(vector<int>& nums) {\nint k = 0, n = nums.size();\nfor (int i = 0; i",
-      "complexity": "时间复杂度 $O(n)$其中 $n$ 是数组 $\\textit{nums}$ 的长度空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "approach": "要把 0 移到末尾且保持非零相对次序，可用双指针： k 指向下一个非零应放的位置。\n遇到非零就与 nums[k] 交换并右移 k，则前 k 位为原相对顺序的非零。\n我们用一个指针 k 记录当前待插入的位置，初始时 k = 0。\n然后我们遍历数组 nums，每次遇到一个非零数，就将其与 nums[k] 交换，同时将 k 的值加 1。\n这样我们就可以保证 nums 的前 k 个元素都是非零的，且它们的相对顺序与原数组一致。",
+      "complexity": "时间复杂度 O(n)其中 n 是数组 nums 的长度 / 空间复杂度 O(1)",
       "javaSnippet": "class Solution {\n    public void moveZeroes(int[] nums) {\n        int k = 0, n = nums.length;\n        for (int i = 0; i < n; ++i) {\n            if (nums[i] != 0) {\n                int t = nums[i];\n                nums[i] = nums[k];\n                nums[k++] = t;\n            }\n        }\n    }\n}"
     },
     "memory": {
-      "title": "暴力枚举（兜底）",
-      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
-      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
+      "title": "题解直出记忆版",
+      "approach": "优先背题解里这段最直白的 Java 实现：记住容器/指针/状态变量，主流程结束后补返回值与边界。想先保正确性时，可以先用文字里的兜底思路过一遍再优化。",
+      "complexity": "以代码注释与题解为准",
       "javaSnippet": "public void moveZeroes(int[] nums) {\n        int slow = 0;\n        for (int fast = 0; fast < nums.length; fast++) {\n            if (nums[fast] != 0) {\n                nums[slow++] = nums[fast];\n            }\n        }\n        // 后面的元素全变成 0\n        for (int j = slow; j < nums.length; j++) {\n            nums[j] = 0;\n        }\n    }"
     },
     "keywords": [
@@ -80,5 +80,19 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[0,1,0,3,12]"
+      ],
+      "expected": "[1,3,12,0,0]"
+    },
+    {
+      "input": [
+        "[0]"
+      ],
+      "expected": "[0]"
+    }
+  ]
 }

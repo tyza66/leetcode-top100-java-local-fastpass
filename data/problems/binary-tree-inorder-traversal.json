@@ -48,14 +48,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：递归遍历",
-      "approach": "中序遍历的顺序是「左、根、右」。树本身按递归定义，因此可以直接递归：先走完左子树，再记录根，再走右子树。n <= 100，最坏 O(n) 的递归栈可以接受。进阶才要求改成迭代。\n我们先递归左子树，再访问根节点，接着递归右子树。\npython\nDefinition for a binary tree node.\nclass TreeNode:\ndef __init__(self, val=0, left=None, right=None):\nself.val = val\nself.left = left\nself.right = right\nclass Solution:\ndef inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:\ndef dfs(root):\nif root is None:\nreturn\ndfs(root.left)\nans.append(root.val)\ndfs(root.right)\nans = []\ndfs(root)\nreturn ans\njava\n/\n* Definition for a binary tree node.\n* public class TreeNode {\n*     int val;\n*     TreeNode left;\n*     TreeNode right;\n*     TreeNode() {}\n*     TreeNode(int val) { this.val = val; }\n*     TreeNode(int val, TreeNod",
-      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(n)$其中 $n$ 是二叉树的节点数空间复杂度主要取决于递归调用的栈空间 / 空间复杂度 $O(n)$其中 $n$ 是二叉树的节点数，空间复杂度主要取决于递归调用的栈空间",
+      "approach": "中序遍历的顺序是「左、根、右」。树本身按递归定义，因此可以直接递归：先走完左子树，再记录根，再走右子树。n <= 100，最坏 O(n) 的递归栈可以接受。进阶才要求改成迭代。\n我们先递归左子树，再访问根节点，接着递归右子树。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(n)其中 n 是二叉树的节点数，空间复杂度主要取决于递归调用的栈空间",
       "javaSnippet": "/**\n * Definition for a binary tree node.\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n *     TreeNode() {}\n *     TreeNode(int val) { this.val = val; }\n *     TreeNode(int val, TreeNode left, TreeNode right) {\n *         this.val = val;\n *         this.left = left;\n *         this.right = right;\n *     }\n * }\n */\nclass Solution {\n    private List<Integer> ans = new ArrayList<>();\n\n    public List<Integer> inorderTraversal(TreeNode root) {\n        dfs(root);\n        return ans;\n    }\n\n    private void dfs(TreeNode root) {\n        if (root == null) {\n            return;\n        }\n        dfs(root.left);\n        ans.add(root.val);\n        dfs(root.right);\n    }\n}"
     },
     "memory": {
       "title": "方法二：栈实现非递归遍历",
-      "approach": "方法一已经得到正确序列，进阶要去掉系统递归。递归的本质是一路向左，走不动再弹出处理、转向右子树。用显式栈模拟这一过程：有左孩子就压栈下探，否则弹出访问并改走右孩子。顺序与中序相同，空间仍为 O(n)。\n非递归的思路如下：\n1. 定义一个栈 stk\n2. 将树的左节点依次入栈\n3. 左节点为空时，弹出栈顶元素并处理\n4. 重复 2-3 的操作\npython\nDefinition for a binary tree node.\nclass TreeNode:\ndef __init__(self, val=0, left=None, right=None):\nself.val = val\nself.left = left\nself.right = right\nclass Solution:\ndef inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:\nans, stk = [], []\nwhile root or stk:\nif root:\nstk.append(root)\nroot = root.left\nelse:\nroot = stk.pop()\nans.append(root.val)\nroot = root.right\nreturn ans\njava\n/\n* Definition for a binary tree node.\n* public class TreeNode {\n*     int val;\n*     TreeNode left;\n*     TreeNode right;\n*    ",
-      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(n)$其中 $n$ 是二叉树的节点数空间复杂度主要取决于栈空间 / 空间复杂度 $O(n)$其中 $n$ 是二叉树的节点数，空间复杂度主要取决于栈空间",
+      "approach": "方法一已经得到正确序列，进阶要去掉系统递归。递归的本质是一路向左，走不动再弹出处理、转向右子树。用显式栈模拟这一过程：有左孩子就压栈下探，否则弹出访问并改走右孩子。顺序与中序相同，空间仍为 O(n)。\n非递归的思路如下：\n1. 定义一个栈 stk\n2. 将树的左节点依次入栈\n3. 左节点为空时，弹出栈顶元素并处理\n4. 重复 2-3 的操作",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(n)其中 n 是二叉树的节点数，空间复杂度主要取决于栈空间",
       "javaSnippet": "/**\n * Definition for a binary tree node.\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n *     TreeNode() {}\n *     TreeNode(int val) { this.val = val; }\n *     TreeNode(int val, TreeNode left, TreeNode right) {\n *         this.val = val;\n *         this.left = left;\n *         this.right = right;\n *     }\n * }\n */\nclass Solution {\n    public List<Integer> inorderTraversal(TreeNode root) {\n        List<Integer> ans = new ArrayList<>();\n        Deque<TreeNode> stk = new ArrayDeque<>();\n        while (root != null || !stk.isEmpty()) {\n            if (root != null) {\n                stk.push(root);\n                root = root.left;\n            } else {\n                root = stk.pop();\n                ans.add(root.val);\n                root = root.right;\n            }\n        }\n        return ans;\n    }\n}"
     },
     "keywords": [
@@ -109,5 +109,31 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[1,null,2,3]"
+      ],
+      "expected": "[1,3,2]"
+    },
+    {
+      "input": [
+        "[1,2,3,4,5,null,8,null,null,6,7,9]"
+      ],
+      "expected": "[4,2,6,5,7,1,9,8,3]"
+    },
+    {
+      "input": [
+        "[]"
+      ],
+      "expected": "[]"
+    },
+    {
+      "input": [
+        "[1]"
+      ],
+      "expected": "[1]"
+    }
+  ]
 }

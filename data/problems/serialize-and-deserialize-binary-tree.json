@@ -58,15 +58,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：层序遍历",
-      "approach": "任意二叉树需能还原空孩子，仅存非空值会丢失结构。层序把空结点写成 \\#，即可按父子位置重建。\n序列化时队列扩展左右孩子；反序列化按同样顺序给队头结点挂左右子。\n我们可以采用层序遍历的方式对二叉树进行序列化，即从根节点开始，依次将二叉树的节点按照从上到下、从左到右的顺序加入队列中，然后将队列中的节点依次出队。如果节点不为空，则将其值加入序列化字符串中，否则加入特殊字符 #。最后将序列化字符串返回即可。\n反序列化时，我们将序列化字符串按照分隔符进行切分，得到一个字符串数组，然后依次将字符串数组中的元素加入队列中。队列中的元素即为二叉树的节点，我们从队列中依次取出元素，如果元素不为 #，则将其转换为整数后作为节点的值，然后将该节点加入队列中，否则将其置为 null。最后返回根节点即可。\npython\nDefinition for a binary tree node.\nclass TreeNode(object):\ndef __init__(self, x):\nself.val = x\nself.left = None\nself.right = None\nclass Codec:\ndef serialize(self, root):\n\"\"\"Encodes a tree to a single string.\n:type root: TreeNode\n:rtype: str\n\"\"\"\nif root is None:\nreturn \"\"\nq = deque([root])\nans = []\nwhile q:\nnode = q.popleft()\nif node:\nans.append(s",
-      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(n)$其中 $n$ 为二叉树的节点个数 / 空间复杂度 $O(n)$其中 $n$ 为二叉树的节点个数",
+      "approach": "任意二叉树需能还原空孩子，仅存非空值会丢失结构。层序把空结点写成 \\#，即可按父子位置重建。\n序列化时队列扩展左右孩子；反序列化按同样顺序给队头结点挂左右子。\n我们可以采用层序遍历的方式对二叉树进行序列化，即从根节点开始，依次将二叉树的节点按照从上到下、从左到右的顺序加入队列中，然后将队列中的节点依次出队。如果节点不为空，则将其值加入序列化字符串中，否则加入特殊字符 #。最后将序列化字符串返回即可。\n反序列化时，我们将序列化字符串按照分隔符进行切分，得到一个字符串数组，然后依次将字符串数组中的元素加入队列中。队列中的元素即为二叉树的节点，我们从队列中依次取出元素，如果元素不为 #，则将其转换为整数后作为节点的值，然后将该节点加入队列中，否则将其置为 null。最后返回根节点即可。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(n)其中 n 为二叉树的节点个数",
       "javaSnippet": "/**\n * Definition for a binary tree node.\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n *     TreeNode(int x) { val = x; }\n * }\n */\npublic class Codec {\n\n    // Encodes a tree to a single string.\n    public String serialize(TreeNode root) {\n        if (root == null) {\n            return null;\n        }\n        List<String> ans = new ArrayList<>();\n        Deque<TreeNode> q = new LinkedList<>();\n        q.offer(root);\n        while (!q.isEmpty()) {\n            TreeNode node = q.poll();\n            if (node != null) {\n                ans.add(node.val + \"\");\n                q.offer(node.left);\n                q.offer(node.right);\n            } else {\n                ans.add(\"#\");\n            }\n        }\n        return String.join(\",\", ans);\n    }\n\n    // Decodes your encoded data to tree.\n    public TreeNode deserialize(String data) {\n        if (data == null) {\n            return null;\n        }\n        String[] vals = data.split(\",\");\n        int i = 0;\n        TreeNode root = new TreeNode(Integer.valueOf(vals[i++]));\n        Deque<TreeNode> q = new ArrayDeque<>();\n        q.offer(root);\n        while (!q.isEmpty()) {\n            TreeNode node = q.poll();\n            if (!\"#\".equals(vals[i])) {\n                node.left = new TreeNode(Integer.valueOf(vals[i]));\n                q.offer(node.left);\n            }\n            ++i;\n            if (!\"#\".equals(vals[i])) {\n                node.right = new TreeNode(Integer.valueOf(vals[i]));\n                q.offer(node.right);\n            }\n            ++i;\n        }\n        return root;\n    }\n}\n\n// Your Codec object will be instantiated and called as such:\n// Codec codec = new Codec();\n// codec.deserialize(codec.serialize(root));"
     },
     "memory": {
-      "title": "递归暴力遍历",
-      "approach": "对每个节点执行一次以它为根的完整遍历，把所有子树统计结果汇总；思路简单，适合小规模树。",
-      "complexity": "最坏 O(n^2) 时间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：层序遍历」拆成三步记忆：第一步定核心结构（DFS 框架、访问标记、BFS 框架、层次计数、设计题、字符串处理），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(n)其中 n 为二叉树的节点个数",
+      "javaSnippet": "/**\n * Definition for a binary tree node.\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n *     TreeNode(int x) { val = x; }\n * }\n */\npublic class Codec {\n\n    // Encodes a tree to a single string.\n    public String serialize(TreeNode root) {\n        if (root == null) {\n            return null;\n        }\n        List<String> ans = new ArrayList<>();\n        Deque<TreeNode> q = new LinkedList<>();\n        q.offer(root);\n        while (!q.isEmpty()) {\n            TreeNode node = q.poll();\n            if (node != null) {\n                ans.add(node.val + \"\");\n                q.offer(node.left);\n                q.offer(node.right);\n            } else {\n                ans.add(\"#\");\n            }\n        }\n        return String.join(\",\", ans);\n    }\n\n    // Decodes your encoded data to tree.\n    public TreeNode deserialize(String data) {\n        if (data == null) {\n            return null;\n        }\n        String[] vals = data.split(\",\");\n        int i = 0;\n        TreeNode root = new TreeNode(Integer.valueOf(vals[i++]));\n        Deque<TreeNode> q = new ArrayDeque<>();\n        q.offer(root);\n        while (!q.isEmpty()) {\n            TreeNode node = q.poll();\n            if (!\"#\".equals(vals[i])) {\n                node.left = new TreeNode(Integer.valueOf(vals[i]));\n                q.offer(node.left);\n            }\n            ++i;\n            if (!\"#\".equals(vals[i])) {\n                node.right = new TreeNode(Integer.valueOf(vals[i]));\n                q.offer(node.right);\n            }\n            ++i;\n        }\n        return root;\n    }\n}\n\n// Your Codec object will be instantiated and called as such:\n// Codec codec = new Codec();\n// codec.deserialize(codec.serialize(root));"
     },
     "keywords": [
       "二叉树的序列化与反序列化",
@@ -121,5 +121,19 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[1,2,3,null,null,4,5]"
+      ],
+      "expected": "[1,2,3,null,null,4,5]"
+    },
+    {
+      "input": [
+        "[]"
+      ],
+      "expected": "[]"
+    }
+  ]
 }

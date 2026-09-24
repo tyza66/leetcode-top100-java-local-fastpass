@@ -47,14 +47,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：动态规划",
-      "approach": "等和划分即能否选出一个子集，其和为总和的一半。总和为奇数则不可能。子集枚举在 n<= 200 时不可行。\n这是容量为 m=s/2 的 0-1 背包：令 f[i][j] 表示前 i 个数能否凑出 j，转移为选或不选 x。n 与 m 的乘积可接受。\n先判奇偶再填表，空集对应 f[0][0]=\\textit{true}，保证转移有起点。\n我们先计算出数组的总和 s，如果总和是奇数，那么一定不能分割成两个和相等的子集，直接返回 false。如果总和是偶数，我们记目标子集的和为 m = \\frac{s}{2}，那么问题就转化成了：是否存在一个子集，使得其元素的和为 m。\n我们定义 f[i][j] 表示前 i 个数中选取若干个数，使得其元素的和恰好为 j。初始时 f[0][0] = true，其余 f[i][j] = false。答案为 f[n][m]。\n考虑 f[i][j]，如果我们选取了第 i 个数 x，那么 f[i][j] = f[i - 1][j - x]；如果我们没有选取第 i 个数 x，那么 f[i][j] = f[i - 1][j]。因此状态转移方程为：\nf[i][j] = f[i - 1][j] \\textit{ or } f[i - 1][j - x] \\textit{ if } j >=q x\n最终答案为 f[n][m]。\npython\nclass Solution:\ndef canPartition(self, nums: List[int]) -> bool:\nm, mod = divmod(sum(nums), 2)\nif mod:\nreturn False\nn ",
-      "complexity": "时间复杂度 $(m \\times n)$空间复杂度 $(m \\times n)$其中 $m$ 和 $n$ 分别为数组的总和的一半和数组的长度 / 空间复杂度 $(m \\times n)$其中 $m$ 和 $n$ 分别为数组的总和的一半和数组的长度",
+      "approach": "等和划分即能否选出一个子集，其和为总和的一半。总和为奇数则不可能。子集枚举在 n\n这是容量为 m=s/2 的 0-1 背包：令 f[i][j] 表示前 i 个数能否凑出 j，转移为选或不选 x。n 与 m 的乘积可接受。\n先判奇偶再填表，空集对应 f[0][0]=true，保证转移有起点。\n我们先计算出数组的总和 s，如果总和是奇数，那么一定不能分割成两个和相等的子集，直接返回 false。如果总和是偶数，我们记目标子集的和为 m = \\frac{s}{2}，那么问题就转化成了：是否存在一个子集，使得其元素的和为 m。\n我们定义 f[i][j] 表示前 i 个数中选取若干个数，使得其元素的和恰好为 j。初始时 f[0][0] = true，其余 f[i][j] = false。答案为 f[n][m]。\n考虑 f[i][j]，如果我们选取了第 i 个数 x，那么 f[i][j] = f[i - 1][j - x]；如果我们没有选取第 i 个数 x，那么 f[i][j] = f[i - 1][j]。因此状态转移方程为：\nf[i][j] = f[i - 1][j]  or  f[i - 1][j - x]  if  j >=q x\n最终答案为 f[n][m]。",
+      "complexity": "时间复杂度 (m x n) / 空间复杂度 (m x n)其中 m 和 n 分别为数组的总和的一半和数组的长度",
       "javaSnippet": "class Solution {\n    public boolean canPartition(int[] nums) {\n        // int s = Arrays.stream(nums).sum();\n        int s = 0;\n        for (int x : nums) {\n            s += x;\n        }\n        if (s % 2 == 1) {\n            return false;\n        }\n        int n = nums.length;\n        int m = s >> 1;\n        boolean[][] f = new boolean[n + 1][m + 1];\n        f[0][0] = true;\n        for (int i = 1; i <= n; ++i) {\n            int x = nums[i - 1];\n            for (int j = 0; j <= m; ++j) {\n                f[i][j] = f[i - 1][j] || (j >= x && f[i - 1][j - x]);\n            }\n        }\n        return f[n][m];\n    }\n}"
     },
     "memory": {
       "title": "方法二：动态规划（空间优化）",
-      "approach": "f[i][j] 只依赖上一行，且同一物品不能用两次，因此将 j 倒序更新并压成一维数组，空间从 O(nm) 降到 O(m)。\n我们注意到，方法一中 f[i][j] 只与 f[i - 1][\\cdot] 有关，因此我们可以将二维数组压缩成一维数组。\npython\nclass Solution:\ndef canPartition(self, nums: List[int]) -> bool:\nm, mod = divmod(sum(nums), 2)\nif mod:\nreturn False\nf = [True] + [False] * m\nfor x in nums:\nfor j in range(m, x - 1, -1):\nf[j] = f[j] or f[j - x]\nreturn f[m]\njava\nclass Solution {\npublic boolean canPartition(int[] nums) {\n// int s = Arrays.stream(nums).sum();\nint s = 0;\nfor (int x : nums) {\ns += x;\n}\nif (s % 2 == 1) {\nreturn false;\n}\nint m = s >> 1;\nboolean[] f = new boolean[m + 1];\nf[0] = true;\nfor (int x : nums) {\nfor (int j = m; j >= x; --j) {\nf[j] |= f[j - x];\n}\n}\nreturn f[m];\n}\n}\ncpp\nclass Solut",
-      "complexity": "时间复杂度 $O(n \\times m)$空间复杂度 $O(m)$其中 $n$ 是数组的长度而 $m$ 是数组的总和的一半 / 空间复杂度 $O(m)$其中 $n$ 是数组的长度，而 $m$ 是数组的总和的一半",
+      "approach": "f[i][j] 只依赖上一行，且同一物品不能用两次，因此将 j 倒序更新并压成一维数组，空间从 O(nm) 降到 O(m)。\n我们注意到，方法一中 f[i][j] 只与 f[i - 1][\\cdot] 有关，因此我们可以将二维数组压缩成一维数组。",
+      "complexity": "时间复杂度 O(n x m) / 空间复杂度 O(m)其中 n 是数组的长度，而 m 是数组的总和的一半",
       "javaSnippet": "class Solution {\n    public boolean canPartition(int[] nums) {\n        // int s = Arrays.stream(nums).sum();\n        int s = 0;\n        for (int x : nums) {\n            s += x;\n        }\n        if (s % 2 == 1) {\n            return false;\n        }\n        int m = s >> 1;\n        boolean[] f = new boolean[m + 1];\n        f[0] = true;\n        for (int x : nums) {\n            for (int j = m; j >= x; --j) {\n                f[j] |= f[j - x];\n            }\n        }\n        return f[m];\n    }\n}"
     },
     "keywords": [
@@ -101,5 +101,19 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[1,5,11,5]"
+      ],
+      "expected": "true"
+    },
+    {
+      "input": [
+        "[1,2,3,5]"
+      ],
+      "expected": "false"
+    }
+  ]
 }

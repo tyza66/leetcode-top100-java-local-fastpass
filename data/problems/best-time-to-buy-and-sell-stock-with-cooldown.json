@@ -37,14 +37,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：记忆化搜索",
-      "approach": "买卖可进行多次，卖出后须冷却一天。若按「第几天、是否持有、是否处于冷却」穷举决策树，同一状态会被反复展开。\n状态可压成 (i,j)：从第 i 天起、是否持有股票。每天可跳过；持有则可卖出并跳到 i+2，空仓则可买入并进入持有。记忆化后每个状态只算一次，卖出多走一天即表达冷却。\n我们设计一个函数 dfs(i, j)，表示从第 i 天开始，状态为 j 时，能够获得的最大利润。其中 j 的取值为 0, 1，分别表示当前不持有股票和持有股票。答案即为 dfs(0, 0)。\n函数 dfs(i, j) 的执行逻辑如下：\n如果 i >=q n，表示已经没有股票可以交易了，此时返回 0；\n否则，我们可以选择不交易，此时 dfs(i, j) = dfs(i + 1, j)。我们也可以进行股票交易，如果此时 j \\gt 0，说明当前持有股票，可以卖出，此时 dfs(i, j) = prices[i] + dfs(i + 2, 0)；如果此时 j = 0，说明当前不持有股票，可以买入，此时 dfs(i, j) = -prices[i] + dfs(i + 1, 1)。取最大值作为函数 dfs(i, j) 的返回值。\n答案为 dfs(0, 0)。\n为了避免重复计算，我们使用记忆化搜索的方法，用一个数组 f 记录 dfs(i, j) 的返回值，如果 f[i][j] 不为 -1，说明已经计算过，直接返回 f[i][j] 即可。\npython\nclass Solution:\ndef maxProfit(self, prices: List[int]) -> int:\n@cache\ndef dfs(i: in",
-      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(n)$其中 $n$ 为数组 $prices$ 的长度 / 空间复杂度 $O(n)$其中 $n$ 为数组 $prices$ 的长度",
+      "approach": "买卖可进行多次，卖出后须冷却一天。若按「第几天、是否持有、是否处于冷却」穷举决策树，同一状态会被反复展开。\n状态可压成 (i,j)：从第 i 天起、是否持有股票。每天可跳过；持有则可卖出并跳到 i+2，空仓则可买入并进入持有。记忆化后每个状态只算一次，卖出多走一天即表达冷却。\n我们设计一个函数 dfs(i, j)，表示从第 i 天开始，状态为 j 时，能够获得的最大利润。其中 j 的取值为 0, 1，分别表示当前不持有股票和持有股票。答案即为 dfs(0, 0)。\n函数 dfs(i, j) 的执行逻辑如下：\n如果 i >=q n，表示已经没有股票可以交易了，此时返回 0；\n否则，我们可以选择不交易，此时 dfs(i, j) = dfs(i + 1, j)。我们也可以进行股票交易，如果此时 j \\gt 0，说明当前持有股票，可以卖出，此时 dfs(i, j) = prices[i] + dfs(i + 2, 0)；如果此时 j = 0，说明当前不持有股票，可以买入，此时 dfs(i, j) = -prices[i] + dfs(i + 1, 1)。取最大值作为函数 dfs(i, j) 的返回值。\n答案为 dfs(0, 0)。\n为了避免重复计算，我们使用记忆化搜索的方法，用一个数组 f 记录 dfs(i, j) 的返回值，如果 f[i][j] 不为 -1，说明已经计算过，直接返回 f[i][j] 即可。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(n)其中 n 为数组 prices 的长度",
       "javaSnippet": "class Solution {\n    private int[] prices;\n    private Integer[][] f;\n\n    public int maxProfit(int[] prices) {\n        this.prices = prices;\n        f = new Integer[prices.length][2];\n        return dfs(0, 0);\n    }\n\n    private int dfs(int i, int j) {\n        if (i >= prices.length) {\n            return 0;\n        }\n        if (f[i][j] != null) {\n            return f[i][j];\n        }\n        int ans = dfs(i + 1, j);\n        if (j > 0) {\n            ans = Math.max(ans, prices[i] + dfs(i + 2, 0));\n        } else {\n            ans = Math.max(ans, -prices[i] + dfs(i + 1, 1));\n        }\n        return f[i][j] = ans;\n    }\n}"
     },
     "memory": {
       "title": "方法二：动态规划",
-      "approach": "记忆化按天向前递归，等价于按天递推。定义 f[i][0/1] 为前 i 天结束时不持有/持有的最大利润。不持有由「继续空仓」或「今日卖出」转移；持有由「继续持有」或「冷却结束后买入」转移，买入只能接 f[i-2][0]。\n自左向右填表，答案为最后一天空仓。时间仍为 O(n)，去掉递归常量。\n我们也可以用动态规划的方法求解。\n我们定义 f[i][j] 表示到第 i 天，且状态为 j 时，能够获得的最大利润。其中 j 的取值为 0, 1，分别表示当前不持有股票和持有股票。初始时 f[0][0] = 0, f[0][1] = -prices[0]。\n当 i >=q 1 时，如果当前不持有股票，那么 f[i][0] 可以由 f[i - 1][0] 和 f[i - 1][1] + prices[i] 转移得到，即 f[i][0] = \\max(f[i - 1][0], f[i - 1][1] + prices[i])；如果当前持有股票，那么 f[i][1] 可以由 f[i - 1][1] 和 f[i - 2][0] - prices[i] 转移得到，即 f[i][1] = \\max(f[i - 1][1], f[i - 2][0] - prices[i])。最终答案为 f[n - 1][0]。\npython\nclass Solution:\ndef maxProfit(self, prices: List[int]) -> int:\nn = len(prices)\nf = [[0] * 2 for _ in range(n)]\nf[0][1] = -prices[0]\nfor i in r",
-      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(n)$其中 $n$ 为数组 $prices$ 的长度 / 空间复杂度 $O(n)$其中 $n$ 为数组 $prices$ 的长度",
+      "approach": "记忆化按天向前递归，等价于按天递推。定义 f[i][0/1] 为前 i 天结束时不持有/持有的最大利润。不持有由「继续空仓」或「今日卖出」转移；持有由「继续持有」或「冷却结束后买入」转移，买入只能接 f[i-2][0]。\n自左向右填表，答案为最后一天空仓。时间仍为 O(n)，去掉递归常量。\n我们也可以用动态规划的方法求解。\n我们定义 f[i][j] 表示到第 i 天，且状态为 j 时，能够获得的最大利润。其中 j 的取值为 0, 1，分别表示当前不持有股票和持有股票。初始时 f[0][0] = 0, f[0][1] = -prices[0]。\n当 i >=q 1 时，如果当前不持有股票，那么 f[i][0] 可以由 f[i - 1][0] 和 f[i - 1][1] + prices[i] 转移得到，即 f[i][0] = max(f[i - 1][0], f[i - 1][1] + prices[i])；如果当前持有股票，那么 f[i][1] 可以由 f[i - 1][1] 和 f[i - 2][0] - prices[i] 转移得到，即 f[i][1] = max(f[i - 1][1], f[i - 2][0] - prices[i])。最终答案为 f[n - 1][0]。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(n)其中 n 为数组 prices 的长度",
       "javaSnippet": "class Solution {\n    public int maxProfit(int[] prices) {\n        int n = prices.length;\n        int[][] f = new int[n][2];\n        f[0][1] = -prices[0];\n        for (int i = 1; i < n; i++) {\n            f[i][0] = Math.max(f[i - 1][0], f[i - 1][1] + prices[i]);\n            f[i][1] = Math.max(f[i - 1][1], (i > 1 ? f[i - 2][0] : 0) - prices[i]);\n        }\n        return f[n - 1][0];\n    }\n}"
     },
     "keywords": [
@@ -82,5 +82,19 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[1,2,3,0,2]"
+      ],
+      "expected": "3"
+    },
+    {
+      "input": [
+        "[1]"
+      ],
+      "expected": "0"
+    }
+  ]
 }

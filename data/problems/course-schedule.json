@@ -56,15 +56,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：拓扑排序",
-      "approach": "先修关系构成有向图，能修完所有课当且仅当图中无环。枚举排列检查约束在课程数较大时不可行。\n拓扑排序不断取出入度为 0 的课并减少其后继入度；若全部结点都能入队则无环，否则存在环。\n对于本题，我们可以将课程看作图中的节点，先修课程看作图中的边，那么我们可以将本题转化为判断有向图中是否存在环。\n具体地，我们可以使用拓扑排序的思想，对于每个入度为 0 的节点，我们将其出度的节点的入度减 1，直到所有节点都被遍历到。\n如果所有节点都被遍历到，说明图中不存在环，那么我们就可以完成所有课程的学习；否则，我们就无法完成所有课程的学习。\npython\nclass Solution:\ndef canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:\ng = [[] for _ in range(numCourses)]\nindeg = [0] * numCourses\nfor a, b in prerequisites:\ng[b].append(a)\nindeg[a] += 1\nq = [i for i, x in enumerate(indeg) if x == 0]\nfor i in q:\nnumCourses -= 1\nfor j in g[i]:\nindeg[j] -= 1\nif indeg[j] == 0:\nq.append(j)\nreturn numCourses == 0\njava\nclass Solution {\npublic boolean canFinish(int numCourses",
-      "complexity": "时间复杂度 $O(n + m)$空间复杂度 $O(n + m)$其中 $n$ 和 $m$ 分别为课程数和先修课程数 / 空间复杂度 $O(n + m)$其中 $n$ 和 $m$ 分别为课程数和先修课程数",
+      "approach": "先修关系构成有向图，能修完所有课当且仅当图中无环。枚举排列检查约束在课程数较大时不可行。\n拓扑排序不断取出入度为 0 的课并减少其后继入度；若全部结点都能入队则无环，否则存在环。\n对于本题，我们可以将课程看作图中的节点，先修课程看作图中的边，那么我们可以将本题转化为判断有向图中是否存在环。\n具体地，我们可以使用拓扑排序的思想，对于每个入度为 0 的节点，我们将其出度的节点的入度减 1，直到所有节点都被遍历到。\n如果所有节点都被遍历到，说明图中不存在环，那么我们就可以完成所有课程的学习；否则，我们就无法完成所有课程的学习。",
+      "complexity": "时间复杂度 O(n + m) / 空间复杂度 O(n + m)其中 n 和 m 分别为课程数和先修课程数",
       "javaSnippet": "class Solution {\n    public boolean canFinish(int numCourses, int[][] prerequisites) {\n        List<Integer>[] g = new List[numCourses];\n        Arrays.setAll(g, k -> new ArrayList<>());\n        int[] indeg = new int[numCourses];\n        for (var p : prerequisites) {\n            int a = p[0], b = p[1];\n            g[b].add(a);\n            ++indeg[a];\n        }\n        Deque<Integer> q = new ArrayDeque<>();\n        for (int i = 0; i < numCourses; ++i) {\n            if (indeg[i] == 0) {\n                q.offer(i);\n            }\n        }\n        while (!q.isEmpty()) {\n            int i = q.poll();\n            --numCourses;\n            for (int j : g[i]) {\n                if (--indeg[j] == 0) {\n                    q.offer(j);\n                }\n            }\n        }\n        return numCourses == 0;\n    }\n}"
     },
     "memory": {
-      "title": "对所有起点 DFS",
-      "approach": "把每个点/节点都当作起点走一遍搜索，用 visited 防止绕圈，每次搜索维护全局计数。",
-      "complexity": "O(n) 到 O(n^2) 取决于图结构",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：拓扑排序」拆成三步记忆：第一步定核心结构（DFS 框架、访问标记、BFS 框架、层次计数、图遍历、拓扑排序），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "时间复杂度 O(n + m) / 空间复杂度 O(n + m)其中 n 和 m 分别为课程数和先修课程数",
+      "javaSnippet": "class Solution {\n    public boolean canFinish(int numCourses, int[][] prerequisites) {\n        List<Integer>[] g = new List[numCourses];\n        Arrays.setAll(g, k -> new ArrayList<>());\n        int[] indeg = new int[numCourses];\n        for (var p : prerequisites) {\n            int a = p[0], b = p[1];\n            g[b].add(a);\n            ++indeg[a];\n        }\n        Deque<Integer> q = new ArrayDeque<>();\n        for (int i = 0; i < numCourses; ++i) {\n            if (indeg[i] == 0) {\n                q.offer(i);\n            }\n        }\n        while (!q.isEmpty()) {\n            int i = q.poll();\n            --numCourses;\n            for (int j : g[i]) {\n                if (--indeg[j] == 0) {\n                    q.offer(j);\n                }\n            }\n        }\n        return numCourses == 0;\n    }\n}"
     },
     "keywords": [
       "课程表",
@@ -114,5 +114,21 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "2",
+        "[[1,0]]"
+      ],
+      "expected": "true"
+    },
+    {
+      "input": [
+        "2",
+        "[[1,0],[0,1]]"
+      ],
+      "expected": "false"
+    }
+  ]
 }

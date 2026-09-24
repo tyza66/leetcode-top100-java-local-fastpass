@@ -37,13 +37,13 @@
   "hints": {
     "optimal": {
       "title": "方法一：位运算",
-      "approach": "其余数出现两次、一个出现一次，要求线性时间、常数空间。哈希计数空间是 O(n)。异或满足 x\\oplus x=0、x\\oplus 0=x 且可交换，全部异或后成对的数消掉，剩下即只出现一次的那个。\n异或运算的性质：\n- 任何数和 0 做异或运算，结果仍然是原来的数，即 x \\oplus 0 = x；\n- 任何数和其自身做异或运算，结果是 0，即 x \\oplus x = 0；\n我们对该数组所有元素进行异或运算，结果就是那个只出现一次的数字。\npython\nclass Solution:\ndef singleNumber(self, nums: List[int]) -> int:\nreturn reduce(xor, nums)\njava\nclass Solution {\npublic int singleNumber(int[] nums) {\nint ans = 0;\nfor (int v : nums) {\nans ^= v;\n}\nreturn ans;\n}\n}\ncpp\nclass Solution {\npublic:\nint singleNumber(vector<int>& nums) {\nint ans = 0;\nfor (int v : nums) {\nans ^= v;\n}\nreturn ans;\n}\n};\ngo\nfunc singleNumber(nums []int) (ans int) {\nfor _, v := range nums {\nans ^= v\n}\nreturn\n}\nts\nfunction singleNumber(nums: number[]",
-      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(1)$其中 $n$ 是数组 $nums$ 的长度 / 空间复杂度 $O(1)$其中 $n$ 是数组 $nums$ 的长度",
+      "approach": "其余数出现两次、一个出现一次，要求线性时间、常数空间。哈希计数空间是 O(n)。异或满足 x\\oplus x=0、x\\oplus 0=x 且可交换，全部异或后成对的数消掉，剩下即只出现一次的那个。\n异或运算的性质：\n- 任何数和 0 做异或运算，结果仍然是原来的数，即 x \\oplus 0 = x；\n- 任何数和其自身做异或运算，结果是 0，即 x \\oplus x = 0；\n我们对该数组所有元素进行异或运算，结果就是那个只出现一次的数字。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(1)其中 n 是数组 nums 的长度",
       "javaSnippet": "class Solution {\n    public int singleNumber(int[] nums) {\n        int ans = 0;\n        for (int v : nums) {\n            ans ^= v;\n        }\n        return ans;\n    }\n}"
     },
     "memory": {
       "title": "方法二",
-      "approach": "方法一已是异或折叠。本写法用语言自带的归约完成同一运算，逻辑不变。\njava\nclass Solution {\npublic int singleNumber(int[] nums) {\nreturn Arrays.stream(nums).reduce(0, (a, b) -> a ^ b);\n}\n}",
+      "approach": "方法一已是异或折叠。本写法用语言自带的归约完成同一运算，逻辑不变。",
       "complexity": "按题面约束估计",
       "javaSnippet": "class Solution {\n    public int singleNumber(int[] nums) {\n        return Arrays.stream(nums).reduce(0, (a, b) -> a ^ b);\n    }\n}"
     },
@@ -76,5 +76,25 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[2,2,1]"
+      ],
+      "expected": "1"
+    },
+    {
+      "input": [
+        "[4,1,2,1,2]"
+      ],
+      "expected": "4"
+    },
+    {
+      "input": [
+        "[1]"
+      ],
+      "expected": "1"
+    }
+  ]
 }

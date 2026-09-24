@@ -42,14 +42,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：遍历",
-      "approach": "数字长度 n <= 4，答案至多 4^n 种，枚举全部组合在复杂度上可以接受。本质是若干字母集合的笛卡尔积；若手写 n 层循环，则 n 不固定时无法写出。\n从空串出发，每读入一位数字，就把当前所有前缀与该位对应字母再拼接一遍，得到新的前缀表。这相当于按层展开笛卡尔积。因此用数组保存数字到字母的映射，从只含空串的列表出发逐位扩展；输入为空时返回空列表。\n我们先用一个数组或者哈希表存储每个数字对应的字母，然后遍历每个数字，将其对应的字母与之前的结果进行组合，得到新的结果。\npython\nclass Solution:\ndef letterCombinations(self, digits: str) -> List[str]:\nif not digits:\nreturn []\nd = [\"abc\", \"def\", \"ghi\", \"jkl\", \"mno\", \"pqrs\", \"tuv\", \"wxyz\"]\nans = [\"\"]\nfor i in digits:\ns = d[int(i) - 2]\nans = [a + b for a in ans for b in s]\nreturn ans\njava\nclass Solution {\npublic List<String> letterCombinations(String digits) {\nList<String> ans = new ArrayList<>();\nif (digits.length() == 0) {\nreturn ans;\n}\nans.add(\"\");\nString[] d = new String[] {\"ab",
-      "complexity": "时间复杂度 $O(4^n)$空间复杂度 $O(4^n)$其中 $n$ 是输入数字的长度 / 空间复杂度 $O(4^n)$其中 $n$ 是输入数字的长度",
+      "approach": "数字长度 n\n从空串出发，每读入一位数字，就把当前所有前缀与该位对应字母再拼接一遍，得到新的前缀表。这相当于按层展开笛卡尔积。因此用数组保存数字到字母的映射，从只含空串的列表出发逐位扩展；输入为空时返回空列表。\n我们先用一个数组或者哈希表存储每个数字对应的字母，然后遍历每个数字，将其对应的字母与之前的结果进行组合，得到新的结果。",
+      "complexity": "时间复杂度 O(4^n) / 空间复杂度 O(4^n)其中 n 是输入数字的长度",
       "javaSnippet": "class Solution {\n    public List<String> letterCombinations(String digits) {\n        List<String> ans = new ArrayList<>();\n        if (digits.length() == 0) {\n            return ans;\n        }\n        ans.add(\"\");\n        String[] d = new String[] {\"abc\", \"def\", \"ghi\", \"jkl\", \"mno\", \"pqrs\", \"tuv\", \"wxyz\"};\n        for (char i : digits.toCharArray()) {\n            String s = d[i - '2'];\n            List<String> t = new ArrayList<>();\n            for (String a : ans) {\n                for (String b : s.split(\"\")) {\n                    t.add(a + b);\n                }\n            }\n            ans = t;\n        }\n        return ans;\n    }\n}"
     },
     "memory": {
       "title": "方法二：DFS",
-      "approach": "方法一已经能枚举全部答案，但每一层都新开一张前缀表，中间字符串占用的空间始终是 O(4^n)。\n若只沿一条路径向下走、走完再回溯，额外空间可以压到 O(n)，即递归深度与路径长度。为此按下标深度优先搜索：选定当前数字的一个字母后推进，返回时撤销选择。答案集合不变，只是生成方式从按层扩展改为一条路径走到底。\n我们可以使用深度优先搜索的方法，枚举所有可能的字母组合。假设当前已经产生了一部分字母组合，但是还有一些数字没有被穷举到，此时我们取出下一个数字所对应的字母，然后依次枚举这个数字所对应的每一个字母，将它们添加到前面已经产生的字母组合后面，形成所有可能的组合。\npython\nclass Solution:\ndef letterCombinations(self, digits: str) -> List[str]:\ndef dfs(i: int):\nif i >= len(digits):\nans.append(\"\".join(t))\nreturn\nfor c in d[int(digits[i]) - 2]:\nt.append(c)\ndfs(i + 1)\nt.pop()\nif not digits:\nreturn []\nd = [\"abc\", \"def\", \"ghi\", \"jkl\", \"mno\", \"pqrs\", \"tuv\", \"wxyz\"]\nans = []\nt = []\ndfs(0)\nreturn ans\njava\nclass Solution {\nprivate final String[] d = {\"abc\", \"def\", \"ghi\", \"jkl\", \"mno\", ",
-      "complexity": "时间复杂度 $O(4^n)$空间复杂度 $O(n)$其中 $n$ 是输入数字的长度 / 空间复杂度 $O(n)$其中 $n$ 是输入数字的长度",
+      "approach": "方法一已经能枚举全部答案，但每一层都新开一张前缀表，中间字符串占用的空间始终是 O(4^n)。\n若只沿一条路径向下走、走完再回溯，额外空间可以压到 O(n)，即递归深度与路径长度。为此按下标深度优先搜索：选定当前数字的一个字母后推进，返回时撤销选择。答案集合不变，只是生成方式从按层扩展改为一条路径走到底。\n我们可以使用深度优先搜索的方法，枚举所有可能的字母组合。假设当前已经产生了一部分字母组合，但是还有一些数字没有被穷举到，此时我们取出下一个数字所对应的字母，然后依次枚举这个数字所对应的每一个字母，将它们添加到前面已经产生的字母组合后面，形成所有可能的组合。",
+      "complexity": "时间复杂度 O(4^n) / 空间复杂度 O(n)其中 n 是输入数字的长度",
       "javaSnippet": "class Solution {\n    private final String[] d = {\"abc\", \"def\", \"ghi\", \"jkl\", \"mno\", \"pqrs\", \"tuv\", \"wxyz\"};\n    private String digits;\n    private List<String> ans = new ArrayList<>();\n    private StringBuilder t = new StringBuilder();\n\n    public List<String> letterCombinations(String digits) {\n        if (digits.length() == 0) {\n            return ans;\n        }\n        this.digits = digits;\n        dfs(0);\n        return ans;\n    }\n\n    private void dfs(int i) {\n        if (i >= digits.length()) {\n            ans.add(t.toString());\n            return;\n        }\n        String s = d[digits.charAt(i) - '2'];\n        for (char c : s.toCharArray()) {\n            t.append(c);\n            dfs(i + 1);\n            t.deleteCharAt(t.length() - 1);\n        }\n    }\n}"
     },
     "keywords": [
@@ -102,5 +102,19 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "\"23\""
+      ],
+      "expected": "[\"ad\",\"ae\",\"af\",\"bd\",\"be\",\"bf\",\"cd\",\"ce\",\"cf\"]"
+    },
+    {
+      "input": [
+        "\"2\""
+      ],
+      "expected": "[\"a\",\"b\",\"c\"]"
+    }
+  ]
 }

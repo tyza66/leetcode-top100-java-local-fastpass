@@ -52,15 +52,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：动态规划",
-      "approach": "上一题要列出所有树，这一题只要个数。结构相同：选定根后，左右子树的形态数相乘，再对根求和。不同之处在于「树的形态」可以换成「节点个数」——任意 i 个连续整数能构成的 BST 数量相同。\n令 f[i] 为 i 个节点的方案数，空树 f[0] = 1，按节点数从小到大递推，避免对同一规模重复搜索。\n我们定义 f[i] 表示 [1, i] 能产生的二叉搜索树的个数，初始时 f[0] = 1，答案为 f[n]。\n我们可以枚举节点数 i，那么左子树节点数 j \\in [0, i - 1]，右子树节点数 k = i - j - 1，左子树节点数和右子树节点数的组合数为 f[j] x f[k]，因此 f[i] = \\sum_{j = 0}^{i - 1} f[j] x f[i - j - 1]。\n最后返回 f[n] 即可。\npython\nclass Solution:\ndef numTrees(self, n: int) -> int:\nf = [1] + [0] * n\nfor i in range(n + 1):\nfor j in range(i):\nf[i] += f[j] * f[i - j - 1]\nreturn f[n]\njava\nclass Solution {\npublic int numTrees(int n) {\nint[] f = new int[n + 1];\nf[0] = 1;\nfor (int i = 1; i <= n; ++i) {\nfor (int j = 0; j < i; ++j) {\nf[i] += f[j] * f[i - j - 1];\n}\n}\n",
-      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(n)$其中 $n$ 为节点数 / 空间复杂度 $O(n)$其中 $n$ 为节点数",
+      "approach": "上一题要列出所有树，这一题只要个数。结构相同：选定根后，左右子树的形态数相乘，再对根求和。不同之处在于「树的形态」可以换成「节点个数」——任意 i 个连续整数能构成的 BST 数量相同。\n令 f[i] 为 i 个节点的方案数，空树 f[0] = 1，按节点数从小到大递推，避免对同一规模重复搜索。\n我们定义 f[i] 表示 [1, i] 能产生的二叉搜索树的个数，初始时 f[0] = 1，答案为 f[n]。\n我们可以枚举节点数 i，那么左子树节点数 j \\in [0, i - 1]，右子树节点数 k = i - j - 1，左子树节点数和右子树节点数的组合数为 f[j] x f[k]，因此 f[i] = \\sum_{j = 0}^{i - 1} f[j] x f[i - j - 1]。\n最后返回 f[n] 即可。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(n)其中 n 为节点数",
       "javaSnippet": "class Solution {\n    public int numTrees(int n) {\n        int[] f = new int[n + 1];\n        f[0] = 1;\n        for (int i = 1; i <= n; ++i) {\n            for (int j = 0; j < i; ++j) {\n                f[i] += f[j] * f[i - j - 1];\n            }\n        }\n        return f[n];\n    }\n}"
     },
     "memory": {
-      "title": "递归暴力遍历",
-      "approach": "对每个节点执行一次以它为根的完整遍历，把所有子树统计结果汇总；思路简单，适合小规模树。",
-      "complexity": "最坏 O(n^2) 时间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：动态规划」拆成三步记忆：第一步定核心结构（BST 性质、验证与转换、数学归纳、动态规划五步、状态压缩、记忆化搜索），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(n)其中 n 为节点数",
+      "javaSnippet": "class Solution {\n    public int numTrees(int n) {\n        int[] f = new int[n + 1];\n        f[0] = 1;\n        for (int i = 1; i <= n; ++i) {\n            for (int j = 0; j < i; ++j) {\n                f[i] += f[j] * f[i - j - 1];\n            }\n        }\n        return f[n];\n    }\n}"
     },
     "keywords": [
       "不同的二叉搜索树",
@@ -113,5 +113,19 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "3"
+      ],
+      "expected": "5"
+    },
+    {
+      "input": [
+        "1"
+      ],
+      "expected": "1"
+    }
+  ]
 }

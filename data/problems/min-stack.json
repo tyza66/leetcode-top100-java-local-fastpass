@@ -70,15 +70,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：双栈",
-      "approach": "栈的 \\textit{getMin} 要与 \\textit{push}/\\textit{pop} 一样 O(1)。每次扫描栈底是线性的，调用可达 3x 10^4。最小值只在入栈更小元素或弹出当前最小时变化，因此再维护一个同步的最小栈：每次压入 \\min(x,  当前最小 )，弹出时两栈一起弹。\n我们用两个栈来实现，其中 stk1 用来存储数据，stk2 用来存储当前栈中的最小值。初始时，stk2 中存储一个极大值。\n- 当我们向栈中压入一个元素 x 时，我们将 x 压入 stk1，并将 min(x, stk2[-1]) 压入 stk2。\n- 当我们从栈中弹出一个元素时，我们将 stk1 和 stk2 的栈顶元素都弹出。\n- 当我们要获取当前栈中的栈顶元素时，我们只需要返回 stk1 的栈顶元素即可。\n- 当我们要获取当前栈中的最小值时，我们只需要返回 stk2 的栈顶元素即可。\n每个操作的时间复杂度为 O(1)。整体的空间复杂度为 O(n)，其中 n 为栈中元素的个数。\npython\nclass MinStack:\ndef __init__(self):\nself.stk1 = []\nself.stk2 = [inf]\ndef push(self, val: int) -> None:\nself.stk1.append(val)\nself.stk2.append(min(val, self.stk2[-1]))\ndef pop(self) -> None:\nself.stk1.pop()\nself.stk2.pop()\ndef top(self) -> int:\nreturn ",
-      "complexity": "时间复杂度 为 $O(1)$整体的空间复杂度为 $O(n)$其中 $n$ 为栈中元素的个数 / 空间复杂度 为 $O(n)$，其中 $n$ 为栈中元素的个数",
+      "approach": "栈的 getMin 要与 push/pop 一样 O(1)。每次扫描栈底是线性的，调用可达 3x 10^4。最小值只在入栈更小元素或弹出当前最小时变化，因此再维护一个同步的最小栈：每次压入 min(x,  当前最小 )，弹出时两栈一起弹。\n我们用两个栈来实现，其中 stk1 用来存储数据，stk2 用来存储当前栈中的最小值。初始时，stk2 中存储一个极大值。\n- 当我们向栈中压入一个元素 x 时，我们将 x 压入 stk1，并将 min(x, stk2[-1]) 压入 stk2。\n- 当我们从栈中弹出一个元素时，我们将 stk1 和 stk2 的栈顶元素都弹出。\n- 当我们要获取当前栈中的栈顶元素时，我们只需要返回 stk1 的栈顶元素即可。\n- 当我们要获取当前栈中的最小值时，我们只需要返回 stk2 的栈顶元素即可。\n每个操作的时间复杂度为 O(1)。整体的空间复杂度为 O(n)，其中 n 为栈中元素的个数。",
+      "complexity": "时间复杂度 为 O(1)整体的 / 空间复杂度 为 O(n)，其中 n 为栈中元素的个数",
       "javaSnippet": "class MinStack {\n    private Deque<Integer> stk1 = new ArrayDeque<>();\n    private Deque<Integer> stk2 = new ArrayDeque<>();\n\n    public MinStack() {\n        stk2.push(Integer.MAX_VALUE);\n    }\n\n    public void push(int val) {\n        stk1.push(val);\n        stk2.push(Math.min(val, stk2.peek()));\n    }\n\n    public void pop() {\n        stk1.pop();\n        stk2.pop();\n    }\n\n    public int top() {\n        return stk1.peek();\n    }\n\n    public int getMin() {\n        return stk2.peek();\n    }\n}\n\n/**\n * Your MinStack object will be instantiated and called as such:\n * MinStack obj = new MinStack();\n * obj.push(val);\n * obj.pop();\n * int param_3 = obj.top();\n * int param_4 = obj.getMin();\n */"
     },
     "memory": {
-      "title": "两层循环补栈",
-      "approach": "对每个位置扫描其后元素，找到第一个满足条件的值并记录；不再依赖栈时最容易理解。",
-      "complexity": "O(n^2) 时间 / O(1) 空间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：双栈」拆成三步记忆：第一步定核心结构（栈与括号/表达式、单调栈、设计题），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "时间复杂度 为 O(1)整体的 / 空间复杂度 为 O(n)，其中 n 为栈中元素的个数",
+      "javaSnippet": "class MinStack {\n    private Deque<Integer> stk1 = new ArrayDeque<>();\n    private Deque<Integer> stk2 = new ArrayDeque<>();\n\n    public MinStack() {\n        stk2.push(Integer.MAX_VALUE);\n    }\n\n    public void push(int val) {\n        stk1.push(val);\n        stk2.push(Math.min(val, stk2.peek()));\n    }\n\n    public void pop() {\n        stk1.pop();\n        stk2.pop();\n    }\n\n    public int top() {\n        return stk1.peek();\n    }\n\n    public int getMin() {\n        return stk2.peek();\n    }\n}\n\n/**\n * Your MinStack object will be instantiated and called as such:\n * MinStack obj = new MinStack();\n * obj.push(val);\n * obj.pop();\n * int param_3 = obj.top();\n * int param_4 = obj.getMin();\n */"
     },
     "keywords": [
       "最小栈",
@@ -115,5 +115,14 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[\"MinStack\",\"push\",\"push\",\"push\",\"getMin\",\"pop\",\"top\",\"getMin\"]",
+        "[[],[-2],[0],[-3],[],[],[],[]]"
+      ],
+      "expected": "[null,null,null,null,-3,null,0,-2]"
+    }
+  ]
 }

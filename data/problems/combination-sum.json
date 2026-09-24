@@ -42,14 +42,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：排序 + 剪枝 + 回溯",
-      "approach": "对每个数无限次选用或不选，搜完所有和为 target 的序列，在 n <= 30、target <= 40 时，若不剪枝会搜出大量超过目标和的路径，且不同顺序会被当成不同组合。\n组合与顺序无关，同一组数只应出现一次。因此先排序，搜索时只从当前下标向右选取，避免排列重复。排序后若剩余 s 已小于 candidates[i]，其后元素更大，整支可以停止。dfs(i, s) 从 i 起枚举 j，递归仍从 j 开始，表示该数还能再用。\n我们可以先对数组进行排序，方便剪枝。\n接下来，我们设计一个函数 dfs(i, s)，表示从下标 i 开始搜索，且剩余目标值为 s，其中 i 和 s 都是非负整数，当前搜索路径为 t，答案为 ans。\n在函数 dfs(i, s) 中，我们先判断 s 是否为 0，如果是，则将当前搜索路径 t 加入答案 ans 中，然后返回。如果 s \\lt candidates[i]，说明当前下标及后面的下标的元素都大于剩余目标值 s，路径不合法，直接返回。否则，我们从下标 i 开始搜索，搜索的下标范围是 j \\in [i, n)，其中 n 为数组 candidates 的长度。在搜索的过程中，我们将当前下标的元素加入搜索路径 t，递归调用函数 dfs(j, s - candidates[j])，递归结束后，将当前下标的元素从搜索路径 t 中移除。\n在主函数中，我们只要调用函数 dfs(0, target)，即可得到答案。\n相似题目：\n- 40. 组合总和 II\n- 77. 组合\n- 216. 组合总和 III\npython\nclass Solution:\ndef comb",
-      "complexity": "时间复杂度 $O(2^n \\times n)$空间复杂度 $O(n)$其中 $n$ 为数组 $candidates$ 的长度由于剪枝实际的时间复杂度要远小于 $O(2^n \\times n)$ / 空间复杂度 $O(n)$其中 $n$ 为数组 $candidates$ 的长度由于剪枝，实际的时间复杂度要远小于 $O(2^n \\times n)$",
+      "approach": "对每个数无限次选用或不选，搜完所有和为 target 的序列，在 n\n组合与顺序无关，同一组数只应出现一次。因此先排序，搜索时只从当前下标向右选取，避免排列重复。排序后若剩余 s 已小于 candidates[i]，其后元素更大，整支可以停止。dfs(i, s) 从 i 起枚举 j，递归仍从 j 开始，表示该数还能再用。\n我们可以先对数组进行排序，方便剪枝。\n接下来，我们设计一个函数 dfs(i, s)，表示从下标 i 开始搜索，且剩余目标值为 s，其中 i 和 s 都是非负整数，当前搜索路径为 t，答案为 ans。\n在函数 dfs(i, s) 中，我们先判断 s 是否为 0，如果是，则将当前搜索路径 t 加入答案 ans 中，然后返回。如果 s \\lt candidates[i]，说明当前下标及后面的下标的元素都大于剩余目标值 s，路径不合法，直接返回。否则，我们从下标 i 开始搜索，搜索的下标范围是 j \\in [i, n)，其中 n 为数组 candidates 的长度。在搜索的过程中，我们将当前下标的元素加入搜索路径 t，递归调用函数 dfs(j, s - candidates[j])，递归结束后，将当前下标的元素从搜索路径 t 中移除。\n在主函数中，我们只要调用函数 dfs(0, target)，即可得到答案。\n相似题目：\n- 40. 组合总和 II\n- 77. 组合\n- 216. 组合总和 III",
+      "complexity": "时间复杂度 O(2^n x n) / 空间复杂度 O(n)其中 n 为数组 candidates 的长度由于剪枝，实际的时间复杂度要远小于 O(2^n x n)",
       "javaSnippet": "class Solution {\n    private List<List<Integer>> ans = new ArrayList<>();\n    private List<Integer> t = new ArrayList<>();\n    private int[] candidates;\n\n    public List<List<Integer>> combinationSum(int[] candidates, int target) {\n        Arrays.sort(candidates);\n        this.candidates = candidates;\n        dfs(0, target);\n        return ans;\n    }\n\n    private void dfs(int i, int s) {\n        if (s == 0) {\n            ans.add(new ArrayList(t));\n            return;\n        }\n        if (s < candidates[i]) {\n            return;\n        }\n        for (int j = i; j < candidates.length; ++j) {\n            t.add(candidates[j]);\n            dfs(j, s - candidates[j]);\n            t.remove(t.size() - 1);\n        }\n    }\n}"
     },
     "memory": {
       "title": "方法二：排序 + 剪枝 + 回溯（写法二）",
-      "approach": "方法一用循环枚举「下一个选谁」，已经剪枝正确，搜索树是多叉的。我们也可以对当前位置做选或不选：不选则下标变为 i+1，选则留在 i（允许重复使用当前数）。搜索树形状不同，答案相同，只是实现换成二叉树展开。\n我们也可以将函数 dfs(i, s) 的实现逻辑改为另一种写法。在函数 dfs(i, s) 中，我们先判断 s 是否为 0，如果是，则将当前搜索路径 t 加入答案 ans 中，然后返回。如果 i >=q n 或者 s \\lt candidates[i]，路径不合法，直接返回。否则，我们考虑两种情况，一种是不选当前下标的元素，即递归调用函数 dfs(i + 1, s)，另一种是选当前下标的元素，即递归调用函数 dfs(i, s - candidates[i])。\npython\nclass Solution:\ndef combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:\ndef dfs(i: int, s: int):\nif s == 0:\nans.append(t[:])\nreturn\nif i >= len(candidates) or s < candidates[i]:\nreturn\ndfs(i + 1, s)\nt.append(candidates[i])\ndfs(i, s - candidates[i])\nt.pop()\ncandidates.sort()\nt = []\nans = []\ndfs(0, target)\nreturn ans\njava\nclass Solu",
-      "complexity": "时间复杂度 $O(2^n \\times n)$空间复杂度 $O(n)$其中 $n$ 为数组 $candidates$ 的长度由于剪枝实际的时间复杂度要远小于 $O(2^n \\times n)$ / 空间复杂度 $O(n)$其中 $n$ 为数组 $candidates$ 的长度由于剪枝，实际的时间复杂度要远小于 $O(2^n \\times n)$",
+      "approach": "方法一用循环枚举「下一个选谁」，已经剪枝正确，搜索树是多叉的。我们也可以对当前位置做选或不选：不选则下标变为 i+1，选则留在 i（允许重复使用当前数）。搜索树形状不同，答案相同，只是实现换成二叉树展开。\n我们也可以将函数 dfs(i, s) 的实现逻辑改为另一种写法。在函数 dfs(i, s) 中，我们先判断 s 是否为 0，如果是，则将当前搜索路径 t 加入答案 ans 中，然后返回。如果 i >=q n 或者 s \\lt candidates[i]，路径不合法，直接返回。否则，我们考虑两种情况，一种是不选当前下标的元素，即递归调用函数 dfs(i + 1, s)，另一种是选当前下标的元素，即递归调用函数 dfs(i, s - candidates[i])。",
+      "complexity": "时间复杂度 O(2^n x n) / 空间复杂度 O(n)其中 n 为数组 candidates 的长度由于剪枝，实际的时间复杂度要远小于 O(2^n x n)",
       "javaSnippet": "class Solution {\n    private List<List<Integer>> ans = new ArrayList<>();\n    private List<Integer> t = new ArrayList<>();\n    private int[] candidates;\n\n    public List<List<Integer>> combinationSum(int[] candidates, int target) {\n        Arrays.sort(candidates);\n        this.candidates = candidates;\n        dfs(0, target);\n        return ans;\n    }\n\n    private void dfs(int i, int s) {\n        if (s == 0) {\n            ans.add(new ArrayList(t));\n            return;\n        }\n        if (i >= candidates.length || s < candidates[i]) {\n            return;\n        }\n        dfs(i + 1, s);\n        t.add(candidates[i]);\n        dfs(i, s - candidates[i]);\n        t.remove(t.size() - 1);\n    }\n}"
     },
     "keywords": [
@@ -84,5 +84,28 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[2,3,6,7]",
+        "7"
+      ],
+      "expected": "[[2,2,3],[7]]"
+    },
+    {
+      "input": [
+        "[2,3,5]",
+        "8"
+      ],
+      "expected": "[[2,2,2,2],[2,3,3],[3,5]]"
+    },
+    {
+      "input": [
+        "[2]",
+        "1"
+      ],
+      "expected": "[]"
+    }
+  ]
 }

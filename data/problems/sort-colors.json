@@ -56,15 +56,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：三指针",
-      "approach": "统计 0、1、2 的个数再覆写需要两趟扫描；直接排序也能得到结果，n <= 300 时间足够。题目不允许使用库函数排序，进阶还要求一趟扫描且仅用常数额外空间。\n数组中只有三个取值，需要划分成「全 0 / 全 1 / 全 2」三段。为此用 i、j 分别框住已经归位的 0 与 2，k 扫描未知区间。与 2 交换时，换回来的元素尚未考察，因此 k 不能前进；与 0 交换时，换回来的元素来自已扫描区间，因此 k 可以同步右移。一遍结束后三段自然有序。\n我们定义三个指针 i, j 和 k，其中指针 i 用于指向数组中元素值为 0 的最右边界，指针 j 用于指向数组中元素值为 2 的最左边界，初始时 i=-1, j=n。指针 k 用于指向当前遍历的元素，初始时 k=0。\n当 k \\lt j 时，我们执行如下操作：\n- 若 nums[k]=0，则将其与 nums[i+1] 交换，然后 i 和 k 都加 1；\n- 若 nums[k]=2，则将其与 nums[j-1] 交换，然后 j 减 1；\n- 若 nums[k]=1，则 k 加 1。\n遍历结束后，数组中的元素就被分成了 [0,i], [i+1,j-1] 和 [j,n-1] 三个部分。\npython\nclass Solution:\ndef sortColors(self, nums: List[int]) -> None:\ni, j, k = -1, len(nums), 0\nwhile k < j:\nif nums[k] == 0:\ni += 1\nnums[i], nums[k] = nums[k], nums[i]\nk += 1\nelif",
-      "complexity": "时间复杂度 $O(n)$其中 $n$ 是数组的长度只需要遍历一遍数组即可空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "approach": "统计 0、1、2 的个数再覆写需要两趟扫描；直接排序也能得到结果，n\n数组中只有三个取值，需要划分成「全 0 / 全 1 / 全 2」三段。为此用 i、j 分别框住已经归位的 0 与 2，k 扫描未知区间。与 2 交换时，换回来的元素尚未考察，因此 k 不能前进；与 0 交换时，换回来的元素来自已扫描区间，因此 k 可以同步右移。一遍结束后三段自然有序。\n我们定义三个指针 i, j 和 k，其中指针 i 用于指向数组中元素值为 0 的最右边界，指针 j 用于指向数组中元素值为 2 的最左边界，初始时 i=-1, j=n。指针 k 用于指向当前遍历的元素，初始时 k=0。\n当 k \\lt j 时，我们执行如下操作：\n- 若 nums[k]=0，则将其与 nums[i+1] 交换，然后 i 和 k 都加 1；\n- 若 nums[k]=2，则将其与 nums[j-1] 交换，然后 j 减 1；\n- 若 nums[k]=1，则 k 加 1。\n遍历结束后，数组中的元素就被分成了 [0,i], [i+1,j-1] 和 [j,n-1] 三个部分。",
+      "complexity": "时间复杂度 O(n)其中 n 是数组的长度只需要遍历一遍数组即可 / 空间复杂度 O(1)",
       "javaSnippet": "class Solution {\n    public void sortColors(int[] nums) {\n        int i = -1, j = nums.length, k = 0;\n        while (k < j) {\n            if (nums[k] == 0) {\n                swap(nums, ++i, k++);\n            } else if (nums[k] == 2) {\n                swap(nums, --j, k);\n            } else {\n                ++k;\n            }\n        }\n    }\n\n    private void swap(int[] nums, int i, int j) {\n        int t = nums[i];\n        nums[i] = nums[j];\n        nums[j] = t;\n    }\n}"
     },
     "memory": {
-      "title": "暴力枚举（兜底）",
-      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
-      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：三指针」拆成三步记忆：第一步定核心结构（双指针、边界处理、冒泡排序、常用排序、原地与稳定性、快排），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "时间复杂度 O(n)其中 n 是数组的长度只需要遍历一遍数组即可 / 空间复杂度 O(1)",
+      "javaSnippet": "class Solution {\n    public void sortColors(int[] nums) {\n        int i = -1, j = nums.length, k = 0;\n        while (k < j) {\n            if (nums[k] == 0) {\n                swap(nums, ++i, k++);\n            } else if (nums[k] == 2) {\n                swap(nums, --j, k);\n            } else {\n                ++k;\n            }\n        }\n    }\n\n    private void swap(int[] nums, int i, int j) {\n        int t = nums[i];\n        nums[i] = nums[j];\n        nums[j] = t;\n    }\n}"
     },
     "keywords": [
       "颜色分类",
@@ -116,5 +116,19 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[2,0,2,1,1,0]"
+      ],
+      "expected": "[0,0,1,1,2,2]"
+    },
+    {
+      "input": [
+        "[2,0,1]"
+      ],
+      "expected": "[0,1,2]"
+    }
+  ]
 }

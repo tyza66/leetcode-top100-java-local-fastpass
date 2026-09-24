@@ -57,14 +57,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：差分数组",
-      "approach": "所需会议室数等于同一时刻正在进行的会议数的最大值。在开始处 +1、结束处 -1，前缀和即当前占用。\n用差分数组覆盖到最大结束时间，再扫一遍取前缀和的峰值。\n我们可以用差分数组来实现。\n我们首先找到所有会议的最大结束时间，记为 m，然后创建一个长度为 m + 1 的差分数组 d，将每个会议的开始时间和结束时间分别加到差分数组的对应位置上，即 d[l] = d[l] + 1，而 d[r] = d[r] - 1。\n然后，我们计算差分数组的前缀和，找出前缀和的最大值，即为所需会议室的最小数量。\npython\nclass Solution:\ndef minMeetingRooms(self, intervals: List[List[int]]) -> int:\nm = max(e[1] for e in intervals)\nd = [0] * (m + 1)\nfor l, r in intervals:\nd[l] += 1\nd[r] -= 1\nans = s = 0\nfor v in d:\ns += v\nans = max(ans, s)\nreturn ans\njava\nclass Solution {\npublic int minMeetingRooms(int[][] intervals) {\nint m = 0;\nfor (var e : intervals) {\nm = Math.max(m, e[1]);\n}\nint[] d = new int[m + 1];\nfor (var e : intervals) {\n++d[e[0]];\n--d[e[1]];\n}\nint ans",
-      "complexity": "时间复杂度 $O(n + m)$空间复杂度 $O(m)$其中 $n$ 和 $m$ 分别为会议数量和最大结束时间 / 空间复杂度 $O(m)$其中 $n$ 和 $m$ 分别为会议数量和最大结束时间",
+      "approach": "所需会议室数等于同一时刻正在进行的会议数的最大值。在开始处 +1、结束处 -1，前缀和即当前占用。\n用差分数组覆盖到最大结束时间，再扫一遍取前缀和的峰值。\n我们可以用差分数组来实现。\n我们首先找到所有会议的最大结束时间，记为 m，然后创建一个长度为 m + 1 的差分数组 d，将每个会议的开始时间和结束时间分别加到差分数组的对应位置上，即 d[l] = d[l] + 1，而 d[r] = d[r] - 1。\n然后，我们计算差分数组的前缀和，找出前缀和的最大值，即为所需会议室的最小数量。",
+      "complexity": "时间复杂度 O(n + m) / 空间复杂度 O(m)其中 n 和 m 分别为会议数量和最大结束时间",
       "javaSnippet": "class Solution {\n    public int minMeetingRooms(int[][] intervals) {\n        int m = 0;\n        for (var e : intervals) {\n            m = Math.max(m, e[1]);\n        }\n        int[] d = new int[m + 1];\n        for (var e : intervals) {\n            ++d[e[0]];\n            --d[e[1]];\n        }\n        int ans = 0, s = 0;\n        for (int v : d) {\n            s += v;\n            ans = Math.max(ans, s);\n        }\n        return ans;\n    }\n}"
     },
     "memory": {
       "title": "方法二：差分（哈希表）",
-      "approach": "结束时间很大时，长度为 m 的数组浪费空间。改用哈希表只在出现过的端点上加减，按键排序后同样求前缀和最大值。\n如果题目中的会议时间跨度很大，那么我们可以使用哈希表来代替差分数组。\n我们首先创建一个哈希表 d，将每个会议的开始时间和结束时间分别加到哈希表的对应位置上，即 d[l] = d[l] + 1，而 d[r] = d[r] - 1。\n然后，我们将哈希表按照键进行排序，计算哈希表的前缀和，找出前缀和的最大值，即为所需会议室的最小数量。\npython\nclass Solution:\ndef minMeetingRooms(self, intervals: List[List[int]]) -> int:\nd = defaultdict(int)\nfor l, r in intervals:\nd[l] += 1\nd[r] -= 1\nans = s = 0\nfor _, v in sorted(d.items()):\ns += v\nans = max(ans, s)\nreturn ans\njava\nclass Solution {\npublic int minMeetingRooms(int[][] intervals) {\nMap<Integer, Integer> d = new TreeMap<>();\nfor (var e : intervals) {\nd.merge(e[0], 1, Integer::sum);\nd.merge(e[1], -1, Integer::sum);\n}\nint ans = 0, s = 0;\nfor (var e : d.values()) ",
-      "complexity": "时间复杂度 $O(n \\times \\log n)$空间复杂度 $O(n)$其中 $n$ 为会议数量 / 空间复杂度 $O(n)$其中 $n$ 为会议数量",
+      "approach": "结束时间很大时，长度为 m 的数组浪费空间。改用哈希表只在出现过的端点上加减，按键排序后同样求前缀和最大值。\n如果题目中的会议时间跨度很大，那么我们可以使用哈希表来代替差分数组。\n我们首先创建一个哈希表 d，将每个会议的开始时间和结束时间分别加到哈希表的对应位置上，即 d[l] = d[l] + 1，而 d[r] = d[r] - 1。\n然后，我们将哈希表按照键进行排序，计算哈希表的前缀和，找出前缀和的最大值，即为所需会议室的最小数量。",
+      "complexity": "时间复杂度 O(n x \\log n) / 空间复杂度 O(n)其中 n 为会议数量",
       "javaSnippet": "class Solution {\n    public int minMeetingRooms(int[][] intervals) {\n        Map<Integer, Integer> d = new TreeMap<>();\n        for (var e : intervals) {\n            d.merge(e[0], 1, Integer::sum);\n            d.merge(e[1], -1, Integer::sum);\n        }\n        int ans = 0, s = 0;\n        for (var e : d.values()) {\n            s += e;\n            ans = Math.max(ans, s);\n        }\n        return ans;\n    }\n}"
     },
     "keywords": [
@@ -120,5 +120,19 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[[0,30],[5,10],[15,20]]"
+      ],
+      "expected": "2"
+    },
+    {
+      "input": [
+        "[[7,10],[2,4]]"
+      ],
+      "expected": "1"
+    }
+  ]
 }

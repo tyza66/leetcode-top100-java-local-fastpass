@@ -47,14 +47,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：动态规划",
-      "approach": "子序列须保持相对顺序且严格递增。若枚举全部子序列，长度为 n 时状态过多；n <= 2500，故可接受按结尾位置转移。\n以 nums[i] 结尾的最长递增子序列，只依赖于左侧更小的元素。为此定义 f[i] 为该长度，枚举 j < i 且 nums[j] < nums[i]，取 f[j]+1 的最大值。每个位置独立成段时长度为 1，最终答案为 \\max f。\n我们定义 f[i] 表示以 nums[i] 结尾的最长递增子序列的长度，初始时 f[i] = 1，答案为 f[i] 的最大值。\n对于 f[i]，我们需要枚举 0 <= j \\lt i，如果 nums[j] \\lt nums[i]，则 f[i] = \\max(f[i], f[j] + 1)。\n最后的答案即为 f[i] 的最大值。\npython\nclass Solution:\ndef lengthOfLIS(self, nums: List[int]) -> int:\nn = len(nums)\nf = [1] * n\nfor i in range(1, n):\nfor j in range(i):\nif nums[j] < nums[i]:\nf[i] = max(f[i], f[j] + 1)\nreturn max(f)\njava\nclass Solution {\npublic int lengthOfLIS(int[] nums) {\nint n = nums.length;\nint[] f = new int[n];\nArrays.fill(f, 1);\nint ans = 1;\nfor (int i = 1; i < n",
-      "complexity": "时间复杂度 $O(n^2)$空间复杂度 $O(n)$其中 $n$ 为数组长度 / 空间复杂度 $O(n)$其中 $n$ 为数组长度",
+      "approach": "子序列须保持相对顺序且严格递增。若枚举全部子序列，长度为 n 时状态过多；n\n以 nums[i] 结尾的最长递增子序列，只依赖于左侧更小的元素。为此定义 f[i] 为该长度，枚举 j\n我们定义 f[i] 表示以 nums[i] 结尾的最长递增子序列的长度，初始时 f[i] = 1，答案为 f[i] 的最大值。\n对于 f[i]，我们需要枚举 0 <= j \\lt i，如果 nums[j] \\lt nums[i]，则 f[i] = max(f[i], f[j] + 1)。\n最后的答案即为 f[i] 的最大值。",
+      "complexity": "时间复杂度 O(n^2) / 空间复杂度 O(n)其中 n 为数组长度",
       "javaSnippet": "class Solution {\n    public int lengthOfLIS(int[] nums) {\n        int n = nums.length;\n        int[] f = new int[n];\n        Arrays.fill(f, 1);\n        int ans = 1;\n        for (int i = 1; i < n; ++i) {\n            for (int j = 0; j < i; ++j) {\n                if (nums[j] < nums[i]) {\n                    f[i] = Math.max(f[i], f[j] + 1);\n                }\n            }\n            ans = Math.max(ans, f[i]);\n        }\n        return ans;\n    }\n}"
     },
     "memory": {
       "title": "方法二：离散化 + 树状数组",
-      "approach": "方法一查询「左侧小于 x 的最大 f[j]」需线性扫描，整体为 O(n^2)。将数值离散化后，该查询变为秩上的前缀最大值，树状数组可在 O(\\log n) 内维护。\n按原序遍历每个 x：先查询小于 x 的前缀最大长度再写回 x 处，保证只用到左侧信息。因此时间降至 O(n \\log n)，转移语义与方法一相同。\n我们将数组中的元素离散化，然后使用树状数组维护不大于某个元素的最长递增子序列的长度。\n遍历数组中的每个元素 x，将其离散化，然后在树状数组中查找不大于 x-1 的最长递增子序列的长度 t，则 x 的最长递增子序列的长度为 t+1，更新答案，并且更新树状数组中 x 的最长递增子序列的长度。\n遍历完数组中的所有元素，即可得到答案。\npython\nclass BinaryIndexedTree:\ndef __init__(self, n: int):\nself.n = n\nself.c = [0] * (n + 1)\ndef update(self, x: int, v: int):\nwhile x <= self.n:\nself.c[x] = max(self.c[x], v)\nx += x & -x\ndef query(self, x: int) -> int:\nmx = 0\nwhile x:\nmx = max(mx, self.c[x])\nx -= x & -x\nreturn mx\nclass Solution:\ndef lengthOfLIS(self, nums: List[int]) -> int:\ns = sorted(set(nums))\nm = len(s)",
-      "complexity": "时间复杂度 $O(n \\times \\log n)$空间复杂度 $O(n)$其中 $n$ 为数组长度 / 空间复杂度 $O(n)$其中 $n$ 为数组长度",
+      "approach": "方法一查询「左侧小于 x 的最大 f[j]」需线性扫描，整体为 O(n^2)。将数值离散化后，该查询变为秩上的前缀最大值，树状数组可在 O(\\log n) 内维护。\n按原序遍历每个 x：先查询小于 x 的前缀最大长度再写回 x 处，保证只用到左侧信息。因此时间降至 O(n \\log n)，转移语义与方法一相同。\n我们将数组中的元素离散化，然后使用树状数组维护不大于某个元素的最长递增子序列的长度。\n遍历数组中的每个元素 x，将其离散化，然后在树状数组中查找不大于 x-1 的最长递增子序列的长度 t，则 x 的最长递增子序列的长度为 t+1，更新答案，并且更新树状数组中 x 的最长递增子序列的长度。\n遍历完数组中的所有元素，即可得到答案。",
+      "complexity": "时间复杂度 O(n x \\log n) / 空间复杂度 O(n)其中 n 为数组长度",
       "javaSnippet": "class Solution {\n    public int lengthOfLIS(int[] nums) {\n        int[] s = nums.clone();\n        Arrays.sort(s);\n        int m = 0;\n        int n = s.length;\n        for (int i = 0; i < n; ++i) {\n            if (i == 0 || s[i] != s[i - 1]) {\n                s[m++] = s[i];\n            }\n        }\n        BinaryIndexedTree tree = new BinaryIndexedTree(m);\n        for (int x : nums) {\n            x = search(s, x, m);\n            int t = tree.query(x - 1) + 1;\n            tree.update(x, t);\n        }\n        return tree.query(m);\n    }\n\n    private int search(int[] nums, int x, int r) {\n        int l = 0;\n        while (l < r) {\n            int mid = (l + r) >> 1;\n            if (nums[mid] >= x) {\n                r = mid;\n            } else {\n                l = mid + 1;\n            }\n        }\n        return l + 1;\n    }\n}\n\nclass BinaryIndexedTree {\n    private int n;\n    private int[] c;\n\n    public BinaryIndexedTree(int n) {\n        this.n = n;\n        c = new int[n + 1];\n    }\n\n    public void update(int x, int v) {\n        while (x <= n) {\n            c[x] = Math.max(c[x], v);\n            x += x & -x;\n        }\n    }\n\n    public int query(int x) {\n        int mx = 0;\n        while (x > 0) {\n            mx = Math.max(mx, c[x]);\n            x -= x & -x;\n        }\n        return mx;\n    }\n}"
     },
     "keywords": [
@@ -106,5 +106,25 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[10,9,2,5,3,7,101,18]"
+      ],
+      "expected": "4"
+    },
+    {
+      "input": [
+        "[0,1,0,3,2,3]"
+      ],
+      "expected": "4"
+    },
+    {
+      "input": [
+        "[7,7,7,7,7,7,7]"
+      ],
+      "expected": "1"
+    }
+  ]
 }

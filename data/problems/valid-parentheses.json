@@ -42,14 +42,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：栈",
-      "approach": "反复将配对括号 ()、[]、\\{\\} 从字符串中消去，直到无法再删，最坏时间复杂度为 O(n^2)。n <= 10^4，容易超时。\n括号匹配遵循后进先出：左括号等待与之对应的右括号；遇到右括号时，必须与当前尚未匹配的最近一个左括号成对。扫描结束时若栈非空，说明仍有左括号未闭合。因此用栈存放尚未匹配的左括号，右括号到来时弹出栈顶并判断是否成对。\n遍历括号字符串 s，遇到左括号时，压入当前的左括号；遇到右括号时，弹出栈顶元素（若栈为空，直接返回 false），判断是否匹配，若不匹配，直接返回 false。\n也可以选择遇到左括号时，将右括号压入栈中；遇到右括号时，弹出栈顶元素（若栈为空，直接返回 false），判断是否是相等。若不匹配，直接返回 false。\n两者的区别仅限于括号转换时机，一个是在入栈时，一个是在出栈时。\n遍历结束，若栈为空，说明括号字符串有效，返回 true；否则，返回 false。\npython\nclass Solution:\ndef isValid(self, s: str) -> bool:\nstk = []\nd = {'()', '[]', '{}'}\nfor c in s:\nif c in '({[':\nstk.append(c)\nelif not stk or stk.pop() + c not in d:\nreturn False\nreturn not stk\njava\nclass Solution {\npublic boolean isValid(String s) {\nDeque<Character> stk = new ArrayDeque<>(",
-      "complexity": "时间复杂度 为 $O(n^2)$$n \\le 10^4$容易超时 / 空间复杂度 $O(n)$其中 $n$ 为括号字符串 $s$ 的长度",
+      "approach": "反复将配对括号 ()、[]、\\{\\} 从字符串中消去，直到无法再删，最坏时间复杂度为 O(n^2)。n\n括号匹配遵循后进先出：左括号等待与之对应的右括号；遇到右括号时，必须与当前尚未匹配的最近一个左括号成对。扫描结束时若栈非空，说明仍有左括号未闭合。因此用栈存放尚未匹配的左括号，右括号到来时弹出栈顶并判断是否成对。\n遍历括号字符串 s，遇到左括号时，压入当前的左括号；遇到右括号时，弹出栈顶元素（若栈为空，直接返回 false），判断是否匹配，若不匹配，直接返回 false。\n也可以选择遇到左括号时，将右括号压入栈中；遇到右括号时，弹出栈顶元素（若栈为空，直接返回 false），判断是否是相等。若不匹配，直接返回 false。\n两者的区别仅限于括号转换时机，一个是在入栈时，一个是在出栈时。\n遍历结束，若栈为空，说明括号字符串有效，返回 true；否则，返回 false。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(n)其中 n 为括号字符串 s 的长度",
       "javaSnippet": "class Solution {\n    public boolean isValid(String s) {\n        Deque<Character> stk = new ArrayDeque<>();\n        for (char c : s.toCharArray()) {\n            if (c == '(' || c == '{' || c == '[') {\n                stk.push(c);\n            } else if (stk.isEmpty() || !match(stk.pop(), c)) {\n                return false;\n            }\n        }\n        return stk.isEmpty();\n    }\n\n    private boolean match(char l, char r) {\n        return (l == '(' && r == ')') || (l == '{' && r == '}') || (l == '[' && r == ']');\n    }\n}"
     },
     "memory": {
-      "title": "两层循环补栈",
-      "approach": "对每个位置扫描其后元素，找到第一个满足条件的值并记录；不再依赖栈时最容易理解。",
-      "complexity": "O(n^2) 时间 / O(1) 空间",
+      "title": "题解直出记忆版",
+      "approach": "优先背题解里这段最直白的 Java 实现：记住容器/指针/状态变量，主流程结束后补返回值与边界。想先保正确性时，可以先用文字里的兜底思路过一遍再优化。",
+      "complexity": "以代码注释与题解为准",
       "javaSnippet": "// 解法二\n// 对应的另一半一定在栈顶\nclass Solution {\n    public boolean isValid(String s) {\n        Stack<Character> stack = new Stack<>();\n        for(char c : s.toCharArray()){\n            // 有对应的另一半就直接消消乐\n            if(c == ')' && !stack.isEmpty() && stack.peek() == '(')\n                stack.pop();\n            else if(c == '}' && !stack.isEmpty() && stack.peek() == '{')\n                stack.pop();\n            else if(c == ']' && !stack.isEmpty() && stack.peek() == '[')\n                stack.pop();\n            else\n                stack.push(c);// 没有匹配的就放进去\n        }\n\n        return stack.isEmpty();\n    }\n}"
     },
     "keywords": [
@@ -97,5 +97,37 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "\"()\""
+      ],
+      "expected": "true"
+    },
+    {
+      "input": [
+        "\"()[]{}\""
+      ],
+      "expected": "true"
+    },
+    {
+      "input": [
+        "\"(]\""
+      ],
+      "expected": "false"
+    },
+    {
+      "input": [
+        "\"([])\""
+      ],
+      "expected": "true"
+    },
+    {
+      "input": [
+        "\"([)]\""
+      ],
+      "expected": "false"
+    }
+  ]
 }

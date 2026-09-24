@@ -52,14 +52,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：动态规划(完全背包)",
-      "approach": "完全平方数可重复使用，求组成 n 的最少个数，即完全背包。物品为 1^2,\\ldots,m^2（m=\\lfloor\\sqrt{n}\\rfloor）。\nf[i][j] 表示用前 i 种平方数凑 j 的最少个数，转移为不选或再加一个 i^2。\n我们定义 f[i][j] 表示使用数字 1, 2, \\cdots, i 的完全平方数组成和为 j 的最少数量。初始时 f[0][0] = 0，其余位置的值均为正无穷。\n我们可以枚举使用的最后一个数字的数量 k，那么：\nf[i][j] = \\min(f[i - 1][j], f[i - 1][j - i^2] + 1, \\cdots, f[i - 1][j - k x i^2] + k)\n其中 i^2 表示最后一个数字 i 的完全平方数。\n不妨令 j = j - i^2，那么有：\nf[i][j - i^2] = \\min(f[i - 1][j - i^2], f[i - 1][j - 2 x i^2] + 1, \\cdots, f[i - 1][j - k x i^2] + k - 1)\n将二式代入一式，我们可以得到以下状态转移方程：\nf[i][j] = \\min(f[i - 1][j], f[i][j - i^2] + 1)\n最后答案即为 f[m][n]。\n相似题目：\n- 322. 零钱兑换\npython\nclass Solution:\ndef numSquares(self, n: int) -> int:\nm = int(sqrt(n))\nf = [[inf] * (n + 1) for _ in range(m + 1)]\nf[0][0",
-      "complexity": "时间复杂度 $O(m \\times n)$空间复杂度 $O(m \\times n)$其中 $m$ 为 $sqrt(n)$ 的整数部分 / 空间复杂度 $O(m \\times n)$其中 $m$ 为 $sqrt(n)$ 的整数部分",
+      "approach": "完全平方数可重复使用，求组成 n 的最少个数，即完全背包。物品为 1^2,\\ldots,m^2（m=\\lfloor\\sqrt{n}\\rfloor）。\nf[i][j] 表示用前 i 种平方数凑 j 的最少个数，转移为不选或再加一个 i^2。\n我们定义 f[i][j] 表示使用数字 1, 2, \\cdots, i 的完全平方数组成和为 j 的最少数量。初始时 f[0][0] = 0，其余位置的值均为正无穷。\n我们可以枚举使用的最后一个数字的数量 k，那么：\nf[i][j] = min(f[i - 1][j], f[i - 1][j - i^2] + 1, \\cdots, f[i - 1][j - k x i^2] + k)\n其中 i^2 表示最后一个数字 i 的完全平方数。\n不妨令 j = j - i^2，那么有：\nf[i][j - i^2] = min(f[i - 1][j - i^2], f[i - 1][j - 2 x i^2] + 1, \\cdots, f[i - 1][j - k x i^2] + k - 1)\n将二式代入一式，我们可以得到以下状态转移方程：\nf[i][j] = min(f[i - 1][j], f[i][j - i^2] + 1)\n最后答案即为 f[m][n]。\n相似题目：\n- 322. 零钱兑换",
+      "complexity": "时间复杂度 O(m x n) / 空间复杂度 O(m x n)其中 m 为 sqrt(n) 的整数部分",
       "javaSnippet": "class Solution {\n    public int numSquares(int n) {\n        int m = (int) Math.sqrt(n);\n        int[][] f = new int[m + 1][n + 1];\n        for (var g : f) {\n            Arrays.fill(g, 1 << 30);\n        }\n        f[0][0] = 0;\n        for (int i = 1; i <= m; ++i) {\n            for (int j = 0; j <= n; ++j) {\n                f[i][j] = f[i - 1][j];\n                if (j >= i * i) {\n                    f[i][j] = Math.min(f[i][j], f[i][j - i * i] + 1);\n                }\n            }\n        }\n        return f[m][n];\n    }\n}"
     },
     "memory": {
       "title": "方法二：动态规划优化",
-      "approach": "二维表中 f[i][j] 只依赖 f[i-1][j] 与 f[i][j-i^2]，可压成一维，按 j 从小到大更新。\nf[i][j] 只与 f[i - 1][j] 和 f[i][j - i^2] 有关，因此可以将二维数组优化为一维数组，空间复杂度降为 O(n)。时间复杂度仍为 O(m x n)。\npython\nclass Solution:\ndef numSquares(self, n: int) -> int:\nm = int(sqrt(n))\nf = [0] + [inf] * n\nfor i in range(1, m + 1):\nfor j in range(i * i, n + 1):\nf[j] = min(f[j], f[j - i * i] + 1)\nreturn f[n]\njava\nclass Solution {\npublic int numSquares(int n) {\nint m = (int) Math.sqrt(n);\nint[] f = new int[n + 1];\nArrays.fill(f, 1 << 30);\nf[0] = 0;\nfor (int i = 1; i <= m; ++i) {\nfor (int j = i * i; j <= n; ++j) {\nf[j] = Math.min(f[j], f[j - i * i] + 1);\n}\n}\nreturn f[n];\n}\n}\ncpp\nclass Solution {\npublic:\nint numSquares(int n) {\nint m = sqrt(n);\nint f[n + 1",
-      "complexity": "时间复杂度 仍为 $O(m \\times n)$ / 空间复杂度 降为 $O(n)$时间复杂度仍为 $O(m \\times n)$",
+      "approach": "二维表中 f[i][j] 只依赖 f[i-1][j] 与 f[i][j-i^2]，可压成一维，按 j 从小到大更新。\nf[i][j] 只与 f[i - 1][j] 和 f[i][j - i^2] 有关，因此可以将二维数组优化为一维数组，空间复杂度降为 O(n)。时间复杂度仍为 O(m x n)。",
+      "complexity": "时间复杂度 仍为 O(m x n) / 空间复杂度 降为 O(n)时间复杂度仍为 O(m x n)",
       "javaSnippet": "class Solution {\n    public int numSquares(int n) {\n        int m = (int) Math.sqrt(n);\n        int[] f = new int[n + 1];\n        Arrays.fill(f, 1 << 30);\n        f[0] = 0;\n        for (int i = 1; i <= m; ++i) {\n            for (int j = i * i; j <= n; ++j) {\n                f[j] = Math.min(f[j], f[j - i * i] + 1);\n            }\n        }\n        return f[n];\n    }\n}"
     },
     "keywords": [
@@ -111,5 +111,19 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "12"
+      ],
+      "expected": "3"
+    },
+    {
+      "input": [
+        "13"
+      ],
+      "expected": "2"
+    }
+  ]
 }

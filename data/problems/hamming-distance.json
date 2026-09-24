@@ -36,15 +36,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：位运算",
-      "approach": "汉明距离是二进制不同位的个数。逐位比较需要循环 32 次。\nx\\oplus y 的 1 位恰是不同位，对其做 \\textit{bit\\_count} 即可。\n异或把比较收成一次字运算，再数 1 的硬件指令或循环均可。\n我们将 x 和 y 按位异或，得到的结果中的 1 的个数就是汉明距离。\npython\nclass Solution:\ndef hammingDistance(self, x: int, y: int) -> int:\nreturn (x ^ y).bit_count()\njava\nclass Solution {\npublic int hammingDistance(int x, int y) {\nreturn Integer.bitCount(x ^ y);\n}\n}\ncpp\nclass Solution {\npublic:\nint hammingDistance(int x, int y) {\nreturn __builtin_popcount(x ^ y);\n}\n};\ngo\nfunc hammingDistance(x int, y int) int {\nreturn bits.OnesCount(uint(x ^ y))\n}\nts\nfunction hammingDistance(x: number, y: number): number {\nx ^= y;\nlet ans = 0;\nwhile (x) {\nx -= x & -x;\n++ans;\n}\nreturn ans;\n}\njs\n/\n* @param {number} x\n* @param {numbe",
-      "complexity": "时间复杂度 $O(1)$空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "approach": "汉明距离是二进制不同位的个数。逐位比较需要循环 32 次。\nx\\oplus y 的 1 位恰是不同位，对其做 bit\\_count 即可。\n异或把比较收成一次字运算，再数 1 的硬件指令或循环均可。\n我们将 x 和 y 按位异或，得到的结果中的 1 的个数就是汉明距离。",
+      "complexity": "时间复杂度 O(1) / 空间复杂度 O(1)",
       "javaSnippet": "class Solution {\n    public int hammingDistance(int x, int y) {\n        return Integer.bitCount(x ^ y);\n    }\n}"
     },
     "memory": {
-      "title": "暴力枚举（兜底）",
-      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
-      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：位运算」拆成三步记忆：第一步定核心结构（异或性质、位运算技巧），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "时间复杂度 O(1) / 空间复杂度 O(1)",
+      "javaSnippet": "class Solution {\n    public int hammingDistance(int x, int y) {\n        return Integer.bitCount(x ^ y);\n    }\n}"
     },
     "keywords": [
       "汉明距离",
@@ -74,5 +74,21 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "1",
+        "4"
+      ],
+      "expected": "2"
+    },
+    {
+      "input": [
+        "3",
+        "1"
+      ],
+      "expected": "1"
+    }
+  ]
 }

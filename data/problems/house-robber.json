@@ -37,14 +37,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：记忆化搜索",
-      "approach": "相邻房屋不能都偷，求最大金额。枚举子集要检查相邻约束，房屋数虽不大，重叠子问题很多。从第 i 间出发：偷则跳到 i+2，不偷则到 i+1，取较大者。记忆化后每个下标只算一次。\n我们设计一个函数 \\textit{dfs}(i)，表示从第 i 间房屋开始偷窃能够得到的最高金额。那么答案即为 \\textit{dfs}(0)。\n函数 \\textit{dfs}(i) 的执行过程如下：\n- 如果 i >= \\textit{len}(\\textit{nums})，表示所有房屋都被考虑过了，直接返回 0；\n- 否则，考虑偷窃第 i 间房屋，那么 \\textit{dfs}(i) = \\textit{nums}[i] + \\textit{dfs}(i+2)；不偷窃第 i 间房屋，那么 \\textit{dfs}(i) = \\textit{dfs}(i+1)。\n- 返回 \\max(\\textit{nums}[i] + \\textit{dfs}(i+2), \\textit{dfs}(i+1))。\n为了避免重复计算，我们使用记忆化搜索的方法，将 \\textit{dfs}(i) 的结果保存在一个数组或哈希表中，每次计算前先查询是否已经计算过，如果计算过直接返回结果。\npython\nclass Solution:\ndef rob(self, nums: List[int]) -> int:\n@cache\ndef dfs(i: int) -> int:\nif i >= len(nums):\nreturn 0\nreturn max(nums[i] + dfs(i + 2), dfs(i + 1))\nreturn ",
-      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(n)$其中 $n$ 是数组长度 / 空间复杂度 $O(n)$其中 $n$ 是数组长度",
+      "approach": "相邻房屋不能都偷，求最大金额。枚举子集要检查相邻约束，房屋数虽不大，重叠子问题很多。从第 i 间出发：偷则跳到 i+2，不偷则到 i+1，取较大者。记忆化后每个下标只算一次。\n我们设计一个函数 dfs(i)，表示从第 i 间房屋开始偷窃能够得到的最高金额。那么答案即为 dfs(0)。\n函数 dfs(i) 的执行过程如下：\n- 如果 i >= len(nums)，表示所有房屋都被考虑过了，直接返回 0；\n- 否则，考虑偷窃第 i 间房屋，那么 dfs(i) = nums[i] + dfs(i+2)；不偷窃第 i 间房屋，那么 dfs(i) = dfs(i+1)。\n- 返回 max(nums[i] + dfs(i+2), dfs(i+1))。\n为了避免重复计算，我们使用记忆化搜索的方法，将 dfs(i) 的结果保存在一个数组或哈希表中，每次计算前先查询是否已经计算过，如果计算过直接返回结果。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(n)其中 n 是数组长度",
       "javaSnippet": "class Solution {\n    private Integer[] f;\n    private int[] nums;\n\n    public int rob(int[] nums) {\n        this.nums = nums;\n        f = new Integer[nums.length];\n        return dfs(0);\n    }\n\n    private int dfs(int i) {\n        if (i >= nums.length) {\n            return 0;\n        }\n        if (f[i] == null) {\n            f[i] = Math.max(nums[i] + dfs(i + 2), dfs(i + 1));\n        }\n        return f[i];\n    }\n}"
     },
     "memory": {
       "title": "方法二：动态规划",
-      "approach": "方法一是递归。f[i] 表示前 i 间的最大金额，转移只看「偷第 i 间则加 f[i-2]，否则继承 f[i-1]」，自底向上填表。\n我们定义 f[i] 表示前 i 间房屋能偷窃到的最高总金额，初始时 f[0]=0, f[1]=nums[0]。\n考虑 i \\gt 1 的情况，第 i 间房屋有两个选项：\n- 不偷窃第 i 间房屋，偷窃总金额为 f[i-1]；\n- 偷窃第 i 间房屋，偷窃总金额为 f[i-2]+nums[i-1]；\n因此，我们可以得到状态转移方程：\nf[i]=\n\\begin{cases}\n0, & i=0 \\\\\nnums[0], & i=1 \\\\\n\\max(f[i-1],f[i-2]+nums[i-1]), & i \\gt 1\n\\end{cases}\n最终的答案即为 f[n]，其中 n 是数组的长度。\npython\nclass Solution:\ndef rob(self, nums: List[int]) -> int:\nn = len(nums)\nf = [0] * (n + 1)\nf[1] = nums[0]\nfor i in range(2, n + 1):\nf[i] = max(f[i - 1], f[i - 2] + nums[i - 1])\nreturn f[n]\njava\nclass Solution {\npublic int rob(int[] nums) {\nint n = nums.length;\nint[] f = new int[n + 1];\nf[1] = nums[0];\nfor (int i = 2; i <= n; ++i) {\n",
-      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(n)$其中 $n$ 是数组长度 / 空间复杂度 $O(n)$其中 $n$ 是数组长度",
+      "approach": "方法一是递归。f[i] 表示前 i 间的最大金额，转移只看「偷第 i 间则加 f[i-2]，否则继承 f[i-1]」，自底向上填表。\n我们定义 f[i] 表示前 i 间房屋能偷窃到的最高总金额，初始时 f[0]=0, f[1]=nums[0]。\n考虑 i \\gt 1 的情况，第 i 间房屋有两个选项：\n- 不偷窃第 i 间房屋，偷窃总金额为 f[i-1]；\n- 偷窃第 i 间房屋，偷窃总金额为 f[i-2]+nums[i-1]；\n因此，我们可以得到状态转移方程：\nf[i]=\n最终的答案即为 f[n]，其中 n 是数组的长度。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(n)其中 n 是数组长度",
       "javaSnippet": "class Solution {\n    public int rob(int[] nums) {\n        int n = nums.length;\n        int[] f = new int[n + 1];\n        f[1] = nums[0];\n        for (int i = 2; i <= n; ++i) {\n            f[i] = Math.max(f[i - 1], f[i - 2] + nums[i - 1]);\n        }\n        return f[n];\n    }\n}"
     },
     "keywords": [
@@ -82,5 +82,19 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[1,2,3,1]"
+      ],
+      "expected": "4"
+    },
+    {
+      "input": [
+        "[2,7,9,3,1]"
+      ],
+      "expected": "12"
+    }
+  ]
 }

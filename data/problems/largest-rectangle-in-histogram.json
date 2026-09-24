@@ -47,14 +47,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：单调栈",
-      "approach": "若枚举左右边界 [l, r]，高度取区间最小值，面积为 (r - l + 1) x \\min，时间复杂度为 O(n^2)。n <= 10^5，无法通过。\n可以改换枚举对象：以第 i 根柱作为矩形的最矮柱，宽度就是它向左右延伸到第一根更矮柱之间的距离。求每个位置「左右两侧最近的更小值」，适合用单调栈：栈中下标对应的高度单调递增，遇到更矮的柱便弹出，同时得到被弹柱的右边界，栈顶即为左边界。每根柱入栈、出栈各一次，线性即可扫完。\n我们可以枚举每根柱子的高度 h 作为矩形的高度，利用单调栈，向左右两边找第一个高度小于 h 的下标 left_i, right_i。那么此时矩形面积为 h x (right_i-left_i-1)，求最大值即可。\n单调栈常见模型：找出每个数左/右边离它最近的且比它大/小的数。模板：\npython\nstk = []\nfor i in range(n):\nwhile stk and check(stk[-1], i):\nstk.pop()\nstk.append(i)\npython\nclass Solution:\ndef largestRectangleArea(self, heights: List[int]) -> int:\nn = len(heights)\nstk = []\nleft = [-1] * n\nright = [n] * n\nfor i, h in enumerate(heights):\nwhile stk and heights[stk[-1]] >= h:\nright[stk[-1]] = i\nstk.pop()\nif stk:\nleft[i",
-      "complexity": "时间复杂度 为 $O(n^2)$$n \\le 10^5$无法通过 / 空间复杂度 $O(n)$其中 $n$ 表示 $heights$ 的长度",
+      "approach": "若枚举左右边界 [l, r]，高度取区间最小值，面积为 (r - l + 1) x min，时间复杂度为 O(n^2)。n\n可以改换枚举对象：以第 i 根柱作为矩形的最矮柱，宽度就是它向左右延伸到第一根更矮柱之间的距离。求每个位置「左右两侧最近的更小值」，适合用单调栈：栈中下标对应的高度单调递增，遇到更矮的柱便弹出，同时得到被弹柱的右边界，栈顶即为左边界。每根柱入栈、出栈各一次，线性即可扫完。\n我们可以枚举每根柱子的高度 h 作为矩形的高度，利用单调栈，向左右两边找第一个高度小于 h 的下标 left_i, right_i。那么此时矩形面积为 h x (right_i-left_i-1)，求最大值即可。\n单调栈常见模型：找出每个数左/右边离它最近的且比它大/小的数。模板：",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(n)其中 n 表示 heights 的长度",
       "javaSnippet": "class Solution {\n    public int largestRectangleArea(int[] heights) {\n        int res = 0, n = heights.length;\n        Deque<Integer> stk = new ArrayDeque<>();\n        int[] left = new int[n];\n        int[] right = new int[n];\n        Arrays.fill(right, n);\n        for (int i = 0; i < n; ++i) {\n            while (!stk.isEmpty() && heights[stk.peek()] >= heights[i]) {\n                right[stk.pop()] = i;\n            }\n            left[i] = stk.isEmpty() ? -1 : stk.peek();\n            stk.push(i);\n        }\n        for (int i = 0; i < n; ++i) {\n            res = Math.max(res, heights[i] * (right[i] - left[i] - 1));\n        }\n        return res;\n    }\n}"
     },
     "memory": {
-      "title": "两层循环补栈",
-      "approach": "对每个位置扫描其后元素，找到第一个满足条件的值并记录；不再依赖栈时最容易理解。",
-      "complexity": "O(n^2) 时间 / O(1) 空间",
+      "title": "题解直出记忆版",
+      "approach": "优先背题解里这段最直白的 Java 实现：记住容器/指针/状态变量，主流程结束后补返回值与边界。想先保正确性时，可以先用文字里的兜底思路过一遍再优化。",
+      "complexity": "以代码注释与题解为准",
       "javaSnippet": "class Solution {\n    int largestRectangleArea(int[] heights) {\n        Stack<Integer> st = new Stack<Integer>();\n        \n        // 数组扩容，在头和尾各加入一个元素\n        int [] newHeights = new int[heights.length + 2];\n        newHeights[0] = 0;\n        newHeights[newHeights.length - 1] = 0;\n        for (int index = 0; index < heights.length; index++){\n            newHeights[index + 1] = heights[index];\n        }\n\n        heights = newHeights;\n        \n        st.push(0);\n        int result = 0;\n        // 第一个元素已经入栈，从下标1开始\n        for (int i = 1; i < heights.length; i++) {\n            // 注意heights[i] 是和heights[st.top()] 比较 ，st.top()是下标\n            if (heights[i] > heights[st.peek()]) {\n                st.push(i);\n            } else if (heights[i] == heights[st.peek()]) {\n                st.pop(); // 这个可以加，可以不加，效果一样，思路不同\n                st.push(i);\n            } else {\n                while (heights[i] < heights[st.peek()]) { // 注意是while\n                    int mid = st.peek();\n                    st.pop();\n                    int left = st.peek();\n                    int right = i;\n                    int w = right - left - 1;\n                    int h = heights[mid];\n                    result = Math.max(result, w * h);\n                }\n                st.push(i);\n            }\n        }\n        return result;\n    }\n}"
     },
     "keywords": [
@@ -93,5 +93,19 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[2,1,5,6,2,3]"
+      ],
+      "expected": "10"
+    },
+    {
+      "input": [
+        "[2,4]"
+      ],
+      "expected": "4"
+    }
+  ]
 }

@@ -39,14 +39,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：头插法",
-      "approach": "把结点依次放入数组再反向重建可行，但只需改指针。头插可在一次遍历中完成反转：当前结点不断插到哑结点之后。\n遍历结束时 \\textit{dummy.next} 即为新头，空间为常数。\n我们创建一个虚拟头节点 \\textit{dummy}，然后遍历链表，将每个节点依次插入 \\textit{dummy} 的下一个节点。遍历结束，返回 \\textit{dummy.next}。\npython\nDefinition for singly-linked list.\nclass ListNode:\ndef __init__(self, val=0, next=None):\nself.val = val\nself.next = next\nclass Solution:\ndef reverseList(self, head: ListNode) -> ListNode:\ndummy = ListNode()\ncurr = head\nwhile curr:\nnext = curr.next\ncurr.next = dummy.next\ndummy.next = curr\ncurr = next\nreturn dummy.next\njava\n/\n* Definition for singly-linked list.\n* public class ListNode {\n*     int val;\n*     ListNode next;\n*     ListNode() {}\n*     ListNode(int val) { this.val = val; }\n*     ListNode(int",
-      "complexity": "时间复杂度 $O(n)$其中 $n$ 为链表的长度空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "approach": "把结点依次放入数组再反向重建可行，但只需改指针。头插可在一次遍历中完成反转：当前结点不断插到哑结点之后。\n遍历结束时 dummy.next 即为新头，空间为常数。\n我们创建一个虚拟头节点 dummy，然后遍历链表，将每个节点依次插入 dummy 的下一个节点。遍历结束，返回 dummy.next。",
+      "complexity": "时间复杂度 O(n)其中 n 为链表的长度 / 空间复杂度 O(1)",
       "javaSnippet": "/**\n * Definition for singly-linked list.\n * public class ListNode {\n *     int val;\n *     ListNode next;\n *     ListNode() {}\n *     ListNode(int val) { this.val = val; }\n *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }\n * }\n */\nclass Solution {\n    public ListNode reverseList(ListNode head) {\n        ListNode dummy = new ListNode();\n        ListNode curr = head;\n        while (curr != null) {\n            ListNode next = curr.next;\n            curr.next = dummy.next;\n            dummy.next = curr;\n            curr = next;\n        }\n        return dummy.next;\n    }\n}"
     },
     "memory": {
       "title": "方法二：递归",
-      "approach": "头插已是线性迭代。也可先递归反转后继链表，再把当前结点接到新尾之后。\n指针操作更短，但系统栈占用 O(n) 空间。\n递归反转链表的第二个节点到尾部的所有节点，然后 head 插在反转后的链表的尾部。\npython\nDefinition for singly-linked list.\nclass ListNode:\ndef __init__(self, val=0, next=None):\nself.val = val\nself.next = next\nclass Solution:\ndef reverseList(self, head: ListNode) -> ListNode:\nif head is None or head.next is None:\nreturn head\nans = self.reverseList(head.next)\nhead.next.next = head\nhead.next = None\nreturn ans\njava\n/\n* Definition for singly-linked list.\n* public class ListNode {\n*     int val;\n*     ListNode next;\n*     ListNode() {}\n*     ListNode(int val) { this.val = val; }\n*     ListNode(int val, ListNode next) { this.val = val; this.next = next; }\n* }\n*/\nclass Solution {\n",
-      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(n)$其中 $n$ 为链表的长度 / 空间复杂度 $O(n)$其中 $n$ 为链表的长度",
+      "approach": "头插已是线性迭代。也可先递归反转后继链表，再把当前结点接到新尾之后。\n指针操作更短，但系统栈占用 O(n) 空间。\n递归反转链表的第二个节点到尾部的所有节点，然后 head 插在反转后的链表的尾部。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(n)其中 n 为链表的长度",
       "javaSnippet": "/**\n * Definition for singly-linked list.\n * public class ListNode {\n *     int val;\n *     ListNode next;\n *     ListNode() {}\n *     ListNode(int val) { this.val = val; }\n *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }\n * }\n */\nclass Solution {\n    public ListNode reverseList(ListNode head) {\n        if (head == null || head.next == null) {\n            return head;\n        }\n        ListNode ans = reverseList(head.next);\n        head.next.next = head;\n        head.next = null;\n        return ans;\n    }\n}"
     },
     "keywords": [
@@ -84,5 +84,25 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[1,2,3,4,5]"
+      ],
+      "expected": "[5,4,3,2,1]"
+    },
+    {
+      "input": [
+        "[1,2]"
+      ],
+      "expected": "[2,1]"
+    },
+    {
+      "input": [
+        "[]"
+      ],
+      "expected": "[]"
+    }
+  ]
 }

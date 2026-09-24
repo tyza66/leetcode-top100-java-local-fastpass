@@ -47,15 +47,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：枚举 + DFS",
-      "approach": "直径是任意两点路径的最长边数。枚举所有点对再求路径不现实。任一直径必经过某节点，等于该节点左右子树高度之和。\nDFS 返回子树高度，并在回溯时用 l+r 更新全局答案，同时向父节点返回 1+\\max(l,r)。每个节点只访问一次，高度与直径一起算出。\n我们可以枚举二叉树的每个节点，以该节点为根节点，计算其左右子树的最大深度 \\textit{l} 和 \\textit{r}，则该节点的直径为 \\textit{l} + \\textit{r}。取所有节点的直径的最大值即为二叉树的直径。\npython\nDefinition for a binary tree node.\nclass TreeNode:\ndef __init__(self, val=0, left=None, right=None):\nself.val = val\nself.left = left\nself.right = right\nclass Solution:\ndef diameterOfBinaryTree(self, root: TreeNode) -> int:\ndef dfs(root):\nif root is None:\nreturn 0\nnonlocal ans\nleft, right = dfs(root.left), dfs(root.right)\nans = max(ans, left + right)\nreturn 1 + max(left, right)\nans = 0\ndfs(root)\nreturn ans\njava\n/\n* Definition for a binary tree node",
-      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(n)$其中 $n$ 为二叉树的节点个数 / 空间复杂度 $O(n)$其中 $n$ 为二叉树的节点个数",
+      "approach": "直径是任意两点路径的最长边数。枚举所有点对再求路径不现实。任一直径必经过某节点，等于该节点左右子树高度之和。\nDFS 返回子树高度，并在回溯时用 l+r 更新全局答案，同时向父节点返回 1+max(l,r)。每个节点只访问一次，高度与直径一起算出。\n我们可以枚举二叉树的每个节点，以该节点为根节点，计算其左右子树的最大深度 l 和 r，则该节点的直径为 l + r。取所有节点的直径的最大值即为二叉树的直径。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(n)其中 n 为二叉树的节点个数",
       "javaSnippet": "/**\n * Definition for a binary tree node.\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n *     TreeNode() {}\n *     TreeNode(int val) { this.val = val; }\n *     TreeNode(int val, TreeNode left, TreeNode right) {\n *         this.val = val;\n *         this.left = left;\n *         this.right = right;\n *     }\n * }\n */\nclass Solution {\n    private int ans;\n\n    public int diameterOfBinaryTree(TreeNode root) {\n        dfs(root);\n        return ans;\n    }\n\n    private int dfs(TreeNode root) {\n        if (root == null) {\n            return 0;\n        }\n        int l = dfs(root.left);\n        int r = dfs(root.right);\n        ans = Math.max(ans, l + r);\n        return 1 + Math.max(l, r);\n    }\n}"
     },
     "memory": {
-      "title": "递归暴力遍历",
-      "approach": "对每个节点执行一次以它为根的完整遍历，把所有子树统计结果汇总；思路简单，适合小规模树。",
-      "complexity": "最坏 O(n^2) 时间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：枚举 + DFS」拆成三步记忆：第一步定核心结构（DFS 框架、访问标记、树的三种遍历、递归返回值设计、树上 DP），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(n)其中 n 为二叉树的节点个数",
+      "javaSnippet": "/**\n * Definition for a binary tree node.\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n *     TreeNode() {}\n *     TreeNode(int val) { this.val = val; }\n *     TreeNode(int val, TreeNode left, TreeNode right) {\n *         this.val = val;\n *         this.left = left;\n *         this.right = right;\n *     }\n * }\n */\nclass Solution {\n    private int ans;\n\n    public int diameterOfBinaryTree(TreeNode root) {\n        dfs(root);\n        return ans;\n    }\n\n    private int dfs(TreeNode root) {\n        if (root == null) {\n            return 0;\n        }\n        int l = dfs(root.left);\n        int r = dfs(root.right);\n        ans = Math.max(ans, l + r);\n        return 1 + Math.max(l, r);\n    }\n}"
     },
     "keywords": [
       "二叉树的直径",
@@ -103,5 +103,19 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[1,2,3,4,5]"
+      ],
+      "expected": "3"
+    },
+    {
+      "input": [
+        "[1,2]"
+      ],
+      "expected": "1"
+    }
+  ]
 }

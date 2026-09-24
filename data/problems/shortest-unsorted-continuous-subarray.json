@@ -57,14 +57,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：排序",
-      "approach": "最短无序子数组排序后应使整个数组有序。把数组排序再与原数组比较，两端第一个不同的位置就是要排序的区间。\nn <= 10^4，排序可以接受。若两端从未错位则数组已有序，长度为 0。\n我们可以先对数组进行排序，然后比较排序后的数组和原数组，找到最左边和最右边不相等的位置，它们之间的长度就是我们要找的最短无序连续子数组的长度。\npython\nclass Solution:\ndef findUnsortedSubarray(self, nums: List[int]) -> int:\narr = sorted(nums)\nl, r = 0, len(nums) - 1\nwhile l <= r and nums[l] == arr[l]:\nl += 1\nwhile l <= r and nums[r] == arr[r]:\nr -= 1\nreturn r - l + 1\njava\nclass Solution {\npublic int findUnsortedSubarray(int[] nums) {\nint[] arr = nums.clone();\nArrays.sort(arr);\nint l = 0, r = arr.length - 1;\nwhile (l <= r && nums[l] == arr[l]) {\nl++;\n}\nwhile (l <= r && nums[r] == arr[r]) {\nr--;\n}\nreturn r - l + 1;\n}\n}\ncpp\nclass Solution {\npublic:\nint findUnsortedSubarray(vect",
-      "complexity": "时间复杂度 $O(n \\times \\log n)$空间复杂度 $O(n)$其中 $n$ 是数组的长度 / 空间复杂度 $O(n)$其中 $n$ 是数组的长度",
+      "approach": "最短无序子数组排序后应使整个数组有序。把数组排序再与原数组比较，两端第一个不同的位置就是要排序的区间。\nn <= 10^4，排序可以接受。若两端从未错位则数组已有序，长度为 0。\n我们可以先对数组进行排序，然后比较排序后的数组和原数组，找到最左边和最右边不相等的位置，它们之间的长度就是我们要找的最短无序连续子数组的长度。",
+      "complexity": "时间复杂度 O(n x \\log n) / 空间复杂度 O(n)其中 n 是数组的长度",
       "javaSnippet": "class Solution {\n    public int findUnsortedSubarray(int[] nums) {\n        int[] arr = nums.clone();\n        Arrays.sort(arr);\n        int l = 0, r = arr.length - 1;\n        while (l <= r && nums[l] == arr[l]) {\n            l++;\n        }\n        while (l <= r && nums[r] == arr[r]) {\n            r--;\n        }\n        return r - l + 1;\n    }\n}"
     },
     "memory": {
       "title": "方法二：维护左侧最大值和右侧最小值",
-      "approach": "排序多花了对数因子。从左扫，一旦当前值小于左侧最大值，它就必须落入待排序区间，右端点持续更新；从右扫则用右侧最小值更新左端点。\n两端初值为 -1，若右端从未更新则返回 0。线性两遍，空间常数。\n我们可以从左到右遍历数组，维护一个最大值 mx，如果当前值小于 mx，说明当前值不在正确的位置上，我们更新右边界 r 为当前位置。同理，我们可以从右到左遍历数组，维护一个最小值 mi，如果当前值大于 mi，说明当前值不在正确的位置上，我们更新左边界 l 为当前位置。在初始化时，我们将 l 和 r 都初始化为 -1，如果 l 和 r 都没有被更新，说明数组已经有序，返回 0，否则返回 r - l + 1。\npython\nclass Solution:\ndef findUnsortedSubarray(self, nums: List[int]) -> int:\nmi, mx = inf, -inf\nl = r = -1\nn = len(nums)\nfor i, x in enumerate(nums):\nif mx > x:\nr = i\nelse:\nmx = x\nif mi < nums[n - i - 1]:\nl = n - i - 1\nelse:\nmi = nums[n - i - 1]\nreturn 0 if r == -1 else r - l + 1\njava\nclass Solution {\npublic int findUnsortedSubarray(int[] nums) {\nfinal int inf = 1 << 30;\nint n = nums.length;\nin",
-      "complexity": "时间复杂度 $O(n)$其中 $n$ 是数组的长度空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "approach": "排序多花了对数因子。从左扫，一旦当前值小于左侧最大值，它就必须落入待排序区间，右端点持续更新；从右扫则用右侧最小值更新左端点。\n两端初值为 -1，若右端从未更新则返回 0。线性两遍，空间常数。\n我们可以从左到右遍历数组，维护一个最大值 mx，如果当前值小于 mx，说明当前值不在正确的位置上，我们更新右边界 r 为当前位置。同理，我们可以从右到左遍历数组，维护一个最小值 mi，如果当前值大于 mi，说明当前值不在正确的位置上，我们更新左边界 l 为当前位置。在初始化时，我们将 l 和 r 都初始化为 -1，如果 l 和 r 都没有被更新，说明数组已经有序，返回 0，否则返回 r - l + 1。",
+      "complexity": "时间复杂度 O(n)其中 n 是数组的长度 / 空间复杂度 O(1)",
       "javaSnippet": "class Solution {\n    public int findUnsortedSubarray(int[] nums) {\n        final int inf = 1 << 30;\n        int n = nums.length;\n        int l = -1, r = -1;\n        int mi = inf, mx = -inf;\n        for (int i = 0; i < n; ++i) {\n            if (mx > nums[i]) {\n                r = i;\n            } else {\n                mx = nums[i];\n            }\n            if (mi < nums[n - i - 1]) {\n                l = n - i - 1;\n            } else {\n                mi = nums[n - i - 1];\n            }\n        }\n        return r == -1 ? 0 : r - l + 1;\n    }\n}"
     },
     "keywords": [
@@ -119,5 +119,25 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[2,6,4,8,10,9,15]"
+      ],
+      "expected": "5"
+    },
+    {
+      "input": [
+        "[1,2,3,4]"
+      ],
+      "expected": "0"
+    },
+    {
+      "input": [
+        "[1]"
+      ],
+      "expected": "0"
+    }
+  ]
 }

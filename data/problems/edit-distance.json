@@ -41,14 +41,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：动态规划",
-      "approach": "把 word1 变成 word2，每次只能插入、删除或替换一个字符。若在每个位置尝试三种操作并递归处理剩余部分，同一对前缀会被不同路径反复求解，m, n <= 500 时时间无法接受。\n同一对前缀的最少操作数与到达路径无关，因此可以按前缀长度递推。定义 f[i][j] 为将 word1 前 i 个字符变成 word2 前 j 个字符的最少操作数：末尾字符相同则无需改动；否则三种操作分别对应删除、插入与替换，取最小值即可。空串到另一串只能全部删除或全部插入。按 i、j 递增填表，f[m][n] 即为答案。\n我们定义 f[i][j] 表示将 word1 的前 i 个字符转换成 word2 的前 j 个字符所使用的最少操作数。初始时 f[i][0] = i, f[0][j] = j。其中 i \\in [1, m], j \\in [0, n]。\n考虑 f[i][j]：\n- 如果 word1[i - 1] = word2[j - 1]，那么我们只需要考虑将 word1 的前 i - 1 个字符转换成 word2 的前 j - 1 个字符所使用的最少操作数，因此 f[i][j] = f[i - 1][j - 1]；\n- 否则，我们可以考虑插入、删除、替换操作，那么 f[i][j] = \\min(f[i - 1][j], f[i][j - 1], f[i - 1][j - 1]) + 1。\n综上，我们可以得到状态转移方程：\nf[i][j] = \\begin{cases}\ni, & \\textit{if } j = 0 \\\\\nj, & \\textit{if } i = 0 \\\\\nf[i - 1",
-      "complexity": "时间复杂度 $O(m \\times n)$空间复杂度 $O(m \\times n)$其中 $m$ 和 $n$ 分别是 $word1$ 和 $word2$ 的长度 / 空间复杂度 $O(m \\times n)$其中 $m$ 和 $n$ 分别是 $word1$ 和 $word2$ 的长度",
+      "approach": "把 word1 变成 word2，每次只能插入、删除或替换一个字符。若在每个位置尝试三种操作并递归处理剩余部分，同一对前缀会被不同路径反复求解，m, n\n同一对前缀的最少操作数与到达路径无关，因此可以按前缀长度递推。定义 f[i][j] 为将 word1 前 i 个字符变成 word2 前 j 个字符的最少操作数：末尾字符相同则无需改动；否则三种操作分别对应删除、插入与替换，取最小值即可。空串到另一串只能全部删除或全部插入。按 i、j 递增填表，f[m][n] 即为答案。\n我们定义 f[i][j] 表示将 word1 的前 i 个字符转换成 word2 的前 j 个字符所使用的最少操作数。初始时 f[i][0] = i, f[0][j] = j。其中 i \\in [1, m], j \\in [0, n]。\n考虑 f[i][j]：\n- 如果 word1[i - 1] = word2[j - 1]，那么我们只需要考虑将 word1 的前 i - 1 个字符转换成 word2 的前 j - 1 个字符所使用的最少操作数，因此 f[i][j] = f[i - 1][j - 1]；\n- 否则，我们可以考虑插入、删除、替换操作，那么 f[i][j] = min(f[i - 1][j], f[i][j - 1], f[i - 1][j - 1]) + 1。\n综上，我们可以得到状态转移方程：\nf[i][j] =\n最后，我们返回 f[m][n] 即可。",
+      "complexity": "时间复杂度 O(m x n) / 空间复杂度 O(m x n)其中 m 和 n 分别是 word1 和 word2 的长度",
       "javaSnippet": "class Solution {\n    public int minDistance(String word1, String word2) {\n        int m = word1.length(), n = word2.length();\n        int[][] f = new int[m + 1][n + 1];\n        for (int j = 1; j <= n; ++j) {\n            f[0][j] = j;\n        }\n        for (int i = 1; i <= m; ++i) {\n            f[i][0] = i;\n            for (int j = 1; j <= n; ++j) {\n                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {\n                    f[i][j] = f[i - 1][j - 1];\n                } else {\n                    f[i][j] = Math.min(f[i - 1][j], Math.min(f[i][j - 1], f[i - 1][j - 1])) + 1;\n                }\n            }\n        }\n        return f[m][n];\n    }\n}"
     },
     "memory": {
-      "title": "枚举子串 + 计数",
-      "approach": "枚举字符串所有起点，逐步扩展右端点并维护计数，扩展过程中判断是否满足条件；写起来直观。",
-      "complexity": "O(n^2) 时间 / O(字符集) 空间",
+      "title": "题解直出记忆版",
+      "approach": "优先背题解里这段最直白的 Java 实现：记住容器/指针/状态变量，主流程结束后补返回值与边界。想先保正确性时，可以先用文字里的兜底思路过一遍再优化。",
+      "complexity": "以代码注释与题解为准",
       "javaSnippet": "public int minDistance(String word1, String word2) {\n    int m = word1.length();\n    int n = word2.length();\n    int[][] dp = new int[m + 1][n + 1];\n    // 初始化\n    for (int i = 1; i <= m; i++) {\n        dp[i][0] =  i;\n    }\n    for (int j = 1; j <= n; j++) {\n        dp[0][j] = j;\n    }\n    for (int i = 1; i <= m; i++) {\n        for (int j = 1; j <= n; j++) {\n            // 因为dp数组有效位从1开始\n            // 所以当前遍历到的字符串的位置为i-1 | j-1\n            if (word1.charAt(i - 1) == word2.charAt(j - 1)) {\n                dp[i][j] = dp[i - 1][j - 1];\n            } else {\n                dp[i][j] = Math.min(Math.min(dp[i - 1][j - 1], dp[i][j - 1]), dp[i - 1][j]) + 1;\n            }\n        }\n    }\n    return dp[m][n];\n}"
     },
     "keywords": [
@@ -95,5 +95,21 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "\"horse\"",
+        "\"ros\""
+      ],
+      "expected": "3"
+    },
+    {
+      "input": [
+        "\"intention\"",
+        "\"execution\""
+      ],
+      "expected": "5"
+    }
+  ]
 }

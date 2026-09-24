@@ -49,15 +49,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：模拟",
-      "approach": "题目已经将个位放在链表头部，按位逆序存放，本质上就是竖式加法。若先把链表转成整数再相加，反而绕开了这一结构，也需要处理大整数。\n两条链的长度可能不同，最高位还可能产生额外进位。每一位都是「当前两位数字（缺省为 0）与进位 carry 之和」，再拆出个位和新的进位。从哑节点依次接上答案节点，两个指针同步前进；循环条件应为 l_1、l_2 或 carry 仍未结束，否则像 [9] + [1] 这样的情况会丢失最后的进位。\n我们同时遍历两个链表 l_1 和 l_2，并使用变量 carry 表示当前是否有进位。\n每次遍历时，我们取出对应链表的当前位，计算它们与进位 carry 的和，然后更新进位的值，最后将当前位的值加入答案链表。如果两个链表都遍历完了，并且进位为 0 时，遍历结束。\n最后我们返回答案链表的头节点即可。\npython\nDefinition for singly-linked list.\nclass ListNode:\ndef __init__(self, val=0, next=None):\nself.val = val\nself.next = next\nclass Solution:\ndef addTwoNumbers(\nself, l1: Optional[ListNode], l2: Optional[ListNode]\n) -> Optional[ListNode]:\ndummy = ListNode()\ncarry, curr = 0, dummy\nwhile l1 or l2 or carry:\ns = (l1.val if l1 else 0) + (l2",
-      "complexity": "时间复杂度 $O(\\max(m n))$其中 $m$ 和 $n$ 分别为两个链表的长度我们需要遍历两个链表的全部位置而处理每个位置只需要 $O(1)$ 的时间忽略答案的空间消耗空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "approach": "题目已经将个位放在链表头部，按位逆序存放，本质上就是竖式加法。若先把链表转成整数再相加，反而绕开了这一结构，也需要处理大整数。\n两条链的长度可能不同，最高位还可能产生额外进位。每一位都是「当前两位数字（缺省为 0）与进位 carry 之和」，再拆出个位和新的进位。从哑节点依次接上答案节点，两个指针同步前进；循环条件应为 l_1、l_2 或 carry 仍未结束，否则像 [9] + [1] 这样的情况会丢失最后的进位。\n我们同时遍历两个链表 l_1 和 l_2，并使用变量 carry 表示当前是否有进位。\n每次遍历时，我们取出对应链表的当前位，计算它们与进位 carry 的和，然后更新进位的值，最后将当前位的值加入答案链表。如果两个链表都遍历完了，并且进位为 0 时，遍历结束。\n最后我们返回答案链表的头节点即可。",
+      "complexity": "时间复杂度 O(max(m n))其中 m 和 n 分别为两个链表的长度我们需要遍历两个链表的全部位置而处理每个位置只需要 O(1) 的时间忽略答案的空间消耗 / 空间复杂度 O(1)",
       "javaSnippet": "/**\n * Definition for singly-linked list.\n * public class ListNode {\n *     int val;\n *     ListNode next;\n *     ListNode() {}\n *     ListNode(int val) { this.val = val; }\n *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }\n * }\n */\nclass Solution {\n    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {\n        ListNode dummy = new ListNode(0);\n        int carry = 0;\n        ListNode cur = dummy;\n        while (l1 != null || l2 != null || carry != 0) {\n            int s = (l1 == null ? 0 : l1.val) + (l2 == null ? 0 : l2.val) + carry;\n            carry = s / 10;\n            cur.next = new ListNode(s % 10);\n            cur = cur.next;\n            l1 = l1 == null ? null : l1.next;\n            l2 = l2 == null ? null : l2.next;\n        }\n        return dummy.next;\n    }\n}"
     },
     "memory": {
-      "title": "转数组再处理",
-      "approach": "先遍历链表把值放入数组，用数组完成判断或计算，再按需重建链表；逻辑直观，面试中可先给该解法。",
-      "complexity": "O(n) 时间 / O(n) 空间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：模拟」拆成三步记忆：第一步定核心结构（递归三要素、虚拟头节点、快慢指针、数学归纳），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "时间复杂度 O(max(m n))其中 m 和 n 分别为两个链表的长度我们需要遍历两个链表的全部位置而处理每个位置只需要 O(1) 的时间忽略答案的空间消耗 / 空间复杂度 O(1)",
+      "javaSnippet": "/**\n * Definition for singly-linked list.\n * public class ListNode {\n *     int val;\n *     ListNode next;\n *     ListNode() {}\n *     ListNode(int val) { this.val = val; }\n *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }\n * }\n */\nclass Solution {\n    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {\n        ListNode dummy = new ListNode(0);\n        int carry = 0;\n        ListNode cur = dummy;\n        while (l1 != null || l2 != null || carry != 0) {\n            int s = (l1 == null ? 0 : l1.val) + (l2 == null ? 0 : l2.val) + carry;\n            carry = s / 10;\n            cur.next = new ListNode(s % 10);\n            cur = cur.next;\n            l1 = l1 == null ? null : l1.next;\n            l2 = l2 == null ? null : l2.next;\n        }\n        return dummy.next;\n    }\n}"
     },
     "keywords": [
       "两数相加",
@@ -99,5 +99,28 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[2,4,3]",
+        "[5,6,4]"
+      ],
+      "expected": "[7,0,8]"
+    },
+    {
+      "input": [
+        "[0]",
+        "[0]"
+      ],
+      "expected": "[0]"
+    },
+    {
+      "input": [
+        "[9,9,9,9,9,9,9]",
+        "[9,9,9,9]"
+      ],
+      "expected": "[8,9,9,9,0,0,0,1]"
+    }
+  ]
 }

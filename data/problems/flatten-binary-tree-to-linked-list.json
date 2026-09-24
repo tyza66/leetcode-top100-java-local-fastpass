@@ -55,15 +55,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：寻找前驱节点",
-      "approach": "先序展开可以用递归或栈先建出新链，但进阶要求 O(1) 额外空间且原地修改。n <= 2000。\n先序中，左子树走完后的下一个节点就是原右子树的根。左子树最右节点恰是这段的前驱：把它的右指针接到原右子树，再把左子树整体接到当前右指针上并清空左指针。沿右链继续，无需递归栈。\n先序遍历的访问顺序是“根、左子树、右子树”，左子树最后一个节点访问完后，接着会访问根节点的右子树节点。\n因此，对于当前节点，如果其左子节点不为空，我们找到左子树的最右节点，作为前驱节点，然后将当前节点的右子节点赋给前驱节点的右子节点。然后将当前节点的左子节点赋给当前节点的右子节点，并将当前节点的左子节点置为空。然后将当前节点的右子节点作为下一个节点，继续处理，直至所有节点处理完毕。\npython\nDefinition for a binary tree node.\nclass TreeNode:\ndef __init__(self, val=0, left=None, right=None):\nself.val = val\nself.left = left\nself.right = right\nclass Solution:\ndef flatten(self, root: Optional[TreeNode]) -> None:\n\"\"\"\nDo not return anything, modify root in-place instead.\n\"\"\"\nwhile root:\nif root.left:\npre = root.left\nwhile pre.right:\npre = pre.right\npre.r",
-      "complexity": "时间复杂度 $O(n)$其中 $n$ 是树中节点的个数空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "approach": "先序展开可以用递归或栈先建出新链，但进阶要求 O(1) 额外空间且原地修改。n\n先序中，左子树走完后的下一个节点就是原右子树的根。左子树最右节点恰是这段的前驱：把它的右指针接到原右子树，再把左子树整体接到当前右指针上并清空左指针。沿右链继续，无需递归栈。\n先序遍历的访问顺序是“根、左子树、右子树”，左子树最后一个节点访问完后，接着会访问根节点的右子树节点。\n因此，对于当前节点，如果其左子节点不为空，我们找到左子树的最右节点，作为前驱节点，然后将当前节点的右子节点赋给前驱节点的右子节点。然后将当前节点的左子节点赋给当前节点的右子节点，并将当前节点的左子节点置为空。然后将当前节点的右子节点作为下一个节点，继续处理，直至所有节点处理完毕。",
+      "complexity": "时间复杂度 O(n)其中 n 是树中节点的个数 / 空间复杂度 O(1)",
       "javaSnippet": "/**\n * Definition for a binary tree node.\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n *     TreeNode() {}\n *     TreeNode(int val) { this.val = val; }\n *     TreeNode(int val, TreeNode left, TreeNode right) {\n *         this.val = val;\n *         this.left = left;\n *         this.right = right;\n *     }\n * }\n */\nclass Solution {\n    public void flatten(TreeNode root) {\n        while (root != null) {\n            if (root.left != null) {\n                // 找到当前节点左子树的最右节点\n                TreeNode pre = root.left;\n                while (pre.right != null) {\n                    pre = pre.right;\n                }\n\n                // 将左子树的最右节点指向原来的右子树\n                pre.right = root.right;\n\n                // 将当前节点指向左子树\n                root.right = root.left;\n                root.left = null;\n            }\n            root = root.right;\n        }\n    }\n}"
     },
     "memory": {
       "title": "方法二",
-      "approach": "方法一已经是 O(1) 空间的前驱拼接。本写法只是同一过程的另一种实现：先取出左右孩子，再把左子树接到右侧、最右节点接回原右子树，沿右指针前进。\ngo\n/\n* Definition for a binary tree node.\n* type TreeNode struct {\n*     Val int\n*     Left *TreeNode\n*     Right *TreeNode\n* }\n*/\nfunc flatten(root *TreeNode) {\nfor root != nil {\nleft, right := root.Left, root.Right\nroot.Left = nil\nif left != nil {\nroot.Right = left\nfor left.Right != nil {\nleft = left.Right\n}\nleft.Right = right\n}\nroot = root.Right\n}\n}",
+      "approach": "方法一已经是 O(1) 空间的前驱拼接。本写法只是同一过程的另一种实现：先取出左右孩子，再把左子树接到右侧、最右节点接回原右子树，沿右指针前进。",
       "complexity": "O(1)",
-      "javaSnippet": ""
+      "javaSnippet": "/**\n * Definition for a binary tree node.\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n *     TreeNode() {}\n *     TreeNode(int val) { this.val = val; }\n *     TreeNode(int val, TreeNode left, TreeNode right) {\n *         this.val = val;\n *         this.left = left;\n *         this.right = right;\n *     }\n * }\n */\nclass Solution {\n    public void flatten(TreeNode root) {\n        while (root != null) {\n            if (root.left != null) {\n                // 找到当前节点左子树的最右节点\n                TreeNode pre = root.left;\n                while (pre.right != null) {\n                    pre = pre.right;\n                }\n\n                // 将左子树的最右节点指向原来的右子树\n                pre.right = root.right;\n\n                // 将当前节点指向左子树\n                root.right = root.left;\n                root.left = null;\n            }\n            root = root.right;\n        }\n    }\n}"
     },
     "keywords": [
       "二叉树展开为链表",
@@ -117,5 +117,25 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[1,2,5,3,4,null,6]"
+      ],
+      "expected": "[1,null,2,null,3,null,4,null,5,null,6]"
+    },
+    {
+      "input": [
+        "[]"
+      ],
+      "expected": "[]"
+    },
+    {
+      "input": [
+        "[0]"
+      ],
+      "expected": "[0]"
+    }
+  ]
 }

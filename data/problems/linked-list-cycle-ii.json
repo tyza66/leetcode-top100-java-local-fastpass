@@ -68,15 +68,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：快慢指针",
-      "approach": "不但要判断有环，还要返回入环节点。哈希表记下首次出现的节点即可，但进阶要 O(1) 空间。n<= 10^4。\n快慢指针相遇后，一个指针回到头、另一个留在相遇点，两者同速前进，相遇处即入口：头到入口的距离等于相遇点再走回入口的距离。\n我们先利用快慢指针判断链表是否有环，如果有环的话，快慢指针一定会相遇，且相遇的节点一定在环中。\n如果没有环，快指针会先到达链表尾部，直接返回 null 即可。\n如果有环，我们再定义一个答案指针 ans 指向链表头部，然后让 ans 和慢指针一起向前走，每次走一步，直到 ans 和慢指针相遇，相遇的节点即为环的入口节点。\n为什么这样能找到环的入口节点呢？\n我们不妨假设链表头节点到环入口的距离为 x，环入口到相遇节点的距离为 y，相遇节点到环入口的距离为 z，那么慢指针走过的距离为 x + y，快指针走过的距离为 x + y + k x (y + z)，其中 k 是快指针在环中绕了 k 圈。\n<p><img src=\"https://fastly.jsdelivr.net/gh/doocs/leetcode@main/solution/0100-0199/0142.Linked%20List%20Cycle%20II/images/linked-list-cycle-ii.png\" /></p>\n由于快指针速度是慢指针的 2 倍，因此有 2 x (x + y) = x + y + k x (y + z)，可以推出 x + y = k x (y + z)，即 x = (k - 1) x (y + z) + z。\n也即是说，如果我们定义一个答案指针 ans ",
-      "complexity": "时间复杂度 $O(n)$其中 $n$ 是链表中节点的数目空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "approach": "不但要判断有环，还要返回入环节点。哈希表记下首次出现的节点即可，但进阶要 O(1) 空间。n\n快慢指针相遇后，一个指针回到头、另一个留在相遇点，两者同速前进，相遇处即入口：头到入口的距离等于相遇点再走回入口的距离。\n我们先利用快慢指针判断链表是否有环，如果有环的话，快慢指针一定会相遇，且相遇的节点一定在环中。\n如果没有环，快指针会先到达链表尾部，直接返回 null 即可。\n如果有环，我们再定义一个答案指针 ans 指向链表头部，然后让 ans 和慢指针一起向前走，每次走一步，直到 ans 和慢指针相遇，相遇的节点即为环的入口节点。\n为什么这样能找到环的入口节点呢？\n我们不妨假设链表头节点到环入口的距离为 x，环入口到相遇节点的距离为 y，相遇节点到环入口的距离为 z，那么慢指针走过的距离为 x + y，快指针走过的距离为 x + y + k x (y + z)，其中 k 是快指针在环中绕了 k 圈。\n由于快指针速度是慢指针的 2 倍，因此有 2 x (x + y) = x + y + k x (y + z)，可以推出 x + y = k x (y + z)，即 x = (k - 1) x (y + z) + z。\n也即是说，如果我们定义一个答案指针 ans 指向链表头部，然后 ans 和慢指针一起向前走，那么它们一定会在环入口相遇。",
+      "complexity": "时间复杂度 O(n)其中 n 是链表中节点的数目 / 空间复杂度 O(1)",
       "javaSnippet": "/**\n * Definition for singly-linked list.\n * class ListNode {\n *     int val;\n *     ListNode next;\n *     ListNode(int x) {\n *         val = x;\n *         next = null;\n *     }\n * }\n */\npublic class Solution {\n    public ListNode detectCycle(ListNode head) {\n        ListNode fast = head, slow = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) {\n                ListNode ans = head;\n                while (ans != slow) {\n                    ans = ans.next;\n                    slow = slow.next;\n                }\n                return ans;\n            }\n        }\n        return null;\n    }\n}"
     },
     "memory": {
-      "title": "暴力查找（兜底）",
-      "approach": "第一层枚举一个元素，第二层线性扫描找目标对应元素；每轮用下标与元素关系做去重。",
-      "complexity": "O(n^2) 时间 / O(1) 空间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：快慢指针」拆成三步记忆：第一步定核心结构（HashMap / HashSet、冲突与扩容、虚拟头节点、快慢指针、双指针、边界处理），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "时间复杂度 O(n)其中 n 是链表中节点的数目 / 空间复杂度 O(1)",
+      "javaSnippet": "/**\n * Definition for singly-linked list.\n * class ListNode {\n *     int val;\n *     ListNode next;\n *     ListNode(int x) {\n *         val = x;\n *         next = null;\n *     }\n * }\n */\npublic class Solution {\n    public ListNode detectCycle(ListNode head) {\n        ListNode fast = head, slow = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) {\n                ListNode ans = head;\n                while (ans != slow) {\n                    ans = ans.next;\n                    slow = slow.next;\n                }\n                return ans;\n            }\n        }\n        return null;\n    }\n}"
     },
     "keywords": [
       "环形链表 II",
@@ -129,5 +129,28 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[3,2,0,-4]",
+        "1"
+      ],
+      "expected": "2"
+    },
+    {
+      "input": [
+        "[1,2]",
+        "0"
+      ],
+      "expected": "1"
+    },
+    {
+      "input": [
+        "[1]",
+        "-1"
+      ],
+      "expected": "null"
+    }
+  ]
 }

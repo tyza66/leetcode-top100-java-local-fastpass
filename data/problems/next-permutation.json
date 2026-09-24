@@ -40,14 +40,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：两次遍历",
-      "approach": "若生成全部排列再取当前序列的后继，时间复杂度为 O(n!)。n <= 100，无法通过，且题目要求原地修改、仅使用常数额外空间。\n我们并不需要全集，只需字典序中紧邻的下一个。下一个排列必须严格大于当前序列，且改动应尽量靠右、幅度尽量小。\n注意到，最长降序后缀已经是该段能排出的最大形态；它左侧的 nums[i] 才是需要抬高的枢轴。后缀里刚好比 nums[i] 大的数位于最右侧，交换后再将后缀翻成升序，改动便落在最右边。若整段均为降序，则不存在更大的排列，反转即回到最小排列。\n我们先从后往前遍历数组 nums，找到第一个满足 nums[i] \\lt nums[i + 1] 的位置 i，那么 nums[i] 就是我们需要交换的元素，而 nums[i + 1] 到 nums[n - 1] 的元素是一个降序序列。\n接下来，我们再从后往前遍历数组 nums，找到第一个满足 nums[j] \\gt nums[i] 的位置 j，然后我们交换 nums[i] 和 nums[j]。最后，我们将 nums[i + 1] 到 nums[n - 1] 的元素反转，即可得到下一个排列。\npython\nclass Solution:\ndef nextPermutation(self, nums: List[int]) -> None:\nn = len(nums)\ni = next((i for i in range(n - 2, -1, -1) if nums[i] < nums[i + 1]), -1)\nif ~i:\nj = next((j for j in range(n - 1, i, -1) if",
-      "complexity": "时间复杂度 为 $O(n!)$$n \\le 100$无法通过且题目要求原地修改、仅使用常数额外空间 / 空间复杂度 $O(1)$其中 $n$ 为数组的长度",
+      "approach": "若生成全部排列再取当前序列的后继，时间复杂度为 O(n!)。n\n我们并不需要全集，只需字典序中紧邻的下一个。下一个排列必须严格大于当前序列，且改动应尽量靠右、幅度尽量小。\n注意到，最长降序后缀已经是该段能排出的最大形态；它左侧的 nums[i] 才是需要抬高的枢轴。后缀里刚好比 nums[i] 大的数位于最右侧，交换后再将后缀翻成升序，改动便落在最右边。若整段均为降序，则不存在更大的排列，反转即回到最小排列。\n我们先从后往前遍历数组 nums，找到第一个满足 nums[i] \\lt nums[i + 1] 的位置 i，那么 nums[i] 就是我们需要交换的元素，而 nums[i + 1] 到 nums[n - 1] 的元素是一个降序序列。\n接下来，我们再从后往前遍历数组 nums，找到第一个满足 nums[j] \\gt nums[i] 的位置 j，然后我们交换 nums[i] 和 nums[j]。最后，我们将 nums[i + 1] 到 nums[n - 1] 的元素反转，即可得到下一个排列。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(1)其中 n 为数组的长度",
       "javaSnippet": "class Solution {\n    public void nextPermutation(int[] nums) {\n        int n = nums.length;\n        int i = n - 2;\n        for (; i >= 0; --i) {\n            if (nums[i] < nums[i + 1]) {\n                break;\n            }\n        }\n        if (i >= 0) {\n            for (int j = n - 1; j > i; --j) {\n                if (nums[j] > nums[i]) {\n                    swap(nums, i, j);\n                    break;\n                }\n            }\n        }\n\n        for (int j = i + 1, k = n - 1; j < k; ++j, --k) {\n            swap(nums, j, k);\n        }\n    }\n\n    private void swap(int[] nums, int i, int j) {\n        int t = nums[j];\n        nums[j] = nums[i];\n        nums[i] = t;\n    }\n}"
     },
     "memory": {
-      "title": "暴力枚举（兜底）",
-      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
-      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
+      "title": "题解直出记忆版",
+      "approach": "优先背题解里这段最直白的 Java 实现：记住容器/指针/状态变量，主流程结束后补返回值与边界。想先保正确性时，可以先用文字里的兜底思路过一遍再优化。",
+      "complexity": "以代码注释与题解为准",
       "javaSnippet": "class Solution {\n    public void nextPermutation(int[] nums) {\n        for (int i = nums.length - 1; i >= 0; i--) {\n            for (int j = nums.length - 1; j > i; j--) {\n                if (nums[j] > nums[i]) {\n                    // 交换\n                    int temp = nums[i];\n                    nums[i] = nums[j];\n                    nums[j] = temp;\n                    // [i + 1, nums.length) 内元素升序排序\n                    Arrays.sort(nums, i + 1, nums.length);\n                    return;\n                }\n            }\n        }\n        Arrays.sort(nums); // 不存在下一个更大的排列，则将数字重新排列成最小的排列（即升序排列）。\n    }\n}"
     },
     "keywords": [
@@ -81,5 +81,25 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[1,2,3]"
+      ],
+      "expected": "[1,3,2]"
+    },
+    {
+      "input": [
+        "[3,2,1]"
+      ],
+      "expected": "[1,2,3]"
+    },
+    {
+      "input": [
+        "[1,1,5]"
+      ],
+      "expected": "[1,5,1]"
+    }
+  ]
 }

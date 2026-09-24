@@ -46,15 +46,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：哈希表 + 前缀和 + 递归",
-      "approach": "路径必须向下，枚举每个祖先再向下扫描是 O(n^2)。路径和等于 \\textit{targetSum} 可改写成「当前前缀和减去某个祖先前缀和」。\n先序累加前缀和 s，用哈希表统计根到当前结点的前缀出现次数，\\textit{cnt}[s-\\textit{targetSum}] 即以此为终点的合法路径数。回溯时撤销 s，避免把另一条分支算进来。\n初始 \\textit{cnt}[0]=1，对应从根出发整段刚好等于目标。先查询再插入，路径不含「当前结点用两次」。\n我们可以运用前缀和的思想，对二叉树进行递归遍历，同时用哈希表 \\textit{cnt} 统计从根节点到当前节点的路径上各个前缀和出现的次数。\n我们设计一个递归函数 \\textit{dfs(node, s)}，表示当前遍历到的节点为 \\textit{node}，从根节点到当前节点的路径上的前缀和为 s。函数的返回值是统计以 \\textit{node} 节点及其子树节点作为路径终点且路径和为 \\textit{targetSum} 的路径数目。那么答案就是 \\textit{dfs(root, 0)}。\n函数 \\textit{dfs(node, s)} 的递归过程如下：\n- 如果当前节点 \\textit{node} 为空，则返回 0。\n- 计算从根节点到当前节点的路径上的前缀和 s。\n- 用 \\textit{cnt}[s - \\textit{targetSum}] 表示以当前节点为路径终点且路径和为 \\textit{targetSum} 的路径数目，其中 \\textit{cnt}[s - \\textit{targetSum}] 即为",
-      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(n)$其中 $n$ 是二叉树的节点个数 / 空间复杂度 $O(n)$其中 $n$ 是二叉树的节点个数",
+      "approach": "路径必须向下，枚举每个祖先再向下扫描是 O(n^2)。路径和等于 targetSum 可改写成「当前前缀和减去某个祖先前缀和」。\n先序累加前缀和 s，用哈希表统计根到当前结点的前缀出现次数，cnt[s-targetSum] 即以此为终点的合法路径数。回溯时撤销 s，避免把另一条分支算进来。\n初始 cnt[0]=1，对应从根出发整段刚好等于目标。先查询再插入，路径不含「当前结点用两次」。\n我们可以运用前缀和的思想，对二叉树进行递归遍历，同时用哈希表 cnt 统计从根节点到当前节点的路径上各个前缀和出现的次数。\n我们设计一个递归函数 dfs(node, s)，表示当前遍历到的节点为 node，从根节点到当前节点的路径上的前缀和为 s。函数的返回值是统计以 node 节点及其子树节点作为路径终点且路径和为 targetSum 的路径数目。那么答案就是 dfs(root, 0)。\n函数 dfs(node, s) 的递归过程如下：\n- 如果当前节点 node 为空，则返回 0。\n- 计算从根节点到当前节点的路径上的前缀和 s。\n- 用 cnt[s - targetSum] 表示以当前节点为路径终点且路径和为 targetSum 的路径数目，其中 cnt[s - targetSum] 即为 cnt 中前缀和为 s - targetSum 的个数。\n- 将前缀和 s 的计数值加 1，即 cnt[s] = cnt[s] + 1。\n- 递归地遍历当前节点的左右子节点，即调用函数 dfs(node.left, s) 和 dfs(node.right, s)，并将它们的返回值相加。\n- 在返回值计算",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(n)其中 n 是二叉树的节点个数",
       "javaSnippet": "/**\n * Definition for a binary tree node.\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n *     TreeNode() {}\n *     TreeNode(int val) { this.val = val; }\n *     TreeNode(int val, TreeNode left, TreeNode right) {\n *         this.val = val;\n *         this.left = left;\n *         this.right = right;\n *     }\n * }\n */\nclass Solution {\n    private Map<Long, Integer> cnt = new HashMap<>();\n    private int targetSum;\n\n    public int pathSum(TreeNode root, int targetSum) {\n        cnt.put(0L, 1);\n        this.targetSum = targetSum;\n        return dfs(root, 0);\n    }\n\n    private int dfs(TreeNode node, long s) {\n        if (node == null) {\n            return 0;\n        }\n        s += node.val;\n        int ans = cnt.getOrDefault(s - targetSum, 0);\n        cnt.merge(s, 1, Integer::sum);\n        ans += dfs(node.left, s);\n        ans += dfs(node.right, s);\n        cnt.merge(s, -1, Integer::sum);\n        return ans;\n    }\n}"
     },
     "memory": {
-      "title": "递归暴力遍历",
-      "approach": "对每个节点执行一次以它为根的完整遍历，把所有子树统计结果汇总；思路简单，适合小规模树。",
-      "complexity": "最坏 O(n^2) 时间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：哈希表 + 前缀和 + 递归」拆成三步记忆：第一步定核心结构（DFS 框架、访问标记、树的三种遍历、递归返回值设计），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(n)其中 n 是二叉树的节点个数",
+      "javaSnippet": "/**\n * Definition for a binary tree node.\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n *     TreeNode() {}\n *     TreeNode(int val) { this.val = val; }\n *     TreeNode(int val, TreeNode left, TreeNode right) {\n *         this.val = val;\n *         this.left = left;\n *         this.right = right;\n *     }\n * }\n */\nclass Solution {\n    private Map<Long, Integer> cnt = new HashMap<>();\n    private int targetSum;\n\n    public int pathSum(TreeNode root, int targetSum) {\n        cnt.put(0L, 1);\n        this.targetSum = targetSum;\n        return dfs(root, 0);\n    }\n\n    private int dfs(TreeNode node, long s) {\n        if (node == null) {\n            return 0;\n        }\n        s += node.val;\n        int ans = cnt.getOrDefault(s - targetSum, 0);\n        cnt.merge(s, 1, Integer::sum);\n        ans += dfs(node.left, s);\n        ans += dfs(node.right, s);\n        cnt.merge(s, -1, Integer::sum);\n        return ans;\n    }\n}"
     },
     "keywords": [
       "路径总和 III",
@@ -98,5 +98,21 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[10,5,-3,3,2,null,11,3,-2,null,1]",
+        "8"
+      ],
+      "expected": "3"
+    },
+    {
+      "input": [
+        "[5,4,8,11,null,13,4,7,2,null,null,5,1]",
+        "22"
+      ],
+      "expected": "3"
+    }
+  ]
 }

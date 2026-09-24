@@ -3,40 +3,91 @@ import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { TECH_BY_TOPIC, MEMORY_FALLBACK_BY_TOPIC, PITFALLS_BY_TOPIC, TOPIC_CN } from '../data/hints/base-tech.mjs'
 
-function clean(text) {
+function cleanMath(text) {
   return String(text)
+    .replace(/<[^>]*>/g, '')
+    .replace(/\\textit\{([^{}]*)\}/g, '$1')
+    .replace(/\\textbf\{([^{}]*)\}/g, '$1')
+    .replace(/\\text\{([^{}]*)\}/g, '$1')
+    .replace(/\\mathrm\{([^{}]*)\}/g, '$1')
+    .replace(/\\begin\{[a-z]+\*?\}[\s\S]*?\\end\{[a-z]+\*?\}/g, '')
+    .replace(/\\min\b/g, 'min')
+    .replace(/\\max\b/g, 'max')
+    .replace(/\\to/g, '->')
+    .replace(/\\le/g, '<=')
+    .replace(/\\ge/g, '>=')
+    .replace(/\\times/g, 'x')
+    .replace(/\\,/g, ' ')
+    .replace(/\$/g, '')
+}
+
+function stripCodeFences(text) {
+  const lines = String(text).split('\n')
+  let inCode = false
+  const out = []
+  for (const line of lines) {
+    if (/^\s*```/.test(line)) {
+      inCode = !inCode
+      continue
+    }
+    if (!inCode) out.push(line)
+  }
+  return out.join('\n')
+}
+
+function clean(text) {
+  return cleanMath(stripCodeFences(text))
     .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/<[^>]*>/g, '')
+    .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
     .replace(/\*\*/g, '')
     .replace(/`/g, '')
     .replace(/^#{1,6}\s*/gm, '')
     .replace(/^\s*>\s?/gm, '')
     .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-    .replace(/\$\{?O\([^)]*\)\}?/g, (m) => m.replace(/\$/g, ''))
-    .replace(/\$/g, '')
-    .replace(/\\to/g, '->')
-    .replace(/\\le/g, '<=')
-    .replace(/\\ge/g, '>=')
-    .replace(/\\times/g, 'x')
     .replace(/\n{3,}/g, '\n\n')
     .trim()
 }
 
+function cleanMathText(text) {
+  return cleanMath(text).trim()
+}
+
 function extractComplexity(text) {
-  const t = /\s*时间复杂度([^\n]*)/.exec(text)
-  const s = /\s*空间复杂度([^\n]*)/.exec(text)
+  const cleaned = cleanMathText(text)
+  const matches = [...cleaned.matchAll(/(?:时间复杂度|空间复杂度)[^\n]*/g)].map((m) => m[0])
+  const target = matches.find((item) => item.includes('空间复杂度')) || matches[matches.length - 1]
+  const timeIndex = target ? target.indexOf('时间复杂度') : -1
+  const spaceIndex = target ? target.indexOf('空间复杂度') : -1
+  const timeText =
+    timeIndex >= 0 ? target.slice(timeIndex + 5, spaceIndex > timeIndex ? spaceIndex : undefined) : ''
+  const spaceText = spaceIndex >= 0 ? target.slice(spaceIndex + 5) : ''
   let out = ''
-  if (t) out += `时间复杂度 ${t[1].replace(/[，,。]/g, '').trim()}`
-  if (s) out += `${out ? ' / ' : ''}空间复杂度 ${s[1].replace(/[。]/g, '').trim()}`
+  if (timeText.trim()) out += `时间复杂度 ${timeText.replace(/[，,。]/g, '').trim()}`
+  if (spaceText.trim()) out += `${out ? ' / ' : ''}空间复杂度 ${spaceText.replace(/[。]/g, '').trim()}`
   if (!out) {
-    const any = /\$*(O\([^)]*\))\$*/.exec(text)
+    const any = /(O\([^)]*\))/.exec(cleaned)
     if (any) out = any[1]
   }
   return out || '按题面约束估计'
 }
 
 function extractJava(body) {
-  const m = /```java\n([\s\S]*?)```/.exec(body)
-  return m ? m[1].trim() : ''
+  const lines = String(body).split('\n')
+  const out = []
+  let capture = false
+  for (const line of lines) {
+    if (/^\s*```\s*(?:java|Java)\s*$/.test(line)) {
+      capture = true
+      continue
+    }
+    if (capture && /^\s*```/.test(line)) {
+      capture = false
+      continue
+    }
+    if (capture) out.push(line)
+  }
+  return out.join('\n').trim()
 }
 
 function extractApproach(body) {
@@ -48,7 +99,7 @@ function extractApproach(body) {
   const out = []
   for (const line of lines) {
     if (/^(时间复杂度|空间复杂度|####|###|##|```)/.test(line)) continue
-    if (/^(Python\d*|Java|C\+\+|Go|TypeScript|Rust|JavaScript|C#|PHP|Swift|Kotlin|Scala|Ruby|C)$/.test(line)) continue
+    if (/^(Python\d*|Java|C\+\+|Go|TypeScript|Rust|JavaScript|C#|PHP|Swift|Kotlin|Scala|Ruby|Nim|Cangjie|C)$/.test(line)) continue
     out.push(line)
   }
   if (out[0] === '思考') out.shift()
@@ -83,6 +134,32 @@ function parseLcm(md) {
 function fallbackMemory(topics) {
   const topic = topics.find((t) => MEMORY_FALLBACK_BY_TOPIC[t.slug])
   return topic ? MEMORY_FALLBACK_BY_TOPIC[topic.slug] : MEMORY_FALLBACK_BY_TOPIC.array
+}
+
+function resolveMemory(problem, optimal, lcm) {
+  const snippet = lcm?.javaSnippets?.[1] ?? lcm?.javaSnippets?.[0] ?? ''
+  if (snippet) {
+    return {
+      title: '题解直出记忆版',
+      approach:
+        '优先背题解里这段最直白的 Java 实现：记住容器/指针/状态变量，主流程结束后补返回值与边界。想先保正确性时，可以先用文字里的兜底思路过一遍再优化。',
+      complexity: '以代码注释与题解为准',
+      javaSnippet: snippet
+    }
+  }
+  if (optimal.javaSnippet) {
+    const techNames = collectTech(problem)
+      .map((item) => item.name)
+      .join('、')
+    return {
+      title: '最优解模板（三步记忆）',
+      approach:
+        `把「${optimal.title}」拆成三步记忆：第一步定核心结构（${techNames}），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。`,
+      complexity: optimal.complexity,
+      javaSnippet: optimal.javaSnippet
+    }
+  }
+  return { ...fallbackMemory(problem.topics), javaSnippet: '' }
 }
 
 function collectTech(problem) {
@@ -145,10 +222,9 @@ export async function runEnrichHints() {
       complexity: '按实现分析',
       javaSnippet: lcm?.javaSnippets?.[0] ?? ''
     }
-    const memory = methods[1] || {
-      ...fallbackMemory(problem.topics),
-      javaSnippet: lcm?.javaSnippets?.[1] ?? lcm?.javaSnippets?.[0] ?? ''
-    }
+    const memory = methods[1]
+      ? { ...methods[1], javaSnippet: methods[1].javaSnippet || optimal.javaSnippet || '' }
+      : resolveMemory(problem, optimal, lcm)
     const hints = {
       optimal: {
         title: optimal.title,

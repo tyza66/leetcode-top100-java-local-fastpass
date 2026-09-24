@@ -61,15 +61,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：贪心 + 构造",
-      "approach": "相同任务之间至少间隔 n，直接模拟时间轴在任务数较大时偏慢，且冷却空档要显式填。\n次数最多的任务决定「框架」：(x-1) 个完整间隔加上最后一批 s 个并列最多者。若任务总数更大，空档会被其余任务填满，故答案取 \\max(m, (x-1)(n+1)+s)。\n不妨设 m 是任务的个数，统计每种任务出现的次数，记录在数组 cnt 中。\n假设出现次数最多的任务为 A，出现次数为 x，则至少需要 (x-1)x(n+1) + 1 个时间单位才能安排完所有任务。如果出现次数最多的任务有 s 个，则需要再加上出现次数最多的任务的个数。\n答案是 \\max ((x-1) x(n+1)+s, m)。\npython\nclass Solution:\ndef leastInterval(self, tasks: List[str], n: int) -> int:\ncnt = Counter(tasks)\nx = max(cnt.values())\ns = sum(v == x for v in cnt.values())\nreturn max(len(tasks), (x - 1) * (n + 1) + s)\njava\nclass Solution {\npublic int leastInterval(char[] tasks, int n) {\nint[] cnt = new int[26];\nint x = 0;\nfor (char c : tasks) {\nc -= 'A';\n++cnt[c];\nx = Math.max(x, cnt[c]);\n}\nint s = 0;\nfor (int v ",
-      "complexity": "时间复杂度 $O(m+|\\Sigma|)$其中 $|\\Sigma|$ 是任务的种类数",
+      "approach": "相同任务之间至少间隔 n，直接模拟时间轴在任务数较大时偏慢，且冷却空档要显式填。\n次数最多的任务决定「框架」：(x-1) 个完整间隔加上最后一批 s 个并列最多者。若任务总数更大，空档会被其余任务填满，故答案取 max(m, (x-1)(n+1)+s)。\n不妨设 m 是任务的个数，统计每种任务出现的次数，记录在数组 cnt 中。\n假设出现次数最多的任务为 A，出现次数为 x，则至少需要 (x-1)x(n+1) + 1 个时间单位才能安排完所有任务。如果出现次数最多的任务有 s 个，则需要再加上出现次数最多的任务的个数。\n答案是 max ((x-1) x(n+1)+s, m)。",
+      "complexity": "时间复杂度 O(m+|\\Sigma|)其中 |\\Sigma| 是任务的种类数",
       "javaSnippet": "class Solution {\n    public int leastInterval(char[] tasks, int n) {\n        int[] cnt = new int[26];\n        int x = 0;\n        for (char c : tasks) {\n            c -= 'A';\n            ++cnt[c];\n            x = Math.max(x, cnt[c]);\n        }\n        int s = 0;\n        for (int v : cnt) {\n            if (v == x) {\n                ++s;\n            }\n        }\n        return Math.max(tasks.length, (x - 1) * (n + 1) + s);\n    }\n}"
     },
     "memory": {
-      "title": "暴力枚举（兜底）",
-      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
-      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：贪心 + 构造」拆成三步记忆：第一步定核心结构（贪心策略、贪心 + 排序、HashMap / HashSet、冲突与扩容、计数数组、常用排序），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "时间复杂度 O(m+|\\Sigma|)其中 |\\Sigma| 是任务的种类数",
+      "javaSnippet": "class Solution {\n    public int leastInterval(char[] tasks, int n) {\n        int[] cnt = new int[26];\n        int x = 0;\n        for (char c : tasks) {\n            c -= 'A';\n            ++cnt[c];\n            x = Math.max(x, cnt[c]);\n        }\n        int s = 0;\n        for (int v : cnt) {\n            if (v == x) {\n                ++s;\n            }\n        }\n        return Math.max(tasks.length, (x - 1) * (n + 1) + s);\n    }\n}"
     },
     "keywords": [
       "任务调度器",
@@ -124,5 +124,28 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[\"A\",\"A\",\"A\",\"B\",\"B\",\"B\"]",
+        "2"
+      ],
+      "expected": "8"
+    },
+    {
+      "input": [
+        "[\"A\",\"C\",\"A\",\"B\",\"D\",\"B\"]",
+        "1"
+      ],
+      "expected": "6"
+    },
+    {
+      "input": [
+        "[\"A\",\"A\",\"A\", \"B\",\"B\",\"B\"]",
+        "3"
+      ],
+      "expected": "10"
+    }
+  ]
 }

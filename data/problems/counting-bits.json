@@ -37,14 +37,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：位运算",
-      "approach": "求 0\\ldots n 每个数的二进制 1 的个数。对每个 i 单独数位需 O(\\log i)。n 最大 10^5，线性带对数可过，但可再快。\n直接对每个 i 调用 bit_count（或反复 lowbit）即可得到答案数组。\n我们直接枚举 0 <=q i <=q n 中的每个数，对于每个数 i，我们用库函数或者 lowbit 运算得到 i 中二进制位 1 的个数。\npython\nclass Solution:\ndef countBits(self, n: int) -> List[int]:\nreturn [i.bit_count() for i in range(n + 1)]\njava\nclass Solution {\npublic int[] countBits(int n) {\nint[] ans = new int[n + 1];\nfor (int i = 0; i <= n; ++i) {\nans[i] = Integer.bitCount(i);\n}\nreturn ans;\n}\n}\ncpp\nclass Solution {\npublic:\nvector<int> countBits(int n) {\nvector<int> ans(n + 1);\nfor (int i = 0; i <= n; ++i) {\nans[i] = __builtin_popcount(i);\n}\nreturn ans;\n}\n};\ngo\nfunc countBits(n int) []int {\nans := make([]int, n+1)\nfor i := 0; i <= n; i",
-      "complexity": "时间复杂度 $O(n \\times \\log n)$忽略答案的空间消耗空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "approach": "求 0\\ldots n 每个数的二进制 1 的个数。对每个 i 单独数位需 O(\\log i)。n 最大 10^5，线性带对数可过，但可再快。\n直接对每个 i 调用 bit_count（或反复 lowbit）即可得到答案数组。\n我们直接枚举 0 <=q i <=q n 中的每个数，对于每个数 i，我们用库函数或者 lowbit 运算得到 i 中二进制位 1 的个数。",
+      "complexity": "时间复杂度 O(n x \\log n)忽略答案的空间消耗 / 空间复杂度 O(1)",
       "javaSnippet": "class Solution {\n    public int[] countBits(int n) {\n        int[] ans = new int[n + 1];\n        for (int i = 0; i <= n; ++i) {\n            ans[i] = Integer.bitCount(i);\n        }\n        return ans;\n    }\n}"
     },
     "memory": {
       "title": "方法二：动态规划",
-      "approach": "方法一对每个数独立计数。i 去掉最低位 1 后为 i\\&(i-1)，其答案已知，故 ans[i]=ans[i\\&(i-1)]+1。自小到大填表，总时间 O(n)。\n我们定义一个长度为 n+1 的答案数组 ans，初始时 ans[0]=0。\n对于 1 <=q i <=q n，我们有 ans[i] = ans[i \\textit{ and } (i-1)] + 1。其中 i \\textit{ and } (i-1) 表示将 i 的二进制表示中的最低位 1 变成 0 之后的数，显然 i \\textit{ and } (i-1) < i，且 ans[i \\textit{ and } (i-1)] 已经被计算出来了，我们就能以 O(1) 的时间得到 ans[i]。\npython\nclass Solution:\ndef countBits(self, n: int) -> List[int]:\nans = [0] * (n + 1)\nfor i in range(1, n + 1):\nans[i] = ans[i & (i - 1)] + 1\nreturn ans\njava\nclass Solution {\npublic int[] countBits(int n) {\nint[] ans = new int[n + 1];\nfor (int i = 1; i <= n; ++i) {\nans[i] = ans[i & (i - 1)] + 1;\n}\nreturn ans;\n}\n}\ncpp\nclass Solution {\npublic:\nvector<int> countBits(int",
-      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "approach": "方法一对每个数独立计数。i 去掉最低位 1 后为 i\\&(i-1)，其答案已知，故 ans[i]=ans[i\\&(i-1)]+1。自小到大填表，总时间 O(n)。\n我们定义一个长度为 n+1 的答案数组 ans，初始时 ans[0]=0。\n对于 1 <=q i <=q n，我们有 ans[i] = ans[i  and  (i-1)] + 1。其中 i  and  (i-1) 表示将 i 的二进制表示中的最低位 1 变成 0 之后的数，显然 i  and  (i-1)",
+      "complexity": "O(n)",
       "javaSnippet": "class Solution {\n    public int[] countBits(int n) {\n        int[] ans = new int[n + 1];\n        for (int i = 1; i <= n; ++i) {\n            ans[i] = ans[i & (i - 1)] + 1;\n        }\n        return ans;\n    }\n}"
     },
     "keywords": [
@@ -89,5 +89,19 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "2"
+      ],
+      "expected": "[0,1,1]"
+    },
+    {
+      "input": [
+        "5"
+      ],
+      "expected": "[0,1,1,2,1,2]"
+    }
+  ]
 }

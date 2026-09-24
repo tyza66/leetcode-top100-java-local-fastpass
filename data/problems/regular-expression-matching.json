@@ -46,14 +46,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：记忆化搜索",
-      "approach": "若对模式中的每个 * 枚举它匹配 0,1,2,\\ldots 个字符，时间复杂度为指数级。s 与 p 最长仅为 20，但同一对位置会被反复计算，直接枚举难以稳定通过。\n* 只作用于其前一个元素：要么匹配 0 次，模式下标前进 2；要么当前字符与该元素相符（含 .），再让同一个 * 继续匹配 s 的下一个字符。普通字符则必须与 s 中对应位置一一匹配。\n因此可以将状态定义为：s 从下标 i 起的后缀与 p 从下标 j 起的后缀能否匹配。递归求解时加以记忆化，即可避免同一对 (i,j) 被重复计算。\n我们设计一个函数 dfs(i, j)，表示从 s 的第 i 个字符开始，和 p 的第 j 个字符开始是否匹配。那么答案就是 dfs(0, 0)。\n函数 dfs(i, j) 的计算过程如下：\n- 如果 j 已经到达 p 的末尾，那么如果 i 也到达了 s 的末尾，那么匹配成功，否则匹配失败。\n- 如果 j 的下一个字符是 '*'，我们可以选择匹配 0 个 s[i] 字符，那么就是 dfs(i, j + 2)。如果此时 i \\lt m 并且 s[i] 和 p[j] 匹配，那么我们可以选择匹配 1 个 s[i] 字符，那么就是 dfs(i + 1, j)。\n- 如果 j 的下一个字符不是 '*'，那么如果 i \\lt m 并且 s[i] 和 p[j] 匹配，那么就是 dfs(i + 1, j + 1)。否则匹配失败。\n过程中，我们可以使用记忆化搜索，避免重复计算。\npython\nclass Solution:\ndef isMatch(self, s: str, p: str) -> bool:",
-      "complexity": "时间复杂度 为指数级$s$ 与 $p$ 最长仅为 $20$但同一对位置会被反复计算直接枚举难以稳定通过 / 空间复杂度 $O(m \\times n)$其中 $m$ 和 $n$ 分别是 $s$ 和 $p$ 的长度",
+      "approach": "若对模式中的每个 * 枚举它匹配 0,1,2,\\ldots 个字符，时间复杂度为指数级。s 与 p 最长仅为 20，但同一对位置会被反复计算，直接枚举难以稳定通过。\n* 只作用于其前一个元素：要么匹配 0 次，模式下标前进 2；要么当前字符与该元素相符（含 .），再让同一个 * 继续匹配 s 的下一个字符。普通字符则必须与 s 中对应位置一一匹配。\n因此可以将状态定义为：s 从下标 i 起的后缀与 p 从下标 j 起的后缀能否匹配。递归求解时加以记忆化，即可避免同一对 (i,j) 被重复计算。\n我们设计一个函数 dfs(i, j)，表示从 s 的第 i 个字符开始，和 p 的第 j 个字符开始是否匹配。那么答案就是 dfs(0, 0)。\n函数 dfs(i, j) 的计算过程如下：\n- 如果 j 已经到达 p 的末尾，那么如果 i 也到达了 s 的末尾，那么匹配成功，否则匹配失败。\n- 如果 j 的下一个字符是 '*'，我们可以选择匹配 0 个 s[i] 字符，那么就是 dfs(i, j + 2)。如果此时 i \\lt m 并且 s[i] 和 p[j] 匹配，那么我们可以选择匹配 1 个 s[i] 字符，那么就是 dfs(i + 1, j)。\n- 如果 j 的下一个字符不是 '*'，那么如果 i \\lt m 并且 s[i] 和 p[j] 匹配，那么就是 dfs(i + 1, j + 1)。否则匹配失败。\n过程中，我们可以使用记忆化搜索，避免重复计算。",
+      "complexity": "时间复杂度 O(m x n) / 空间复杂度 O(m x n)其中 m 和 n 分别是 s 和 p 的长度",
       "javaSnippet": "class Solution {\n    private Boolean[][] f;\n    private String s;\n    private String p;\n    private int m;\n    private int n;\n\n    public boolean isMatch(String s, String p) {\n        m = s.length();\n        n = p.length();\n        f = new Boolean[m + 1][n + 1];\n        this.s = s;\n        this.p = p;\n        return dfs(0, 0);\n    }\n\n    private boolean dfs(int i, int j) {\n        if (j >= n) {\n            return i == m;\n        }\n        if (f[i][j] != null) {\n            return f[i][j];\n        }\n        boolean res = false;\n        if (j + 1 < n && p.charAt(j + 1) == '*') {\n            res = dfs(i, j + 2)\n                || (i < m && (s.charAt(i) == p.charAt(j) || p.charAt(j) == '.') && dfs(i + 1, j));\n        } else {\n            res = i < m && (s.charAt(i) == p.charAt(j) || p.charAt(j) == '.') && dfs(i + 1, j + 1);\n        }\n        return f[i][j] = res;\n    }\n}"
     },
     "memory": {
       "title": "方法二：动态规划",
-      "approach": "方法一经记忆化后时间复杂度已是 O(mn)，但仍依赖递归，调用栈与常系数都更大。转移没有后效，可以按 i、j 从小到大填表。\n定义 f[i][j] 表示 s 的前 i 个字符与 p 的前 j 个字符是否匹配。空串与空模式匹配；还须允许 i=0 去匹配形如 a* 这类可以匹配空串的模式，因此外层循环从空串开始。\n* 的转移与方法一相同：跳过两个模式字符，或在当前字符匹配时再消耗 s 的一个字符。迭代填完后直接读取 f[m][n]。\n我们可以将方法一中的记忆化搜索转换为动态规划。\n定义 f[i][j] 表示字符串 s 的前 i 个字符和字符串 p 的前 j 个字符是否匹配。那么答案就是 f[m][n]。初始化 f[0][0] = true，表示空字符串和空正则表达式是匹配的。\n与方法一类似，我们可以分情况来讨论。\n- 如果 p[j - 1] 是 '*'，那么我们可以选择匹配 0 个 s[i - 1] 字符，那么就是 f[i][j] = f[i][j - 2]。如果此时 s[i - 1] 和 p[j - 2] 匹配，那么我们可以选择匹配 1 个 s[i - 1] 字符，那么就是 f[i][j] = f[i][j] \\lor f[i - 1][j]。\n- 如果 p[j - 1] 不是 '*'，那么如果 s[i - 1] 和 p[j - 1] 匹配，那么就是 f[i][j] = f[i - 1][j - 1]。否则匹配失败。\npython\nclass Solution:\ndef isMatch(self, s: str, p: str) -> bool:\nm, n = len(s), l",
-      "complexity": "时间复杂度 已是 $O(mn)$但仍依赖递归调用栈与常系数都更大转移没有后效可以按 $i$、$j$ 从小到大填表 / 空间复杂度 $O(m \\times n)$其中 $m$ 和 $n$ 分别是 $s$ 和 $p$ 的长度",
+      "approach": "方法一经记忆化后时间复杂度已是 O(mn)，但仍依赖递归，调用栈与常系数都更大。转移没有后效，可以按 i、j 从小到大填表。\n定义 f[i][j] 表示 s 的前 i 个字符与 p 的前 j 个字符是否匹配。空串与空模式匹配；还须允许 i=0 去匹配形如 a* 这类可以匹配空串的模式，因此外层循环从空串开始。\n* 的转移与方法一相同：跳过两个模式字符，或在当前字符匹配时再消耗 s 的一个字符。迭代填完后直接读取 f[m][n]。\n我们可以将方法一中的记忆化搜索转换为动态规划。\n定义 f[i][j] 表示字符串 s 的前 i 个字符和字符串 p 的前 j 个字符是否匹配。那么答案就是 f[m][n]。初始化 f[0][0] = true，表示空字符串和空正则表达式是匹配的。\n与方法一类似，我们可以分情况来讨论。\n- 如果 p[j - 1] 是 '*'，那么我们可以选择匹配 0 个 s[i - 1] 字符，那么就是 f[i][j] = f[i][j - 2]。如果此时 s[i - 1] 和 p[j - 2] 匹配，那么我们可以选择匹配 1 个 s[i - 1] 字符，那么就是 f[i][j] = f[i][j] \\lor f[i - 1][j]。\n- 如果 p[j - 1] 不是 '*'，那么如果 s[i - 1] 和 p[j - 1] 匹配，那么就是 f[i][j] = f[i - 1][j - 1]。否则匹配失败。",
+      "complexity": "时间复杂度 O(m x n) / 空间复杂度 O(m x n)其中 m 和 n 分别是 s 和 p 的长度",
       "javaSnippet": "class Solution {\n    public boolean isMatch(String s, String p) {\n        int m = s.length(), n = p.length();\n        boolean[][] f = new boolean[m + 1][n + 1];\n        f[0][0] = true;\n        for (int i = 0; i <= m; ++i) {\n            for (int j = 1; j <= n; ++j) {\n                if (p.charAt(j - 1) == '*') {\n                    f[i][j] = f[i][j - 2];\n                    if (i > 0 && (p.charAt(j - 2) == '.' || p.charAt(j - 2) == s.charAt(i - 1))) {\n                        f[i][j] |= f[i - 1][j];\n                    }\n                } else if (i > 0\n                    && (p.charAt(j - 1) == '.' || p.charAt(j - 1) == s.charAt(i - 1))) {\n                    f[i][j] = f[i - 1][j - 1];\n                }\n            }\n        }\n        return f[m][n];\n    }\n}"
     },
     "keywords": [
@@ -106,5 +106,28 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "\"aa\"",
+        "\"a\""
+      ],
+      "expected": "false"
+    },
+    {
+      "input": [
+        "\"aa\"",
+        "\"a*\""
+      ],
+      "expected": "true"
+    },
+    {
+      "input": [
+        "\"ab\"",
+        "\".*\""
+      ],
+      "expected": "true"
+    }
+  ]
 }

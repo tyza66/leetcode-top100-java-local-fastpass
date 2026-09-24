@@ -92,15 +92,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：哈希表 + 双向链表",
-      "approach": "\\textit{get} / \\textit{put} 都要 O(1)，淘汰最久未使用的键。哈希表能 O(1) 查找，但不能单独维护使用顺序；数组或单向链表移动节点是 O(n)。调用次数达 2x 10^5。\n哈希表存键到节点，双向链表按「最近使用在头、最久在尾」排列。访问或更新时把节点摘下再插到头部；容量满时删掉尾部前驱。查找与调整指针都是 O(1)。\n我们可以用“哈希表”和“双向链表”实现一个 LRU 缓存。\n- 哈希表：用于存储 key 和对应的节点位置。\n- 双向链表：用于存储节点数据，按照访问时间排序。\n当访问一个节点时，如果节点存在，我们将其从原来的位置删除，并重新插入到链表头部。这样就能保证链表尾部存储的就是最近最久未使用的节点，当节点数量大于缓存最大空间时就淘汰链表尾部的节点。\n当插入一个节点时，如果节点存在，我们将其从原来的位置删除，并重新插入到链表头部。如果不存在，我们首先检查缓存是否已满，如果已满，则删除链表尾部的节点，将新的节点插入链表头部。\npython\nclass Node:\ndef __init__(self, key: int = 0, val: int = 0):\nself.key = key\nself.val = val\nself.prev = None\nself.next = None\nclass LRUCache:\ndef __init__(self, capacity: int):\nself.size = 0\nself.capacity = capacity\nself.cache = {}\nself.head = Node()\nself.",
-      "complexity": "时间复杂度 $O(1)$空间复杂度 $O(\\textit{capacity})$ / 空间复杂度 $O(\\textit{capacity})$",
+      "approach": "get / put 都要 O(1)，淘汰最久未使用的键。哈希表能 O(1) 查找，但不能单独维护使用顺序；数组或单向链表移动节点是 O(n)。调用次数达 2x 10^5。\n哈希表存键到节点，双向链表按「最近使用在头、最久在尾」排列。访问或更新时把节点摘下再插到头部；容量满时删掉尾部前驱。查找与调整指针都是 O(1)。\n我们可以用“哈希表”和“双向链表”实现一个 LRU 缓存。\n- 哈希表：用于存储 key 和对应的节点位置。\n- 双向链表：用于存储节点数据，按照访问时间排序。\n当访问一个节点时，如果节点存在，我们将其从原来的位置删除，并重新插入到链表头部。这样就能保证链表尾部存储的就是最近最久未使用的节点，当节点数量大于缓存最大空间时就淘汰链表尾部的节点。\n当插入一个节点时，如果节点存在，我们将其从原来的位置删除，并重新插入到链表头部。如果不存在，我们首先检查缓存是否已满，如果已满，则删除链表尾部的节点，将新的节点插入链表头部。",
+      "complexity": "时间复杂度 O(1) / 空间复杂度 O(capacity)",
       "javaSnippet": "class Node {\n    int key, val;\n    Node prev, next;\n\n    Node() {\n    }\n\n    Node(int key, int val) {\n        this.key = key;\n        this.val = val;\n    }\n}\n\nclass LRUCache {\n    private int size;\n    private int capacity;\n    private Node head = new Node();\n    private Node tail = new Node();\n    private Map<Integer, Node> cache = new HashMap<>();\n\n    public LRUCache(int capacity) {\n        this.capacity = capacity;\n        head.next = tail;\n        tail.prev = head;\n    }\n\n    public int get(int key) {\n        if (!cache.containsKey(key)) {\n            return -1;\n        }\n        Node node = cache.get(key);\n        removeNode(node);\n        addToHead(node);\n        return node.val;\n    }\n\n    public void put(int key, int value) {\n        if (cache.containsKey(key)) {\n            Node node = cache.get(key);\n            removeNode(node);\n            node.val = value;\n            addToHead(node);\n        } else {\n            Node node = new Node(key, value);\n            cache.put(key, node);\n            addToHead(node);\n            if (++size > capacity) {\n                node = tail.prev;\n                cache.remove(node.key);\n                removeNode(node);\n                --size;\n            }\n        }\n    }\n\n    private void removeNode(Node node) {\n        node.prev.next = node.next;\n        node.next.prev = node.prev;\n    }\n\n    private void addToHead(Node node) {\n        node.next = head.next;\n        node.prev = head;\n        head.next = node;\n        node.next.prev = node;\n    }\n}\n\n/**\n * Your LRUCache object will be instantiated and called as such:\n * LRUCache obj = new LRUCache(capacity);\n * int param_1 = obj.get(key);\n * obj.put(key,value);\n */"
     },
     "memory": {
-      "title": "暴力查找（兜底）",
-      "approach": "第一层枚举一个元素，第二层线性扫描找目标对应元素；每轮用下标与元素关系做去重。",
-      "complexity": "O(n^2) 时间 / O(1) 空间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：哈希表 + 双向链表」拆成三步记忆：第一步定核心结构（设计题、HashMap / HashSet、冲突与扩容、虚拟头节点、快慢指针），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "时间复杂度 O(1) / 空间复杂度 O(capacity)",
+      "javaSnippet": "class Node {\n    int key, val;\n    Node prev, next;\n\n    Node() {\n    }\n\n    Node(int key, int val) {\n        this.key = key;\n        this.val = val;\n    }\n}\n\nclass LRUCache {\n    private int size;\n    private int capacity;\n    private Node head = new Node();\n    private Node tail = new Node();\n    private Map<Integer, Node> cache = new HashMap<>();\n\n    public LRUCache(int capacity) {\n        this.capacity = capacity;\n        head.next = tail;\n        tail.prev = head;\n    }\n\n    public int get(int key) {\n        if (!cache.containsKey(key)) {\n            return -1;\n        }\n        Node node = cache.get(key);\n        removeNode(node);\n        addToHead(node);\n        return node.val;\n    }\n\n    public void put(int key, int value) {\n        if (cache.containsKey(key)) {\n            Node node = cache.get(key);\n            removeNode(node);\n            node.val = value;\n            addToHead(node);\n        } else {\n            Node node = new Node(key, value);\n            cache.put(key, node);\n            addToHead(node);\n            if (++size > capacity) {\n                node = tail.prev;\n                cache.remove(node.key);\n                removeNode(node);\n                --size;\n            }\n        }\n    }\n\n    private void removeNode(Node node) {\n        node.prev.next = node.next;\n        node.next.prev = node.prev;\n    }\n\n    private void addToHead(Node node) {\n        node.next = head.next;\n        node.prev = head;\n        head.next = node;\n        node.next.prev = node;\n    }\n}\n\n/**\n * Your LRUCache object will be instantiated and called as such:\n * LRUCache obj = new LRUCache(capacity);\n * int param_1 = obj.get(key);\n * obj.put(key,value);\n */"
     },
     "keywords": [
       "LRU 缓存",
@@ -148,5 +148,14 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[\"LRUCache\",\"put\",\"put\",\"get\",\"put\",\"get\",\"put\",\"get\",\"get\",\"get\"]",
+        "[[2],[1,1],[2,2],[1],[3,3],[2],[4,4],[1],[3],[4]]"
+      ],
+      "expected": "[null,null,null,1,null,-1,null,-1,3,4]"
+    }
+  ]
 }

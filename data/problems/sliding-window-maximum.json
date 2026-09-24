@@ -61,14 +61,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：优先队列（大根堆）",
-      "approach": "每个窗口内再扫一遍求最大，总时间为 O(nk)。大根堆可在对数时间内给出当前最大，过期下标在堆顶时再弹出。\n先放入前 k-1 个，随后每纳入一个新元素并清理过期堆顶，堆顶即为该窗口最大值。\n我们可以使用优先队列（大根堆）来维护滑动窗口中的最大值。\n先将前 k-1 个元素加入优先队列，接下来从第 k 个元素开始，将新元素加入优先队列，同时判断堆顶元素是否滑出窗口，如果滑出窗口则将堆顶元素弹出。然后我们将堆顶元素加入结果数组。\npython\nclass Solution:\ndef maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:\nq = [(-v, i) for i, v in enumerate(nums[: k - 1])]\nheapify(q)\nans = []\nfor i in range(k - 1, len(nums)):\nheappush(q, (-nums[i], i))\nwhile q[0][1] <= i - k:\nheappop(q)\nans.append(-q[0][0])\nreturn ans\njava\nclass Solution {\npublic int[] maxSlidingWindow(int[] nums, int k) {\nPriorityQueue<int[]> q\n= new PriorityQueue<>((a, b) -> a[0] == b[0] ? a[1] - b[1] : b[0] - a[0]);\nint n = nums.length;\nfor (i",
-      "complexity": "时间复杂度 $O(n \\times \\log k)$空间复杂度 $O(k)$其中 $n$ 为数组长度 / 空间复杂度 $O(k)$其中 $n$ 为数组长度",
+      "approach": "每个窗口内再扫一遍求最大，总时间为 O(nk)。大根堆可在对数时间内给出当前最大，过期下标在堆顶时再弹出。\n先放入前 k-1 个，随后每纳入一个新元素并清理过期堆顶，堆顶即为该窗口最大值。\n我们可以使用优先队列（大根堆）来维护滑动窗口中的最大值。\n先将前 k-1 个元素加入优先队列，接下来从第 k 个元素开始，将新元素加入优先队列，同时判断堆顶元素是否滑出窗口，如果滑出窗口则将堆顶元素弹出。然后我们将堆顶元素加入结果数组。",
+      "complexity": "时间复杂度 O(n x \\log k) / 空间复杂度 O(k)其中 n 为数组长度",
       "javaSnippet": "class Solution {\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        PriorityQueue<int[]> q\n            = new PriorityQueue<>((a, b) -> a[0] == b[0] ? a[1] - b[1] : b[0] - a[0]);\n        int n = nums.length;\n        for (int i = 0; i < k - 1; ++i) {\n            q.offer(new int[] {nums[i], i});\n        }\n        int[] ans = new int[n - k + 1];\n        for (int i = k - 1, j = 0; i < n; ++i) {\n            q.offer(new int[] {nums[i], i});\n            while (q.peek()[1] <= i - k) {\n                q.poll();\n            }\n            ans[j++] = q.peek()[0];\n        }\n        return ans;\n    }\n}"
     },
     "memory": {
       "title": "方法二：单调队列",
-      "approach": "堆中会残留过期元素，最坏仍带对数。窗口最大值只关心队头到队尾递减的候选。\n单调队列存下标：队头滑出则弹出，队尾不大于当前值则弹出，队头即为窗口最大，线性完成。\n求滑动窗口的最大值，一种常见的方法是使用单调队列。\n我们可以维护一个从队头到队尾单调递减的队列 q，队列中存储的是元素的下标。遍历数组 \\textit{nums}，对于当前元素 \\textit{nums}[i]，我们首先判断队头元素是否滑出窗口，如果滑出窗口则将队头元素弹出。然后我们将当前元素 \\textit{nums}[i] 从队尾开始依次与队尾元素比较，如果队尾元素小于等于当前元素，则将队尾元素弹出，直到队尾元素大于当前元素或者队列为空。然后将当前元素的下标加入队列。此时队列的队头元素即为当前滑动窗口的最大值，注意，我们将队头元素加入结果数组的时机是当下标 i 大于等于 k-1 时。\npython\nclass Solution:\ndef maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:\nq = deque()\nans = []\nfor i, x in enumerate(nums):\nif q and i - q[0] >= k:\nq.popleft()\nwhile q and nums[q[-1]] <= x:\nq.pop()\nq.append(i)\nif i >= k - 1:\nans.append(nums[q[0]])\nreturn ans\njava\nclass Solution {\npublic int[] maxSlidingWin",
-      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(k)$其中 $n$ 为数组 $\\textit{nums}$ 的长度 / 空间复杂度 $O(k)$其中 $n$ 为数组 $\\textit{nums}$ 的长度",
+      "approach": "堆中会残留过期元素，最坏仍带对数。窗口最大值只关心队头到队尾递减的候选。\n单调队列存下标：队头滑出则弹出，队尾不大于当前值则弹出，队头即为窗口最大，线性完成。\n求滑动窗口的最大值，一种常见的方法是使用单调队列。\n我们可以维护一个从队头到队尾单调递减的队列 q，队列中存储的是元素的下标。遍历数组 nums，对于当前元素 nums[i]，我们首先判断队头元素是否滑出窗口，如果滑出窗口则将队头元素弹出。然后我们将当前元素 nums[i] 从队尾开始依次与队尾元素比较，如果队尾元素小于等于当前元素，则将队尾元素弹出，直到队尾元素大于当前元素或者队列为空。然后将当前元素的下标加入队列。此时队列的队头元素即为当前滑动窗口的最大值，注意，我们将队头元素加入结果数组的时机是当下标 i 大于等于 k-1 时。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(k)其中 n 为数组 nums 的长度",
       "javaSnippet": "class Solution {\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        int n = nums.length;\n        int[] ans = new int[n - k + 1];\n        Deque<Integer> q = new ArrayDeque<>();\n        for (int i = 0; i < n; ++i) {\n            if (!q.isEmpty() && i - q.peekFirst() >= k) {\n                q.pollFirst();\n            }\n            while (!q.isEmpty() && nums[q.peekLast()] <= nums[i]) {\n                q.pollLast();\n            }\n            q.offerLast(i);\n            if (i >= k - 1) {\n                ans[i - k + 1] = nums[q.peekFirst()];\n            }\n        }\n        return ans;\n    }\n}"
     },
     "keywords": [
@@ -121,5 +121,21 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[1,3,-1,-3,5,3,6,7]",
+        "3"
+      ],
+      "expected": "[3,3,5,5,6,7]"
+    },
+    {
+      "input": [
+        "[1]",
+        "1"
+      ],
+      "expected": "[1]"
+    }
+  ]
 }

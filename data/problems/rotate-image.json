@@ -45,15 +45,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：原地翻转",
-      "approach": "顺时针旋转 90^\\circ 的映射是 \\textit{matrix}[i][j] -> \\textit{matrix}[j][n-1-i]。若新开矩阵按此赋值，时间和空间都是 O(n^2)。n <= 20 时额外空间足够，但题目要求原地修改。\n该映射可拆成两个可原地完成的操作：先上下翻转，再沿主对角线翻转（转置）。\n(i, j) 先到 (n-1-i, j)，再转到 (j, n-1-i)，恰好是目标位置。两次交换即可，额外空间 O(1)。\n根据题目要求，我们实际上需要将 \\text{matrix}[i][j] 旋转至 \\text{matrix}[j][n - i - 1]。\n我们可以先对矩阵进行上下翻转，即 \\text{matrix}[i][j] 和 \\text{matrix}[n - i - 1][j] 进行交换，然后再对矩阵进行主对角线翻转，即 \\text{matrix}[i][j] 和 \\text{matrix}[j][i] 进行交换。这样就能将 \\text{matrix}[i][j] 旋转至 \\text{matrix}[j][n - i - 1] 了。\npython\nclass Solution:\ndef rotate(self, matrix: List[List[int]]) -> None:\nn = len(matrix)\nfor i in range(n >> 1):\nfor j in range(n):\nmatrix[i][j], matrix[n - i - 1][j] = matrix[n - i - 1][j], matrix[i][j]\nfor i i",
-      "complexity": "时间复杂度 $O(n^2)$其中 $n$ 是矩阵的边长空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "approach": "顺时针旋转 90^\\circ 的映射是 matrix[i][j] -> matrix[j][n-1-i]。若新开矩阵按此赋值，时间和空间都是 O(n^2)。n\n该映射可拆成两个可原地完成的操作：先上下翻转，再沿主对角线翻转（转置）。\n(i, j) 先到 (n-1-i, j)，再转到 (j, n-1-i)，恰好是目标位置。两次交换即可，额外空间 O(1)。\n根据题目要求，我们实际上需要将 matrix[i][j] 旋转至 matrix[j][n - i - 1]。\n我们可以先对矩阵进行上下翻转，即 matrix[i][j] 和 matrix[n - i - 1][j] 进行交换，然后再对矩阵进行主对角线翻转，即 matrix[i][j] 和 matrix[j][i] 进行交换。这样就能将 matrix[i][j] 旋转至 matrix[j][n - i - 1] 了。",
+      "complexity": "时间复杂度 O(n^2)其中 n 是矩阵的边长 / 空间复杂度 O(1)",
       "javaSnippet": "class Solution {\n    public void rotate(int[][] matrix) {\n        int n = matrix.length;\n        for (int i = 0; i < n >> 1; ++i) {\n            for (int j = 0; j < n; ++j) {\n                int t = matrix[i][j];\n                matrix[i][j] = matrix[n - i - 1][j];\n                matrix[n - i - 1][j] = t;\n            }\n        }\n        for (int i = 0; i < n; ++i) {\n            for (int j = 0; j < i; ++j) {\n                int t = matrix[i][j];\n                matrix[i][j] = matrix[j][i];\n                matrix[j][i] = t;\n            }\n        }\n    }\n}"
     },
     "memory": {
-      "title": "暴力枚举（兜底）",
-      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
-      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：原地翻转」拆成三步记忆：第一步定核心结构（数学归纳、矩阵遍历、矩阵变换），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "时间复杂度 O(n^2)其中 n 是矩阵的边长 / 空间复杂度 O(1)",
+      "javaSnippet": "class Solution {\n    public void rotate(int[][] matrix) {\n        int n = matrix.length;\n        for (int i = 0; i < n >> 1; ++i) {\n            for (int j = 0; j < n; ++j) {\n                int t = matrix[i][j];\n                matrix[i][j] = matrix[n - i - 1][j];\n                matrix[n - i - 1][j] = t;\n            }\n        }\n        for (int i = 0; i < n; ++i) {\n            for (int j = 0; j < i; ++j) {\n                int t = matrix[i][j];\n                matrix[i][j] = matrix[j][i];\n                matrix[j][i] = t;\n            }\n        }\n    }\n}"
     },
     "keywords": [
       "旋转图像",
@@ -91,5 +91,19 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[[1,2,3],[4,5,6],[7,8,9]]"
+      ],
+      "expected": "[[7,4,1],[8,5,2],[9,6,3]]"
+    },
+    {
+      "input": [
+        "[[5,1,9,11],[2,4,8,10],[13,3,6,7],[15,14,12,16]]"
+      ],
+      "expected": "[[15,13,2,5],[14,3,4,1],[12,6,8,9],[16,7,10,11]]"
+    }
+  ]
 }

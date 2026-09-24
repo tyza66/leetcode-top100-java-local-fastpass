@@ -37,15 +37,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：动态规划",
-      "approach": "戳气球的顺序会改变两侧相邻关系，直接按戳破次序搜索会重复子区间。两端各补 1 后，区间边界成为固定乘数。\n若 k 是开区间 (i,j) 中最后戳破的气球，则左右子区间互不干扰，得分多出 arr[i]\\cdot arr[k]\\cdot arr[j]。为此定义 f[i][j] 为戳完 (i,j) 内全部气球的最大得分，按区间长度递增（代码中 i 降序、j 升序）填表，答案为 f[0][n+1]。\n我们记数组 nums 的长度为 n。根据题目描述，我们可以在数组 nums 的左右两端各添加一个 1，记为 arr。\n然后，我们定义 f[i][j] 表示戳破区间 [i, j] 内的所有气球能得到的最多硬币数，那么答案即为 f[0][n+1]。\n对于 f[i][j]，我们枚举区间 [i, j] 内的所有位置 k，假设 k 是最后一个戳破的气球，那么我们可以得到如下状态转移方程：\nf[i][j] = \\max(f[i][j], f[i][k] + f[k][j] + arr[i] x arr[k] x arr[j])\n在实现上，由于 f[i][j] 的状态转移方程中涉及到 f[i][k] 和 f[k][j]，其中 i < k < j，因此我们需要从大到小地遍历 i，从小到大地遍历 j，这样才能保证当计算 f[i][j] 时 f[i][k] 和 f[k][j] 已经被计算出来。\n最后，我们返回 f[0][n+1] 即可。\npython\nclass Solution:\ndef maxCoins(self, nums: List[int]) -> int:\nn = len(nums)\narr = ",
-      "complexity": "时间复杂度 $O(n^3)$空间复杂度 $O(n^2)$其中 $n$ 为数组 $nums$ 的长度 / 空间复杂度 $O(n^2)$其中 $n$ 为数组 $nums$ 的长度",
+      "approach": "戳气球的顺序会改变两侧相邻关系，直接按戳破次序搜索会重复子区间。两端各补 1 后，区间边界成为固定乘数。\n若 k 是开区间 (i,j) 中最后戳破的气球，则左右子区间互不干扰，得分多出 arr[i]\\cdot arr[k]\\cdot arr[j]。为此定义 f[i][j] 为戳完 (i,j) 内全部气球的最大得分，按区间长度递增（代码中 i 降序、j 升序）填表，答案为 f[0][n+1]。\n我们记数组 nums 的长度为 n。根据题目描述，我们可以在数组 nums 的左右两端各添加一个 1，记为 arr。\n然后，我们定义 f[i][j] 表示戳破区间 [i, j] 内的所有气球能得到的最多硬币数，那么答案即为 f[0][n+1]。\n对于 f[i][j]，我们枚举区间 [i, j] 内的所有位置 k，假设 k 是最后一个戳破的气球，那么我们可以得到如下状态转移方程：\nf[i][j] = max(f[i][j], f[i][k] + f[k][j] + arr[i] x arr[k] x arr[j])\n在实现上，由于 f[i][j] 的状态转移方程中涉及到 f[i][k] 和 f[k][j]，其中 i",
+      "complexity": "按题面约束估计",
       "javaSnippet": "class Solution {\n    public int maxCoins(int[] nums) {\n        int n = nums.length;\n        int[] arr = new int[n + 2];\n        arr[0] = 1;\n        arr[n + 1] = 1;\n        System.arraycopy(nums, 0, arr, 1, n);\n        int[][] f = new int[n + 2][n + 2];\n        for (int i = n - 1; i >= 0; i--) {\n            for (int j = i + 2; j <= n + 1; j++) {\n                for (int k = i + 1; k < j; k++) {\n                    f[i][j] = Math.max(f[i][j], f[i][k] + f[k][j] + arr[i] * arr[k] * arr[j]);\n                }\n            }\n        }\n        return f[0][n + 1];\n    }\n}"
     },
     "memory": {
-      "title": "暴力枚举（兜底）",
-      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
-      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：动态规划」拆成三步记忆：第一步定核心结构（动态规划五步、状态压缩、记忆化搜索），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "按题面约束估计",
+      "javaSnippet": "class Solution {\n    public int maxCoins(int[] nums) {\n        int n = nums.length;\n        int[] arr = new int[n + 2];\n        arr[0] = 1;\n        arr[n + 1] = 1;\n        System.arraycopy(nums, 0, arr, 1, n);\n        int[][] f = new int[n + 2][n + 2];\n        for (int i = n - 1; i >= 0; i--) {\n            for (int j = i + 2; j <= n + 1; j++) {\n                for (int k = i + 1; k < j; k++) {\n                    f[i][j] = Math.max(f[i][j], f[i][k] + f[k][j] + arr[i] * arr[k] * arr[j]);\n                }\n            }\n        }\n        return f[0][n + 1];\n    }\n}"
     },
     "keywords": [
       "戳气球",
@@ -81,5 +81,19 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[3,1,5,8]"
+      ],
+      "expected": "167"
+    },
+    {
+      "input": [
+        "[1,5]"
+      ],
+      "expected": "10"
+    }
+  ]
 }

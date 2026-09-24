@@ -42,15 +42,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：双指针",
-      "approach": "若枚举所有下标对 (i, j)，面积为 \\min(height[i], height[j]) x (j - i)，时间复杂度为 O(n^2)。n <= 10^5，无法通过。\n容器的高度由较短的那根线决定。从最宽的区间 [0, n-1] 出发：若向内移动较高的一端，宽度减小，高度仍受较短边限制，面积不会变大。因此每次应当舍弃较短的那根，尝试碰到更高的边。用左右指针向中间收缩，每次移动较矮的一侧，每个下标至多访问一次。\n我们使用两个指针 l 和 r 分别指向数组的左右两端，即 l = 0，而 r = n - 1，其中 n 是数组的长度。\n接下来，我们使用变量 \\textit{ans} 记录容器的最大容量，初始化为 0。\n然后，我们开始进行循环，每次循环中，我们计算当前容器的容量，即 \\textit{min}(height[l], height[r]) x (r - l)，并将其与 \\textit{ans} 进行比较，将较大值赋给 \\textit{ans}。然后，我们判断 height[l] 和 height[r] 的大小，如果 \\textit{height}[l] < \\textit{height}[r]，移动 r 指针不会使得结果变得更好，因为容器的高度由较短的那根垂直线决定，所以我们移动 l 指针。反之，我们移动 r 指针。\n遍历结束后，返回 \\textit{ans} 即可。\npython\nclass Solution:\ndef maxArea(self, height: List[int]) -> int:\nl, r = 0, len(height) - 1\nans = 0\n",
-      "complexity": "时间复杂度 为 $O(n^2)$$n \\le 10^5$无法通过 / 空间复杂度 $O(1)$",
+      "approach": "若枚举所有下标对 (i, j)，面积为 min(height[i], height[j]) x (j - i)，时间复杂度为 O(n^2)。n\n容器的高度由较短的那根线决定。从最宽的区间 [0, n-1] 出发：若向内移动较高的一端，宽度减小，高度仍受较短边限制，面积不会变大。因此每次应当舍弃较短的那根，尝试碰到更高的边。用左右指针向中间收缩，每次移动较矮的一侧，每个下标至多访问一次。\n我们使用两个指针 l 和 r 分别指向数组的左右两端，即 l = 0，而 r = n - 1，其中 n 是数组的长度。\n接下来，我们使用变量 ans 记录容器的最大容量，初始化为 0。\n然后，我们开始进行循环，每次循环中，我们计算当前容器的容量，即 min(height[l], height[r]) x (r - l)，并将其与 ans 进行比较，将较大值赋给 ans。然后，我们判断 height[l] 和 height[r] 的大小，如果 height[l]",
+      "complexity": "时间复杂度 为 O(n^2)n <= 10^5无法通过",
       "javaSnippet": "class Solution {\n    public int maxArea(int[] height) {\n        int l = 0, r = height.length - 1;\n        int ans = 0;\n        while (l < r) {\n            int t = Math.min(height[l], height[r]) * (r - l);\n            ans = Math.max(ans, t);\n            if (height[l] < height[r]) {\n                ++l;\n            } else {\n                --r;\n            }\n        }\n        return ans;\n    }\n}"
     },
     "memory": {
-      "title": "暴力枚举（兜底）",
-      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
-      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：双指针」拆成三步记忆：第一步定核心结构（贪心策略、贪心 + 排序、双指针、边界处理），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "时间复杂度 为 O(n^2)n <= 10^5无法通过",
+      "javaSnippet": "class Solution {\n    public int maxArea(int[] height) {\n        int l = 0, r = height.length - 1;\n        int ans = 0;\n        while (l < r) {\n            int t = Math.min(height[l], height[r]) * (r - l);\n            ans = Math.max(ans, t);\n            if (height[l] < height[r]) {\n                ++l;\n            } else {\n                --r;\n            }\n        }\n        return ans;\n    }\n}"
     },
     "keywords": [
       "盛最多水的容器",
@@ -93,5 +93,19 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[1,8,6,2,5,4,8,3,7]"
+      ],
+      "expected": "49"
+    },
+    {
+      "input": [
+        "[1,1]"
+      ],
+      "expected": "1"
+    }
+  ]
 }

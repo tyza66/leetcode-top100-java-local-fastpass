@@ -68,14 +68,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：哈希表",
-      "approach": "判断链表是否有环。n<= 10^4。走过的节点放进哈希表，再次出现即有环；走到空则无环。实现直接，空间 O(n)。进阶要求常数空间。\n我们可以遍历链表，用一个哈希表 s 记录每个节点。当某个节点二次出现时，则表示存在环，直接返回 true。否则链表遍历结束，返回 false。\npython\nDefinition for singly-linked list.\nclass ListNode:\ndef __init__(self, x):\nself.val = x\nself.next = None\nclass Solution:\ndef hasCycle(self, head: Optional[ListNode]) -> bool:\ns = set()\nwhile head:\nif head in s:\nreturn True\ns.add(head)\nhead = head.next\nreturn False\njava\n/\n* Definition for singly-linked list.\n* class ListNode {\n*     int val;\n*     ListNode next;\n*     ListNode(int x) {\n*         val = x;\n*         next = null;\n*     }\n* }\n*/\npublic class Solution {\npublic boolean hasCycle(ListNode head) {\nSet<ListNode> s = new HashSet<>();\nfor (; hea",
-      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(n)$其中 $n$ 是链表中的节点数 / 空间复杂度 $O(n)$其中 $n$ 是链表中的节点数",
+      "approach": "判断链表是否有环。n<= 10^4。走过的节点放进哈希表，再次出现即有环；走到空则无环。实现直接，空间 O(n)。进阶要求常数空间。\n我们可以遍历链表，用一个哈希表 s 记录每个节点。当某个节点二次出现时，则表示存在环，直接返回 true。否则链表遍历结束，返回 false。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(n)其中 n 是链表中的节点数",
       "javaSnippet": "/**\n * Definition for singly-linked list.\n * class ListNode {\n *     int val;\n *     ListNode next;\n *     ListNode(int x) {\n *         val = x;\n *         next = null;\n *     }\n * }\n */\npublic class Solution {\n    public boolean hasCycle(ListNode head) {\n        Set<ListNode> s = new HashSet<>();\n        for (; head != null; head = head.next) {\n            if (!s.add(head)) {\n                return true;\n            }\n        }\n        return false;\n    }\n}"
     },
     "memory": {
       "title": "方法二：快慢指针",
-      "approach": "方法一要用线性额外空间。快指针每次两步、慢指针一步，有环则两者必在环内相遇，无环则快指针先到末尾。只需两个指针。\n我们定义快慢指针 fast 和 slow，初始时均指向 head。\n快指针每次走两步，慢指针每次走一步，不断循环。当快慢指针相遇时，说明链表存在环。如果循环结束依然没有相遇，说明链表不存在环。\npython\nDefinition for singly-linked list.\nclass ListNode:\ndef __init__(self, x):\nself.val = x\nself.next = None\nclass Solution:\ndef hasCycle(self, head: ListNode) -> bool:\nslow = fast = head\nwhile fast and fast.next:\nslow, fast = slow.next, fast.next.next\nif slow == fast:\nreturn True\nreturn False\njava\n/\n* Definition for singly-linked list.\n* class ListNode {\n*     int val;\n*     ListNode next;\n*     ListNode(int x) {\n*         val = x;\n*         next = null;\n*     }\n* }\n*/\npublic class Solution {\npublic boolean hasCycle(ListNode head) {\nList",
-      "complexity": "时间复杂度 $O(n)$其中 $n$ 是链表中的节点数空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "approach": "方法一要用线性额外空间。快指针每次两步、慢指针一步，有环则两者必在环内相遇，无环则快指针先到末尾。只需两个指针。\n我们定义快慢指针 fast 和 slow，初始时均指向 head。\n快指针每次走两步，慢指针每次走一步，不断循环。当快慢指针相遇时，说明链表存在环。如果循环结束依然没有相遇，说明链表不存在环。",
+      "complexity": "时间复杂度 O(n)其中 n 是链表中的节点数 / 空间复杂度 O(1)",
       "javaSnippet": "/**\n * Definition for singly-linked list.\n * class ListNode {\n *     int val;\n *     ListNode next;\n *     ListNode(int x) {\n *         val = x;\n *         next = null;\n *     }\n * }\n */\npublic class Solution {\n    public boolean hasCycle(ListNode head) {\n        ListNode slow = head;\n        ListNode fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) {\n                return true;\n            }\n        }\n        return false;\n    }\n}"
     },
     "keywords": [
@@ -128,5 +128,28 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[3,2,0,-4]",
+        "1"
+      ],
+      "expected": "true"
+    },
+    {
+      "input": [
+        "[1,2]",
+        "0"
+      ],
+      "expected": "true"
+    },
+    {
+      "input": [
+        "[1]",
+        "-1"
+      ],
+      "expected": "false"
+    }
+  ]
 }

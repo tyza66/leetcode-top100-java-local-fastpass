@@ -83,15 +83,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：前缀树",
-      "approach": "多次查询公共前缀时，若对每个单词扫描全部已插入词，则会重复比较相同前缀。字符均为小写，可用 26 叉树按字符分层。\n插入时沿路径创建结点并在末尾置 isEnd；查询前缀走同一路径，search 再检查终点是否为词尾。\n前缀树每个节点包括两部分：\n1. 指向子节点的指针数组 children，对于本题而言，数组长度为 26，即小写英文字母的数量。children[0] 对应小写字母 a，...，children[25] 对应小写字母 z。\n1. 布尔字段 isEnd，表示该节点是否为字符串的结尾。\n1. 插入字符串\n我们从字典树的根开始，插入字符串。对于当前字符对应的子节点，有两种情况：\n- 子节点存在。沿着指针移动到子节点，继续处理下一个字符。\n- 子节点不存在。创建一个新的子节点，记录在 children 数组的对应位置上，然后沿着指针移动到子节点，继续搜索下一个字符。\n重复以上步骤，直到处理字符串的最后一个字符，然后将当前节点标记为字符串的结尾。\n2. 查找前缀\n我们从字典树的根开始，查找前缀。对于当前字符对应的子节点，有两种情况：\n- 子节点存在。沿着指针移动到子节点，继续搜索下一个字符。\n- 子节点不存在。说明字典树中不包含该前缀，返回空指针。\n重复以上步骤，直到返回空指针或搜索完前缀的最后一个字符。\n若搜索到了前缀的末尾，就说明字典树中存在该前缀。此外，若前缀末尾对应节点的 isEnd 为真，则说明字典树中存在该字符串。\npython\nclass Trie:\ndef __init__(self):\nself.children = [None] * 26\nself.is",
-      "complexity": "时间复杂度 方面插入字符串的时间复杂度为 $O(m \\times |\\Sigma|)$查找前缀的时间复杂度为 $O(m)$其中 $m$ 为字符串的长度而 $|\\Sigma|$ 为字符集的大小（本题中为 $26$）空间复杂度为 $O(q \\times m \\times |\\Sigma|)$其中 $q$ 为插入的字符串数量 / 空间复杂度 为 $O(q \\times m \\times |\\Sigma|)$，其中 $q$ 为插入的字符串数量",
+      "approach": "多次查询公共前缀时，若对每个单词扫描全部已插入词，则会重复比较相同前缀。字符均为小写，可用 26 叉树按字符分层。\n插入时沿路径创建结点并在末尾置 isEnd；查询前缀走同一路径，search 再检查终点是否为词尾。\n前缀树每个节点包括两部分：\n1. 指向子节点的指针数组 children，对于本题而言，数组长度为 26，即小写英文字母的数量。children[0] 对应小写字母 a，...，children[25] 对应小写字母 z。\n1. 布尔字段 isEnd，表示该节点是否为字符串的结尾。\n1. 插入字符串\n我们从字典树的根开始，插入字符串。对于当前字符对应的子节点，有两种情况：\n- 子节点存在。沿着指针移动到子节点，继续处理下一个字符。\n- 子节点不存在。创建一个新的子节点，记录在 children 数组的对应位置上，然后沿着指针移动到子节点，继续搜索下一个字符。\n重复以上步骤，直到处理字符串的最后一个字符，然后将当前节点标记为字符串的结尾。\n2. 查找前缀\n我们从字典树的根开始，查找前缀。对于当前字符对应的子节点，有两种情况：\n- 子节点存在。沿着指针移动到子节点，继续搜索下一个字符。\n- 子节点不存在。说明字典树中不包含该前缀，返回空指针。\n重复以上步骤，直到返回空指针或搜索完前缀的最后一个字符。\n若搜索到了前缀的末尾，就说明字典树中存在该前缀。此外，若前缀末尾对应节点的 isEnd 为真，则说明字典树中存在该字符串。",
+      "complexity": "时间复杂度 方面插入字符串的时间复杂度为 O(m x |\\Sigma|)查找前缀的时间复杂度为 O(m)其中 m 为字符串的长度而 |\\Sigma| 为字符集的大小（本题中为 26） / 空间复杂度 为 O(q x m x |\\Sigma|)，其中 q 为插入的字符串数量",
       "javaSnippet": "class Trie {\n    private Trie[] children;\n    private boolean isEnd;\n\n    public Trie() {\n        children = new Trie[26];\n    }\n\n    public void insert(String word) {\n        Trie node = this;\n        for (char c : word.toCharArray()) {\n            int idx = c - 'a';\n            if (node.children[idx] == null) {\n                node.children[idx] = new Trie();\n            }\n            node = node.children[idx];\n        }\n        node.isEnd = true;\n    }\n\n    public boolean search(String word) {\n        Trie node = searchPrefix(word);\n        return node != null && node.isEnd;\n    }\n\n    public boolean startsWith(String prefix) {\n        Trie node = searchPrefix(prefix);\n        return node != null;\n    }\n\n    private Trie searchPrefix(String s) {\n        Trie node = this;\n        for (char c : s.toCharArray()) {\n            int idx = c - 'a';\n            if (node.children[idx] == null) {\n                return null;\n            }\n            node = node.children[idx];\n        }\n        return node;\n    }\n}\n\n/**\n * Your Trie object will be instantiated and called as such:\n * Trie obj = new Trie();\n * obj.insert(word);\n * boolean param_2 = obj.search(word);\n * boolean param_3 = obj.startsWith(prefix);\n */"
     },
     "memory": {
-      "title": "暴力查找（兜底）",
-      "approach": "第一层枚举一个元素，第二层线性扫描找目标对应元素；每轮用下标与元素关系做去重。",
-      "complexity": "O(n^2) 时间 / O(1) 空间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：前缀树」拆成三步记忆：第一步定核心结构（设计题、字典树、HashMap / HashSet、冲突与扩容、字符串处理、字符计数），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "时间复杂度 方面插入字符串的时间复杂度为 O(m x |\\Sigma|)查找前缀的时间复杂度为 O(m)其中 m 为字符串的长度而 |\\Sigma| 为字符集的大小（本题中为 26） / 空间复杂度 为 O(q x m x |\\Sigma|)，其中 q 为插入的字符串数量",
+      "javaSnippet": "class Trie {\n    private Trie[] children;\n    private boolean isEnd;\n\n    public Trie() {\n        children = new Trie[26];\n    }\n\n    public void insert(String word) {\n        Trie node = this;\n        for (char c : word.toCharArray()) {\n            int idx = c - 'a';\n            if (node.children[idx] == null) {\n                node.children[idx] = new Trie();\n            }\n            node = node.children[idx];\n        }\n        node.isEnd = true;\n    }\n\n    public boolean search(String word) {\n        Trie node = searchPrefix(word);\n        return node != null && node.isEnd;\n    }\n\n    public boolean startsWith(String prefix) {\n        Trie node = searchPrefix(prefix);\n        return node != null;\n    }\n\n    private Trie searchPrefix(String s) {\n        Trie node = this;\n        for (char c : s.toCharArray()) {\n            int idx = c - 'a';\n            if (node.children[idx] == null) {\n                return null;\n            }\n            node = node.children[idx];\n        }\n        return node;\n    }\n}\n\n/**\n * Your Trie object will be instantiated and called as such:\n * Trie obj = new Trie();\n * obj.insert(word);\n * boolean param_2 = obj.search(word);\n * boolean param_3 = obj.startsWith(prefix);\n */"
     },
     "keywords": [
       "实现 Trie (前缀树)",
@@ -144,5 +144,14 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[\"Trie\",\"insert\",\"search\",\"search\",\"startsWith\",\"insert\",\"search\"]",
+        "[[],[\"apple\"],[\"apple\"],[\"app\"],[\"app\"],[\"app\"],[\"app\"]]"
+      ],
+      "expected": "[null,null,true,false,true,null,true]"
+    }
+  ]
 }

@@ -42,15 +42,15 @@
   "hints": {
     "optimal": {
       "title": "方法一",
-      "approach": "解码 k[encoded] 嵌套重复串。括号匹配可用递归，也可用栈同时记下倍数与外层已拼串。\n数字累入 num，遇 [ 把倍数与当前结果压栈并清空；遇 ] 弹出外层，把当前段重复后接回；字母直接追加。栈保证由内向外展开。\npython\nclass Solution:\ndef decodeString(self, s: str) -> str:\ns1, s2 = [], []\nnum, res = 0, ''\nfor c in s:\nif c.isdigit():\nnum = num * 10 + int(c)\nelif c == '[':\ns1.append(num)\ns2.append(res)\nnum, res = 0, ''\nelif c == ']':\nres = s2.pop() + res * s1.pop()\nelse:\nres += c\nreturn res\njava\nclass Solution {\npublic String decodeString(String s) {\nDeque<Integer> s1 = new ArrayDeque<>();\nDeque<String> s2 = new ArrayDeque<>();\nint num = 0;\nString res = \"\";\nfor (char c : s.toCharArray()) {\nif ('0' <= c && c <= '9') {\nnum = num * 10 + c - '0';\n} else if (c == '[') {\ns1.push(num);\ns2.push(res);",
+      "approach": "解码 k[encoded] 嵌套重复串。括号匹配可用递归，也可用栈同时记下倍数与外层已拼串。\n数字累入 num，遇 [ 把倍数与当前结果压栈并清空；遇 ] 弹出外层，把当前段重复后接回；字母直接追加。栈保证由内向外展开。",
       "complexity": "按题面约束估计",
       "javaSnippet": "class Solution {\n    public String decodeString(String s) {\n        Deque<Integer> s1 = new ArrayDeque<>();\n        Deque<String> s2 = new ArrayDeque<>();\n        int num = 0;\n        String res = \"\";\n        for (char c : s.toCharArray()) {\n            if ('0' <= c && c <= '9') {\n                num = num * 10 + c - '0';\n            } else if (c == '[') {\n                s1.push(num);\n                s2.push(res);\n                num = 0;\n                res = \"\";\n            } else if (c == ']') {\n                StringBuilder t = new StringBuilder();\n                for (int i = 0, n = s1.pop(); i < n; ++i) {\n                    t.append(res);\n                }\n                res = s2.pop() + t.toString();\n            } else {\n                res += String.valueOf(c);\n            }\n        }\n        return res;\n    }\n}"
     },
     "memory": {
-      "title": "两层循环补栈",
-      "approach": "对每个位置扫描其后元素，找到第一个满足条件的值并记录；不再依赖栈时最容易理解。",
-      "complexity": "O(n^2) 时间 / O(1) 空间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一」拆成三步记忆：第一步定核心结构（栈与括号/表达式、单调栈、递归三要素、字符串处理、字符计数），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "按题面约束估计",
+      "javaSnippet": "class Solution {\n    public String decodeString(String s) {\n        Deque<Integer> s1 = new ArrayDeque<>();\n        Deque<String> s2 = new ArrayDeque<>();\n        int num = 0;\n        String res = \"\";\n        for (char c : s.toCharArray()) {\n            if ('0' <= c && c <= '9') {\n                num = num * 10 + c - '0';\n            } else if (c == '[') {\n                s1.push(num);\n                s2.push(res);\n                num = 0;\n                res = \"\";\n            } else if (c == ']') {\n                StringBuilder t = new StringBuilder();\n                for (int i = 0, n = s1.pop(); i < n; ++i) {\n                    t.append(res);\n                }\n                res = s2.pop() + t.toString();\n            } else {\n                res += String.valueOf(c);\n            }\n        }\n        return res;\n    }\n}"
     },
     "keywords": [
       "字符串解码",
@@ -97,5 +97,25 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "\"3[a]2[bc]\""
+      ],
+      "expected": "\"aaabcbc\""
+    },
+    {
+      "input": [
+        "\"3[a2[c]]\""
+      ],
+      "expected": "\"accaccacc\""
+    },
+    {
+      "input": [
+        "\"2[abc]3[cd]ef\""
+      ],
+      "expected": "\"abcabccdcdcdef\""
+    }
+  ]
 }

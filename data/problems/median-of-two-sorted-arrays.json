@@ -46,15 +46,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：分治",
-      "approach": "若将两个有序数组合并后再取中位数，时间复杂度为 O(m+n)。在 m,n <= 10^3 的范围内可以接受，但题目要求 O(\\log(m+n))，因此不能线性扫描。\n注意到中位数只取决于合并后正中间的一两个位置，比它更小的元素只需知道个数，而不必真正列出。两数组均有序，比较各自第 <=ft\\lfloor k/2 \\right\\rfloor 个数，即可判断其中一侧的前一半不可能是第 k 小，从而一次排除一半候选。\n因此我们在剩余区间上求第 k 小，而不构造合并数组。将中位数统一为第 <=ft\\lfloor (m+n+1)/2 \\right\\rfloor 与第 <=ft\\lfloor (m+n+2)/2 \\right\\rfloor 个数的平均，奇数与偶数长度可以共用同一套逻辑。若某一侧不足 <=ft\\lfloor k/2 \\right\\rfloor 个元素，则将该侧视为 +\\infty，只会排除另一侧。\n题目要求算法的时间复杂度为 O(\\log (m + n))，因此不能直接遍历两个数组，而是需要使用二分查找的方法。\n如果 m + n 是奇数，那么中位数就是第 <=ft\\lfloor\\frac{m + n + 1}{2}\\right\\rfloor 个数；如果 m + n 是偶数，那么中位数就是第 <=ft\\lfloor\\frac{m + n + 1}{2}\\right\\rfloor 和第 <=ft\\lfloor\\frac{m + n + 2}{2}\\right\\rfloor 个数的平均数。实际上，我们可以统一为求第 <=ft\\lfloor\\frac{m + n + 1}{2}\\ri",
-      "complexity": "时间复杂度 为 $O(m+n)$在 $mn \\le 10^3$ 的范围内可以接受但题目要求 $O(\\log(m+n))$因此不能线性扫描 / 空间复杂度 $O(\\log(m + n))$其中 $m$ 和 $n$ 分别是数组 $nums1$ 和 $nums2$ 的长度",
+      "approach": "若将两个有序数组合并后再取中位数，时间复杂度为 O(m+n)。在 m,n\n注意到中位数只取决于合并后正中间的一两个位置，比它更小的元素只需知道个数，而不必真正列出。两数组均有序，比较各自第\n因此我们在剩余区间上求第 k 小，而不构造合并数组。将中位数统一为第 =q m，说明数组 nums1 的区间 [i, m) 为空，因此直接返回 nums2[j + k - 1]；\n- 如果 j >=q n，说明数组 nums2 的区间 [j, n) 为空，因此直接返回 nums1[i + k - 1]；\n- 如果 k = 1，说明要找第一个数，因此只需要返回 nums1[i] 和 nums2[j] 中的最小值；\n- 否则，我们分别在两个数组中查找第  y，则说明数组 nums2 的第 <=ft\\lfloor\\frac{k}{2}\\right\\rfloor 个数不可能是第 k 小的数，因此我们可以排除数组 nums2 的区间 [j, j + <=ft\\lfloor\\frac{k}{2}\\right\\rfloor)，递归调用 f(i, j + <=ft\\lfloor\\frac{k}{2}\\right\\rfloor, k - <=ft\\lfloor\\frac{k}{2}\\right\\rfloor)。",
+      "complexity": "时间复杂度 O(\\log(m + n)) / 空间复杂度 O(\\log(m + n))其中 m 和 n 分别是数组 nums1 和 nums2 的长度",
       "javaSnippet": "class Solution {\n    private int m;\n    private int n;\n    private int[] nums1;\n    private int[] nums2;\n\n    public double findMedianSortedArrays(int[] nums1, int[] nums2) {\n        m = nums1.length;\n        n = nums2.length;\n        this.nums1 = nums1;\n        this.nums2 = nums2;\n        int a = f(0, 0, (m + n + 1) / 2);\n        int b = f(0, 0, (m + n + 2) / 2);\n        return (a + b) / 2.0;\n    }\n\n    private int f(int i, int j, int k) {\n        if (i >= m) {\n            return nums2[j + k - 1];\n        }\n        if (j >= n) {\n            return nums1[i + k - 1];\n        }\n        if (k == 1) {\n            return Math.min(nums1[i], nums2[j]);\n        }\n        int p = k / 2;\n        int x = i + p - 1 < m ? nums1[i + p - 1] : 1 << 30;\n        int y = j + p - 1 < n ? nums2[j + p - 1] : 1 << 30;\n        return x < y ? f(i + p, j, k - p) : f(i, j + p, k - p);\n    }\n}"
     },
     "memory": {
-      "title": "暴力枚举（兜底）",
-      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
-      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：分治」拆成三步记忆：第一步定核心结构（二分查找模板、峰值与旋转数组、分治、合并函数），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "时间复杂度 O(\\log(m + n)) / 空间复杂度 O(\\log(m + n))其中 m 和 n 分别是数组 nums1 和 nums2 的长度",
+      "javaSnippet": "class Solution {\n    private int m;\n    private int n;\n    private int[] nums1;\n    private int[] nums2;\n\n    public double findMedianSortedArrays(int[] nums1, int[] nums2) {\n        m = nums1.length;\n        n = nums2.length;\n        this.nums1 = nums1;\n        this.nums2 = nums2;\n        int a = f(0, 0, (m + n + 1) / 2);\n        int b = f(0, 0, (m + n + 2) / 2);\n        return (a + b) / 2.0;\n    }\n\n    private int f(int i, int j, int k) {\n        if (i >= m) {\n            return nums2[j + k - 1];\n        }\n        if (j >= n) {\n            return nums1[i + k - 1];\n        }\n        if (k == 1) {\n            return Math.min(nums1[i], nums2[j]);\n        }\n        int p = k / 2;\n        int x = i + p - 1 < m ? nums1[i + p - 1] : 1 << 30;\n        int y = j + p - 1 < n ? nums2[j + p - 1] : 1 << 30;\n        return x < y ? f(i + p, j, k - p) : f(i, j + p, k - p);\n    }\n}"
     },
     "keywords": [
       "寻找两个正序数组的中位数",
@@ -95,5 +95,21 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[1,3]",
+        "[2]"
+      ],
+      "expected": "2.00000"
+    },
+    {
+      "input": [
+        "[1,2]",
+        "[3,4]"
+      ],
+      "expected": "2.50000"
+    }
+  ]
 }

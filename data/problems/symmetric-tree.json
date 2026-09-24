@@ -47,15 +47,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：递归",
-      "approach": "镜像对称要求左子树与右子树互为镜像，而不是各自与自身相同。进阶同时要求递归与迭代都能做；n <= 1000，一次遍历即可。\n一对节点对称，当且仅当取值相同，且一方的左孩子与另一方的右孩子对称、一方的右孩子与另一方的左孩子对称。因此从根的左右孩子出发做交叉递归即可。\n我们设计一个函数 \\textit{dfs}(\\textit{root1}, \\textit{root2})，用于判断两个二叉树是否对称。答案即为 \\textit{dfs}(\\textit{root.left}, \\textit{root.right})。\n函数 \\textit{dfs}(\\textit{root1}, \\textit{root2}) 的逻辑如下：\n- 如果 \\textit{root1} 和 \\textit{root2} 都为空，则两个二叉树对称，返回 true；\n- 如果 \\textit{root1} 和 \\textit{root2} 中只有一个为空，或者 \\textit{root1.val} \\neq \\textit{root2.val}\n- 否则，判断 \\textit{root1} 的左子树和 \\textit{root2} 的右子树是否对称，以及 \\textit{root1} 的右子树和 \\textit{root2} 的左子树是否对称，这里使用了递归。\npython\nDefinition for a binary tree node.\nclass TreeNode:\ndef __init__(self, val=0, left=None, right=None):\nself.val = val\ns",
-      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(n)$其中 $n$ 是二叉树的节点数 / 空间复杂度 $O(n)$其中 $n$ 是二叉树的节点数",
+      "approach": "镜像对称要求左子树与右子树互为镜像，而不是各自与自身相同。进阶同时要求递归与迭代都能做；n\n一对节点对称，当且仅当取值相同，且一方的左孩子与另一方的右孩子对称、一方的右孩子与另一方的左孩子对称。因此从根的左右孩子出发做交叉递归即可。\n我们设计一个函数 dfs(root1, root2)，用于判断两个二叉树是否对称。答案即为 dfs(root.left, root.right)。\n函数 dfs(root1, root2) 的逻辑如下：\n- 如果 root1 和 root2 都为空，则两个二叉树对称，返回 true；\n- 如果 root1 和 root2 中只有一个为空，或者 root1.val \\neq root2.val\n- 否则，判断 root1 的左子树和 root2 的右子树是否对称，以及 root1 的右子树和 root2 的左子树是否对称，这里使用了递归。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(n)其中 n 是二叉树的节点数",
       "javaSnippet": "/**\n * Definition for a binary tree node.\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n *     TreeNode() {}\n *     TreeNode(int val) { this.val = val; }\n *     TreeNode(int val, TreeNode left, TreeNode right) {\n *         this.val = val;\n *         this.left = left;\n *         this.right = right;\n *     }\n * }\n */\nclass Solution {\n    public boolean isSymmetric(TreeNode root) {\n        return dfs(root.left, root.right);\n    }\n\n    private boolean dfs(TreeNode root1, TreeNode root2) {\n        if (root1 == root2) {\n            return true;\n        }\n        if (root1 == null || root2 == null || root1.val != root2.val) {\n            return false;\n        }\n        return dfs(root1.left, root2.right) && dfs(root1.right, root2.left);\n    }\n}"
     },
     "memory": {
-      "title": "递归暴力遍历",
-      "approach": "对每个节点执行一次以它为根的完整遍历，把所有子树统计结果汇总；思路简单，适合小规模树。",
-      "complexity": "最坏 O(n^2) 时间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：递归」拆成三步记忆：第一步定核心结构（DFS 框架、访问标记、BFS 框架、层次计数、树的三种遍历、递归返回值设计），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(n)其中 n 是二叉树的节点数",
+      "javaSnippet": "/**\n * Definition for a binary tree node.\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n *     TreeNode() {}\n *     TreeNode(int val) { this.val = val; }\n *     TreeNode(int val, TreeNode left, TreeNode right) {\n *         this.val = val;\n *         this.left = left;\n *         this.right = right;\n *     }\n * }\n */\nclass Solution {\n    public boolean isSymmetric(TreeNode root) {\n        return dfs(root.left, root.right);\n    }\n\n    private boolean dfs(TreeNode root1, TreeNode root2) {\n        if (root1 == root2) {\n            return true;\n        }\n        if (root1 == null || root2 == null || root1.val != root2.val) {\n            return false;\n        }\n        return dfs(root1.left, root2.right) && dfs(root1.right, root2.left);\n    }\n}"
     },
     "keywords": [
       "对称二叉树",
@@ -106,5 +106,19 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[1,2,2,3,4,4,3]"
+      ],
+      "expected": "true"
+    },
+    {
+      "input": [
+        "[1,2,2,null,3,null,3]"
+      ],
+      "expected": "false"
+    }
+  ]
 }

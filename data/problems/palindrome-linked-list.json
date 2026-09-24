@@ -47,14 +47,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：快慢指针",
-      "approach": "放入数组再比较首尾可行，但要求常数空间。回文关于中点对称，可先找中点、反转后半，再与前半逐一比较。\n快慢指针定位中点后原地反转后半段，比较结束后不必恢复。\n我们可以先用快慢指针找到链表的中点，接着反转右半部分的链表。然后同时遍历前后两段链表，若前后两段链表节点对应的值不等，说明不是回文链表，否则说明是回文链表。\npython\nDefinition for singly-linked list.\nclass ListNode:\ndef __init__(self, val=0, next=None):\nself.val = val\nself.next = next\nclass Solution:\ndef isPalindrome(self, head: Optional[ListNode]) -> bool:\nslow, fast = head, head.next\nwhile fast and fast.next:\nslow, fast = slow.next, fast.next.next\npre, cur = None, slow.next\nwhile cur:\nt = cur.next\ncur.next = pre\npre, cur = cur, t\nwhile pre:\nif pre.val != head.val:\nreturn False\npre, head = pre.next, head.next\nreturn True\njava\n/\n* Definition for singly-linked list.\n* public class ListNode {\n*",
-      "complexity": "时间复杂度 $O(n)$其中 $n$ 为链表的长度空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "approach": "放入数组再比较首尾可行，但要求常数空间。回文关于中点对称，可先找中点、反转后半，再与前半逐一比较。\n快慢指针定位中点后原地反转后半段，比较结束后不必恢复。\n我们可以先用快慢指针找到链表的中点，接着反转右半部分的链表。然后同时遍历前后两段链表，若前后两段链表节点对应的值不等，说明不是回文链表，否则说明是回文链表。",
+      "complexity": "时间复杂度 O(n)其中 n 为链表的长度 / 空间复杂度 O(1)",
       "javaSnippet": "/**\n * Definition for singly-linked list.\n * public class ListNode {\n *     int val;\n *     ListNode next;\n *     ListNode() {}\n *     ListNode(int val) { this.val = val; }\n *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }\n * }\n */\nclass Solution {\n    public boolean isPalindrome(ListNode head) {\n        ListNode slow = head;\n        ListNode fast = head.next;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        ListNode cur = slow.next;\n        slow.next = null;\n        ListNode pre = null;\n        while (cur != null) {\n            ListNode t = cur.next;\n            cur.next = pre;\n            pre = cur;\n            cur = t;\n        }\n        while (pre != null) {\n            if (pre.val != head.val) {\n                return false;\n            }\n            pre = pre.next;\n            head = head.next;\n        }\n        return true;\n    }\n}"
     },
     "memory": {
-      "title": "两层循环补栈",
-      "approach": "对每个位置扫描其后元素，找到第一个满足条件的值并记录；不再依赖栈时最容易理解。",
-      "complexity": "O(n^2) 时间 / O(1) 空间",
+      "title": "题解直出记忆版",
+      "approach": "优先背题解里这段最直白的 Java 实现：记住容器/指针/状态变量，主流程结束后补返回值与边界。想先保正确性时，可以先用文字里的兜底思路过一遍再优化。",
+      "complexity": "以代码注释与题解为准",
       "javaSnippet": "// 方法一，使用数组\nclass Solution {\n    public boolean isPalindrome(ListNode head) {\n        int len = 0;\n        // 统计链表长度\n        ListNode cur = head;\n        while (cur != null) {\n            len++;\n            cur = cur.next;\n        }\n        cur = head;\n        int[] res = new int[len];\n        // 将元素加到数组之中\n        for (int i = 0; i < res.length; i++){\n            res[i] = cur.val;\n            cur = cur.next;\n        }\n        // 比较回文\n        for (int i = 0, j = len - 1; i < j; i++, j--){\n            if (res[i] != res[j]){\n                return false;\n            }\n        }\n        return true;\n    }\n}\n\n// 方法二，快慢指针\nclass Solution {\n    public boolean isPalindrome(ListNode head) {\n        // 如果为空或者仅有一个节点，返回true\n        if (head == null && head.next == null) return true;\n        ListNode slow = head;\n        ListNode fast = head;\n        ListNode pre = head;\n        while (fast != null && fast.next != null){\n            pre = slow;  // 记录slow的前一个结点\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        pre.next = null;  // 分割两个链表\n\n        // 前半部分\n        ListNode cur1 = head;\n        // 后半部分。这里使用了反转链表\n        ListNode cur2 = reverseList(slow);\n\n        while (cur1 != null){\n            if (cur1.val != cur2.val) return false;\n\n            // 注意要移动两个结点\n            cur1 = cur1.next;\n            cur2 = cur2.next;\n        }\n        return true;\n    }\n    ListNode reverseList(ListNode head){\n        // 反转链表\n        ListNode tmp = null;\n        ListNode pre = null;\n        while (head != null){\n            tmp = head.next;\n            head.next = pre;\n            pre = head;\n            head = tmp;\n        }\n        return pre;\n    }\n}"
     },
     "keywords": [
@@ -108,5 +108,19 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[1,2,2,1]"
+      ],
+      "expected": "true"
+    },
+    {
+      "input": [
+        "[1,2]"
+      ],
+      "expected": "false"
+    }
+  ]
 }

@@ -37,15 +37,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：两次遍历",
-      "approach": "除自身外的乘积等于左侧积乘右侧积。若先开两个数组存前缀、后缀积，空间不是常数。\n先从左往右把前缀积写入答案，再从右往左用一个变量累乘后缀并乘入答案，从而只用输出数组。\n我们定义两个变量 \\textit{left} 和 \\textit{right}，分别表示当前元素左边所有元素的乘积和右边所有元素的乘积。初始时 \\textit{left}=1, \\textit{right}=1。定义一个长度为 n 的答案数组 \\textit{ans}。\n我们先从左到右遍历数组，对于遍历到的第 i 个元素，我们用 \\textit{left} 更新 \\textit{ans}[i]，然后 \\textit{left} 乘以 \\textit{nums}[i]。\n然后，我们从右到左遍历数组，对于遍历到的第 i 个元素，我们更新 \\textit{ans}[i] 为 \\textit{ans}[i] x \\textit{right}，然后 \\textit{right} 乘以 \\textit{nums}[i]。\n遍历结束后，返回答案数组 \\textit{ans}。\npython\nclass Solution:\ndef productExceptSelf(self, nums: List[int]) -> List[int]:\nn = len(nums)\nans = [0] * n\nleft = right = 1\nfor i, x in enumerate(nums):\nans[i] = left\nleft *= x\nfor i in range(n - 1, -1, -1):\nans[i] *= right\nri",
-      "complexity": "时间复杂度 $O(n)$其中 $n$ 是数组 $\\textit{nums}$ 的长度忽略答案数组的空间消耗空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "approach": "除自身外的乘积等于左侧积乘右侧积。若先开两个数组存前缀、后缀积，空间不是常数。\n先从左往右把前缀积写入答案，再从右往左用一个变量累乘后缀并乘入答案，从而只用输出数组。\n我们定义两个变量 left 和 right，分别表示当前元素左边所有元素的乘积和右边所有元素的乘积。初始时 left=1, right=1。定义一个长度为 n 的答案数组 ans。\n我们先从左到右遍历数组，对于遍历到的第 i 个元素，我们用 left 更新 ans[i]，然后 left 乘以 nums[i]。\n然后，我们从右到左遍历数组，对于遍历到的第 i 个元素，我们更新 ans[i] 为 ans[i] x right，然后 right 乘以 nums[i]。\n遍历结束后，返回答案数组 ans。",
+      "complexity": "时间复杂度 O(n)其中 n 是数组 nums 的长度忽略答案数组的空间消耗 / 空间复杂度 O(1)",
       "javaSnippet": "class Solution {\n    public int[] productExceptSelf(int[] nums) {\n        int n = nums.length;\n        int[] ans = new int[n];\n        for (int i = 0, left = 1; i < n; ++i) {\n            ans[i] = left;\n            left *= nums[i];\n        }\n        for (int i = n - 1, right = 1; i >= 0; --i) {\n            ans[i] *= right;\n            right *= nums[i];\n        }\n        return ans;\n    }\n}"
     },
     "memory": {
-      "title": "暴力枚举（兜底）",
-      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
-      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：两次遍历」拆成三步记忆：第一步定核心结构（前缀和、HashMap 优化），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "时间复杂度 O(n)其中 n 是数组 nums 的长度忽略答案数组的空间消耗 / 空间复杂度 O(1)",
+      "javaSnippet": "class Solution {\n    public int[] productExceptSelf(int[] nums) {\n        int n = nums.length;\n        int[] ans = new int[n];\n        for (int i = 0, left = 1; i < n; ++i) {\n            ans[i] = left;\n            left *= nums[i];\n        }\n        for (int i = n - 1, right = 1; i >= 0; --i) {\n            ans[i] *= right;\n            right *= nums[i];\n        }\n        return ans;\n    }\n}"
     },
     "keywords": [
       "除了自身以外数组的乘积",
@@ -77,5 +77,19 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[1,2,3,4]"
+      ],
+      "expected": "[24,12,8,6]"
+    },
+    {
+      "input": [
+        "[-1,1,0,-3,3]"
+      ],
+      "expected": "[0,0,9,0,0]"
+    }
+  ]
 }

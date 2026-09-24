@@ -42,15 +42,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：动态规划",
-      "approach": "枚举每个右下角并向上检查正方形，在网格较大时重复访问。以 (i,j) 为右下角的最大边长，受限于其左、上、左上三个位置的最大边长。\n为此令 dp[i+1][j+1] 表示该最大边长：格子为 0 则为 0，否则取三者最小值加一。答案是最大边长的平方。\n我们定义 dp[i + 1][j + 1] 表示以下标 (i, j) 作为正方形右下角的最大正方形边长。答案为所有 dp[i + 1][j + 1] 中的最大值。\n状态转移方程为：\ndp[i + 1][j + 1] =\n\\begin{cases}\n0 & \\textit{if } matrix[i][j] = '0' \\\\\n\\min(dp[i][j], dp[i][j + 1], dp[i + 1][j]) + 1 & \\textit{if } matrix[i][j] = '1'\n\\end{cases}\npython\nclass Solution:\ndef maximalSquare(self, matrix: List[List[str]]) -> int:\nm, n = len(matrix), len(matrix[0])\ndp = [[0] * (n + 1) for _ in range(m + 1)]\nmx = 0\nfor i in range(m):\nfor j in range(n):\nif matrix[i][j] == '1':\ndp[i + 1][j + 1] = min(dp[i][j + 1], dp[i + 1][j], dp[i][j]) + 1\nmx = max(mx, dp[i + 1][j + ",
-      "complexity": "时间复杂度 $O(m\\times n)$空间复杂度 $O(m\\times n)$其中 $m$ 和 $n$ 分别是矩阵的行数和列数 / 空间复杂度 $O(m\\times n)$其中 $m$ 和 $n$ 分别是矩阵的行数和列数",
+      "approach": "枚举每个右下角并向上检查正方形，在网格较大时重复访问。以 (i,j) 为右下角的最大边长，受限于其左、上、左上三个位置的最大边长。\n为此令 dp[i+1][j+1] 表示该最大边长：格子为 0 则为 0，否则取三者最小值加一。答案是最大边长的平方。\n我们定义 dp[i + 1][j + 1] 表示以下标 (i, j) 作为正方形右下角的最大正方形边长。答案为所有 dp[i + 1][j + 1] 中的最大值。\n状态转移方程为：\ndp[i + 1][j + 1] =",
+      "complexity": "时间复杂度 O(mx n) / 空间复杂度 O(mx n)其中 m 和 n 分别是矩阵的行数和列数",
       "javaSnippet": "class Solution {\n    public int maximalSquare(char[][] matrix) {\n        int m = matrix.length, n = matrix[0].length;\n        int[][] dp = new int[m + 1][n + 1];\n        int mx = 0;\n        for (int i = 0; i < m; ++i) {\n            for (int j = 0; j < n; ++j) {\n                if (matrix[i][j] == '1') {\n                    dp[i + 1][j + 1] = Math.min(Math.min(dp[i][j + 1], dp[i + 1][j]), dp[i][j]) + 1;\n                    mx = Math.max(mx, dp[i + 1][j + 1]);\n                }\n            }\n        }\n        return mx * mx;\n    }\n}"
     },
     "memory": {
-      "title": "暴力枚举（兜底）",
-      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
-      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：动态规划」拆成三步记忆：第一步定核心结构（动态规划五步、状态压缩、记忆化搜索、矩阵遍历、矩阵变换），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "时间复杂度 O(mx n) / 空间复杂度 O(mx n)其中 m 和 n 分别是矩阵的行数和列数",
+      "javaSnippet": "class Solution {\n    public int maximalSquare(char[][] matrix) {\n        int m = matrix.length, n = matrix[0].length;\n        int[][] dp = new int[m + 1][n + 1];\n        int mx = 0;\n        for (int i = 0; i < m; ++i) {\n            for (int j = 0; j < n; ++j) {\n                if (matrix[i][j] == '1') {\n                    dp[i + 1][j + 1] = Math.min(Math.min(dp[i][j + 1], dp[i + 1][j]), dp[i][j]) + 1;\n                    mx = Math.max(mx, dp[i + 1][j + 1]);\n                }\n            }\n        }\n        return mx * mx;\n    }\n}"
     },
     "keywords": [
       "最大正方形",
@@ -97,5 +97,25 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[[\"1\",\"0\",\"1\",\"0\",\"0\"],[\"1\",\"0\",\"1\",\"1\",\"1\"],[\"1\",\"1\",\"1\",\"1\",\"1\"],[\"1\",\"0\",\"0\",\"1\",\"0\"]]"
+      ],
+      "expected": "4"
+    },
+    {
+      "input": [
+        "[[\"0\",\"1\"],[\"1\",\"0\"]]"
+      ],
+      "expected": "1"
+    },
+    {
+      "input": [
+        "[[\"0\"]]"
+      ],
+      "expected": "0"
+    }
+  ]
 }

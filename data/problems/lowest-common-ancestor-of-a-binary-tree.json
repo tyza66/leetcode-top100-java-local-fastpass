@@ -61,15 +61,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：递归",
-      "approach": "普通二叉树没有有序性，不能按值决定方向。LCA 是同时覆盖 p 与 q 的最深结点。\n后序递归：子树中找到目标则上送该结点；左右都非空则当前根为 LCA，否则上送非空一侧。\n我们递归遍历二叉树：\n如果当前节点为空或者等于 p 或者 q，则返回当前节点；\n否则，我们递归遍历左右子树，将返回的结果分别记为 left 和 right。如果 left 和 right 都不为空，则说明 p 和 q 分别在左右子树中，因此当前节点即为最近公共祖先；如果 left 和 right 中只有一个不为空，返回不为空的那个。\npython\nDefinition for a binary tree node.\nclass TreeNode:\ndef __init__(self, x):\nself.val = x\nself.left = None\nself.right = None\nclass Solution:\ndef lowestCommonAncestor(\nself, root: \"TreeNode\", p: \"TreeNode\", q: \"TreeNode\"\n) -> \"TreeNode\":\nif root in (None, p, q):\nreturn root\nleft = self.lowestCommonAncestor(root.left, p, q)\nright = self.lowestCommonAncestor(root.right, p, q)\nreturn root if left and right else (left or right)\njava\n/\n* Defin",
-      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(n)$其中 $n$ 为二叉树节点个数 / 空间复杂度 $O(n)$其中 $n$ 为二叉树节点个数",
+      "approach": "普通二叉树没有有序性，不能按值决定方向。LCA 是同时覆盖 p 与 q 的最深结点。\n后序递归：子树中找到目标则上送该结点；左右都非空则当前根为 LCA，否则上送非空一侧。\n我们递归遍历二叉树：\n如果当前节点为空或者等于 p 或者 q，则返回当前节点；\n否则，我们递归遍历左右子树，将返回的结果分别记为 left 和 right。如果 left 和 right 都不为空，则说明 p 和 q 分别在左右子树中，因此当前节点即为最近公共祖先；如果 left 和 right 中只有一个不为空，返回不为空的那个。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(n)其中 n 为二叉树节点个数",
       "javaSnippet": "/**\n * Definition for a binary tree node.\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n *     TreeNode(int x) { val = x; }\n * }\n */\nclass Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root == null || root == p || root == q) {\n            return root;\n        }\n        var left = lowestCommonAncestor(root.left, p, q);\n        var right = lowestCommonAncestor(root.right, p, q);\n        if (left != null && right != null) {\n            return root;\n        }\n        return left == null ? right : left;\n    }\n}"
     },
     "memory": {
-      "title": "递归暴力遍历",
-      "approach": "对每个节点执行一次以它为根的完整遍历，把所有子树统计结果汇总；思路简单，适合小规模树。",
-      "complexity": "最坏 O(n^2) 时间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：递归」拆成三步记忆：第一步定核心结构（DFS 框架、访问标记、树的三种遍历、递归返回值设计、最近公共祖先、倍增），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(n)其中 n 为二叉树节点个数",
+      "javaSnippet": "/**\n * Definition for a binary tree node.\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n *     TreeNode(int x) { val = x; }\n * }\n */\nclass Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root == null || root == p || root == q) {\n            return root;\n        }\n        var left = lowestCommonAncestor(root.left, p, q);\n        var right = lowestCommonAncestor(root.right, p, q);\n        if (left != null && right != null) {\n            return root;\n        }\n        return left == null ? right : left;\n    }\n}"
     },
     "keywords": [
       "二叉树的最近公共祖先",
@@ -121,5 +121,31 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[3,5,1,6,2,0,8,null,null,7,4]",
+        "5",
+        "1"
+      ],
+      "expected": "3"
+    },
+    {
+      "input": [
+        "[3,5,1,6,2,0,8,null,null,7,4]",
+        "5",
+        "4"
+      ],
+      "expected": "5"
+    },
+    {
+      "input": [
+        "[1,2]",
+        "1",
+        "2"
+      ],
+      "expected": "1"
+    }
+  ]
 }

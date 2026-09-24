@@ -52,15 +52,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：递归",
-      "approach": "路径可以经过任意节点，不必过根，也可以在某节点「拐弯」同时走左右子树。枚举所有路径在 n <= 3x 10^4 下不可行。\n对每个节点，能向上贡献的只是「节点值加上左右中较大的一条非负链」；左右都接上的和只用于更新全局答案，不能再往上传。负贡献应丢弃，因此递归返回前对子树结果与 0 取最大。\n我们思考二叉树递归问题的经典套路：\n1. 终止条件（何时终止递归）\n2. 递归处理左右子树\n3. 合并左右子树的计算结果\n对于本题，我们设计一个函数 dfs(root)，它返回以 root 为根节点的二叉树的最大路径和。\n函数 dfs(root) 的执行逻辑如下：\n如果 root 不存在，那么 dfs(root) 返回 0；\n否则，我们递归计算 root 的左子树和右子树的最大路径和，分别记为 left 和 right。如果 left 小于 0，那么我们将其置为 0，同理，如果 right 小于 0，那么我们将其置为 0。\n然后，我们用 root.val + left + right 更新答案。最后，函数返回 root.val + \\max(left, right)。\n在主函数中，我们调用 dfs(root)，即可得到每个节点的最大路径和，其中的最大值即为答案。\npython\nDefinition for a binary tree node.\nclass TreeNode:\ndef __init__(self, val=0, left=None, right=None):\nself.val = val\nself.left = left\nself.right = right\nclass S",
-      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(n)$其中 $n$ 是二叉树的节点数 / 空间复杂度 $O(n)$其中 $n$ 是二叉树的节点数",
+      "approach": "路径可以经过任意节点，不必过根，也可以在某节点「拐弯」同时走左右子树。枚举所有路径在 n\n对每个节点，能向上贡献的只是「节点值加上左右中较大的一条非负链」；左右都接上的和只用于更新全局答案，不能再往上传。负贡献应丢弃，因此递归返回前对子树结果与 0 取最大。\n我们思考二叉树递归问题的经典套路：\n1. 终止条件（何时终止递归）\n2. 递归处理左右子树\n3. 合并左右子树的计算结果\n对于本题，我们设计一个函数 dfs(root)，它返回以 root 为根节点的二叉树的最大路径和。\n函数 dfs(root) 的执行逻辑如下：\n如果 root 不存在，那么 dfs(root) 返回 0；\n否则，我们递归计算 root 的左子树和右子树的最大路径和，分别记为 left 和 right。如果 left 小于 0，那么我们将其置为 0，同理，如果 right 小于 0，那么我们将其置为 0。\n然后，我们用 root.val + left + right 更新答案。最后，函数返回 root.val + max(left, right)。\n在主函数中，我们调用 dfs(root)，即可得到每个节点的最大路径和，其中的最大值即为答案。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(n)其中 n 是二叉树的节点数",
       "javaSnippet": "/**\n * Definition for a binary tree node.\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n *     TreeNode() {}\n *     TreeNode(int val) { this.val = val; }\n *     TreeNode(int val, TreeNode left, TreeNode right) {\n *         this.val = val;\n *         this.left = left;\n *         this.right = right;\n *     }\n * }\n */\nclass Solution {\n    private int ans = -1001;\n\n    public int maxPathSum(TreeNode root) {\n        dfs(root);\n        return ans;\n    }\n\n    private int dfs(TreeNode root) {\n        if (root == null) {\n            return 0;\n        }\n        int left = Math.max(0, dfs(root.left));\n        int right = Math.max(0, dfs(root.right));\n        ans = Math.max(ans, root.val + left + right);\n        return root.val + Math.max(left, right);\n    }\n}"
     },
     "memory": {
-      "title": "递归暴力遍历",
-      "approach": "对每个节点执行一次以它为根的完整遍历，把所有子树统计结果汇总；思路简单，适合小规模树。",
-      "complexity": "最坏 O(n^2) 时间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：递归」拆成三步记忆：第一步定核心结构（DFS 框架、访问标记、动态规划五步、状态压缩、记忆化搜索、树的三种遍历），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(n)其中 n 是二叉树的节点数",
+      "javaSnippet": "/**\n * Definition for a binary tree node.\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n *     TreeNode() {}\n *     TreeNode(int val) { this.val = val; }\n *     TreeNode(int val, TreeNode left, TreeNode right) {\n *         this.val = val;\n *         this.left = left;\n *         this.right = right;\n *     }\n * }\n */\nclass Solution {\n    private int ans = -1001;\n\n    public int maxPathSum(TreeNode root) {\n        dfs(root);\n        return ans;\n    }\n\n    private int dfs(TreeNode root) {\n        if (root == null) {\n            return 0;\n        }\n        int left = Math.max(0, dfs(root.left));\n        int right = Math.max(0, dfs(root.right));\n        ans = Math.max(ans, root.val + left + right);\n        return root.val + Math.max(left, right);\n    }\n}"
     },
     "keywords": [
       "二叉树中的最大路径和",
@@ -114,5 +114,19 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[1,2,3]"
+      ],
+      "expected": "6"
+    },
+    {
+      "input": [
+        "[-10,9,20,null,null,15,7]"
+      ],
+      "expected": "42"
+    }
+  ]
 }

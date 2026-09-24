@@ -44,15 +44,15 @@
   "hints": {
     "optimal": {
       "title": "方法一：排序 + 双指针",
-      "approach": "三重循环枚举后再用集合去重，时间复杂度为 O(n^3)。n <= 3000，无法通过。固定一个数后，问题退化为两数之和，哈希表可以将时间降至 O(n^2)，但去重较繁琐，也需要额外空间。\n题目并不要求三元组按原顺序返回。先将数组排序，重复元素会相邻，便于跳过；有序之后，两数之和可以用左右指针在线性时间内完成。若 nums[i] > 0，其后均为正数，三数之和不可能为 0，可以直接结束。因此排序后枚举第一个数，在右侧用双指针夹逼即可。\n我们注意到，题目不要求我们按照顺序返回三元组，因此我们不妨先对数组进行排序，这样就可以方便地跳过重复的元素。\n接下来，我们枚举三元组的第一个元素 nums[i]，其中 0 <=q i \\lt n - 2。对于每个 i，我们可以通过维护两个指针 j = i + 1 和 k = n - 1，从而找到满足 nums[i] + nums[j] + nums[k] = 0 的 j 和 k。在枚举的过程中，我们需要跳过重复的元素，以避免出现重复的三元组。\n具体判断逻辑如下：\n如果 i \\gt 0 并且 nums[i] = nums[i - 1]，则说明当前枚举的元素与上一个元素相同，我们可以直接跳过，因为不会产生新的结果。\n如果 nums[i] \\gt 0，则说明当前枚举的元素大于 0，则三数之和必然无法等于 0，结束枚举。\n否则，我们令左指针 j = i + 1，右指针 k = n - 1，当 j \\lt k 时，执行循环，计算三数之和 x = nums[i] + nums[j] + nums[k]，并与 0 比较：\n- 如果 x \\lt 0，则说明 num",
-      "complexity": "时间复杂度 为 $O(n^3)$$n \\le 3000$无法通过固定一个数后问题退化为两数之和哈希表可以将时间降至 $O(n^2)$但去重较繁琐也需要额外空间 / 空间复杂度 $O(\\log n)$其中 $n$ 为数组的长度",
+      "approach": "三重循环枚举后再用集合去重，时间复杂度为 O(n^3)。n\n题目并不要求三元组按原顺序返回。先将数组排序，重复元素会相邻，便于跳过；有序之后，两数之和可以用左右指针在线性时间内完成。若 nums[i] > 0，其后均为正数，三数之和不可能为 0，可以直接结束。因此排序后枚举第一个数，在右侧用双指针夹逼即可。\n我们注意到，题目不要求我们按照顺序返回三元组，因此我们不妨先对数组进行排序，这样就可以方便地跳过重复的元素。\n接下来，我们枚举三元组的第一个元素 nums[i]，其中 0 <=q i \\lt n - 2。对于每个 i，我们可以通过维护两个指针 j = i + 1 和 k = n - 1，从而找到满足 nums[i] + nums[j] + nums[k] = 0 的 j 和 k。在枚举的过程中，我们需要跳过重复的元素，以避免出现重复的三元组。\n具体判断逻辑如下：\n如果 i \\gt 0 并且 nums[i] = nums[i - 1]，则说明当前枚举的元素与上一个元素相同，我们可以直接跳过，因为不会产生新的结果。\n如果 nums[i] \\gt 0，则说明当前枚举的元素大于 0，则三数之和必然无法等于 0，结束枚举。\n否则，我们令左指针 j = i + 1，右指针 k = n - 1，当 j \\lt k 时，执行循环，计算三数之和 x = nums[i] + nums[j] + nums[k]，并与 0 比较：\n- 如果 x \\lt 0，则说明 nums[j] 太小，我们需要将 j 右移一位。\n- 如果 x \\gt 0，则说明 nums[k] 太大，我们需要将 k 左移一位。\n",
+      "complexity": "时间复杂度 O(n^2) / 空间复杂度 O(\\log n)其中 n 为数组的长度",
       "javaSnippet": "class Solution {\n    public List<List<Integer>> threeSum(int[] nums) {\n        Arrays.sort(nums);\n        List<List<Integer>> ans = new ArrayList<>();\n        int n = nums.length;\n        for (int i = 0; i < n - 2 && nums[i] <= 0; ++i) {\n            if (i > 0 && nums[i] == nums[i - 1]) {\n                continue;\n            }\n            int j = i + 1, k = n - 1;\n            while (j < k) {\n                int x = nums[i] + nums[j] + nums[k];\n                if (x < 0) {\n                    ++j;\n                } else if (x > 0) {\n                    --k;\n                } else {\n                    ans.add(List.of(nums[i], nums[j++], nums[k--]));\n                    while (j < k && nums[j] == nums[j - 1]) {\n                        ++j;\n                    }\n                    while (j < k && nums[k] == nums[k + 1]) {\n                        --k;\n                    }\n                }\n            }\n        }\n        return ans;\n    }\n}"
     },
     "memory": {
-      "title": "暴力枚举（兜底）",
-      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
-      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
-      "javaSnippet": ""
+      "title": "最优解模板（三步记忆）",
+      "approach": "把「方法一：排序 + 双指针」拆成三步记忆：第一步定核心结构（双指针、边界处理、常用排序、原地与稳定性），第二步照着下面模板走主流程，第三步核对边界与返回类型。背熟后再默写一遍，同类题只替换细节。",
+      "complexity": "时间复杂度 O(n^2) / 空间复杂度 O(\\log n)其中 n 为数组的长度",
+      "javaSnippet": "class Solution {\n    public List<List<Integer>> threeSum(int[] nums) {\n        Arrays.sort(nums);\n        List<List<Integer>> ans = new ArrayList<>();\n        int n = nums.length;\n        for (int i = 0; i < n - 2 && nums[i] <= 0; ++i) {\n            if (i > 0 && nums[i] == nums[i - 1]) {\n                continue;\n            }\n            int j = i + 1, k = n - 1;\n            while (j < k) {\n                int x = nums[i] + nums[j] + nums[k];\n                if (x < 0) {\n                    ++j;\n                } else if (x > 0) {\n                    --k;\n                } else {\n                    ans.add(List.of(nums[i], nums[j++], nums[k--]));\n                    while (j < k && nums[j] == nums[j - 1]) {\n                        ++j;\n                    }\n                    while (j < k && nums[k] == nums[k + 1]) {\n                        --k;\n                    }\n                }\n            }\n        }\n        return ans;\n    }\n}"
     },
     "keywords": [
       "三数之和",
@@ -93,5 +93,25 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[-1,0,1,2,-1,-4]"
+      ],
+      "expected": "[[-1,-1,2],[-1,0,1]]"
+    },
+    {
+      "input": [
+        "[0,1,1]"
+      ],
+      "expected": "[]"
+    },
+    {
+      "input": [
+        "[0,0,0]"
+      ],
+      "expected": "[[0,0,0]]"
+    }
+  ]
 }

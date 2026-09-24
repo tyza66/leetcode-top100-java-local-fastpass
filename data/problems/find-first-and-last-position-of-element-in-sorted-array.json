@@ -41,14 +41,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：二分查找",
-      "approach": "扫描一遍记下 target 的首次与末次出现，时间复杂度为 O(n)。n <= 10^5 且题目要求 O(\\log n)；即便先找到一个命中再向两侧扩展，最坏仍是线性。\n数组非递减，左右边界各自是一个二分问题，不必在同一轮里同时寻找两端。左边界即第一个不小于 target 的位置，右边界即第一个不小于 target+1 的位置减一。两次下界查找即可；若两次结果相同，说明 target 不存在。\n我们可以进行两次二分查找，分别查找出左边界和右边界。\npython\nclass Solution:\ndef searchRange(self, nums: List[int], target: int) -> List[int]:\nl = bisect_left(nums, target)\nr = bisect_left(nums, target + 1)\nreturn [-1, -1] if l == r else [l, r - 1]\njava\nclass Solution {\npublic int[] searchRange(int[] nums, int target) {\nint l = search(nums, target);\nint r = search(nums, target + 1);\nreturn l == r ? new int[] {-1, -1} : new int[] {l, r - 1};\n}\nprivate int search(int[] nums, int x) {\nint left = 0, right = nums.length;\nwhile ",
-      "complexity": "时间复杂度 为 $O(n)$$n \\le 10^5$ 且题目要求 $O(\\log n)$；即便先找到一个命中再向两侧扩展最坏仍是线性 / 空间复杂度 $O(1)$",
+      "approach": "扫描一遍记下 target 的首次与末次出现，时间复杂度为 O(n)。n\n数组非递减，左右边界各自是一个二分问题，不必在同一轮里同时寻找两端。左边界即第一个不小于 target 的位置，右边界即第一个不小于 target+1 的位置减一。两次下界查找即可；若两次结果相同，说明 target 不存在。\n我们可以进行两次二分查找，分别查找出左边界和右边界。",
+      "complexity": "时间复杂度 O(\\log n)其中 n 是数组 nums 的长度 / 空间复杂度 O(1)",
       "javaSnippet": "class Solution {\n    public int[] searchRange(int[] nums, int target) {\n        int l = search(nums, target);\n        int r = search(nums, target + 1);\n        return l == r ? new int[] {-1, -1} : new int[] {l, r - 1};\n    }\n\n    private int search(int[] nums, int x) {\n        int left = 0, right = nums.length;\n        while (left < right) {\n            int mid = (left + right) >>> 1;\n            if (nums[mid] >= x) {\n                right = mid;\n            } else {\n                left = mid + 1;\n            }\n        }\n        return left;\n    }\n}"
     },
     "memory": {
-      "title": "暴力枚举（兜底）",
-      "approach": "先枚举所有可选的“起点/下标对”，逐个验证条件，找到答案立即返回。代码直观、不易写错，适合先保正确性再优化。",
-      "complexity": "通常 O(n^2) 时间 / O(1) 空间",
+      "title": "题解直出记忆版",
+      "approach": "优先背题解里这段最直白的 Java 实现：记住容器/指针/状态变量，主流程结束后补返回值与边界。想先保正确性时，可以先用文字里的兜底思路过一遍再优化。",
+      "complexity": "以代码注释与题解为准",
       "javaSnippet": "// 解法2\n// 1、首先，在 nums 数组中二分查找 target；\n// 2、如果二分查找失败，则 binarySearch 返回 -1，表明 nums 中没有 target。此时，searchRange 直接返回 {-1, -1}；\n// 3、如果二分查找成功，则 binarySearch 返回 nums 中值为 target 的一个下标。然后，通过左右滑动指针，来找到符合题意的区间\n\nclass Solution {\n\tpublic int[] searchRange(int[] nums, int target) {\n\t\tint index = binarySearch(nums, target); // 二分查找\n\t\t\n\t\tif (index == -1) { // nums 中不存在 target，直接返回 {-1, -1}\n\t\t\treturn new int[] {-1, -1}; // 匿名数组 \n\t\t}\n\t\t// nums 中存在 target，则左右滑动指针，来找到符合题意的区间\n\t\tint left = index;\n\t\tint right = index;\n        // 向左滑动，找左边界\n\t\twhile (left - 1 >= 0 && nums[left - 1] == nums[index]) { // 防止数组越界。逻辑短路，两个条件顺序不能换\n\t\t\tleft--;\n\t\t}\n        // 向右滑动，找右边界\n\t\twhile (right + 1 < nums.length && nums[right + 1] == nums[index]) { // 防止数组越界。\n\t\t\tright++;\n\t\t}\n\t\treturn new int[] {left, right};\n    }\n\t\n\t/**\n\t * 二分查找\n\t * @param nums\n\t * @param target\n\t */\n\tpublic int binarySearch(int[] nums, int target) {\n\t\tint left = 0;\n\t\tint right = nums.length - 1; // 不变量：左闭右闭区间\n\t\t\n\t\twhile (left <= right) { // 不变量：左闭右闭区间\n\t\t\tint mid = left + (right - left) / 2;\n\t\t\tif (nums[mid] == target) {\n\t\t\t\treturn mid;\n\t\t\t} else if (nums[mid] < target) {\n\t\t\t\tleft = mid + 1;\n\t\t\t} else {\n\t\t\t\tright = mid - 1; // 不变量：左闭右闭区间\n\t\t\t}\n\t\t}\n\t\treturn -1; // 不存在\n\t}\n}"
     },
     "keywords": [
@@ -81,5 +81,28 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[5,7,7,8,8,10]",
+        "8"
+      ],
+      "expected": "[3,4]"
+    },
+    {
+      "input": [
+        "[5,7,7,8,8,10]",
+        "6"
+      ],
+      "expected": "[-1,-1]"
+    },
+    {
+      "input": [
+        "[]",
+        "0"
+      ],
+      "expected": "[-1,-1]"
+    }
+  ]
 }

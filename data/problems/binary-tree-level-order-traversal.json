@@ -43,14 +43,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：BFS",
-      "approach": "题目要按层输出节点值。深度优先也能记下深度再分组，但同一层的左右顺序还要额外整理。n <= 2000，一层最多 O(n) 个节点。\n广度优先天然按层扩张：队列中当前一批节点恰为一层，出队时收集取值并压入孩子，即可得到从左到右的一层结果。\n我们可以使用 BFS 的方法来解决这道题。首先将根节点入队，然后不断地进行以下操作，直到队列为空：\n- 遍历当前队列中的所有节点，将它们的值存储到一个临时数组 t 中，然后将它们的孩子节点入队。\n- 将临时数组 t 存储到答案数组中。\n最后返回答案数组即可。\npython\nDefinition for a binary tree node.\nclass TreeNode:\ndef __init__(self, val=0, left=None, right=None):\nself.val = val\nself.left = left\nself.right = right\nclass Solution:\ndef levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:\nans = []\nif root is None:\nreturn ans\nq = deque([root])\nwhile q:\nt = []\nfor _ in range(len(q)):\nnode = q.popleft()\nt.append(node.val)\nif node.left:\nq.append(node.left)\nif node.right:\nq.append(node.right)\nans.ap",
-      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(n)$其中 $n$ 是二叉树的节点个数 / 空间复杂度 $O(n)$其中 $n$ 是二叉树的节点个数",
+      "approach": "题目要按层输出节点值。深度优先也能记下深度再分组，但同一层的左右顺序还要额外整理。n\n广度优先天然按层扩张：队列中当前一批节点恰为一层，出队时收集取值并压入孩子，即可得到从左到右的一层结果。\n我们可以使用 BFS 的方法来解决这道题。首先将根节点入队，然后不断地进行以下操作，直到队列为空：\n- 遍历当前队列中的所有节点，将它们的值存储到一个临时数组 t 中，然后将它们的孩子节点入队。\n- 将临时数组 t 存储到答案数组中。\n最后返回答案数组即可。",
+      "complexity": "时间复杂度 O(n) / 空间复杂度 O(n)其中 n 是二叉树的节点个数",
       "javaSnippet": "/**\n * Definition for a binary tree node.\n * public class TreeNode {\n *     int val;\n *     TreeNode left;\n *     TreeNode right;\n *     TreeNode() {}\n *     TreeNode(int val) { this.val = val; }\n *     TreeNode(int val, TreeNode left, TreeNode right) {\n *         this.val = val;\n *         this.left = left;\n *         this.right = right;\n *     }\n * }\n */\nclass Solution {\n    public List<List<Integer>> levelOrder(TreeNode root) {\n        List<List<Integer>> ans = new ArrayList<>();\n        if (root == null) {\n            return ans;\n        }\n        Deque<TreeNode> q = new ArrayDeque<>();\n        q.offer(root);\n        while (!q.isEmpty()) {\n            List<Integer> t = new ArrayList<>();\n            for (int n = q.size(); n > 0; --n) {\n                TreeNode node = q.poll();\n                t.add(node.val);\n                if (node.left != null) {\n                    q.offer(node.left);\n                }\n                if (node.right != null) {\n                    q.offer(node.right);\n                }\n            }\n            ans.add(t);\n        }\n        return ans;\n    }\n}"
     },
     "memory": {
-      "title": "递归暴力遍历",
-      "approach": "对每个节点执行一次以它为根的完整遍历，把所有子树统计结果汇总；思路简单，适合小规模树。",
-      "complexity": "最坏 O(n^2) 时间",
+      "title": "题解直出记忆版",
+      "approach": "优先背题解里这段最直白的 Java 实现：记住容器/指针/状态变量，主流程结束后补返回值与边界。想先保正确性时，可以先用文字里的兜底思路过一遍再优化。",
+      "complexity": "以代码注释与题解为准",
       "javaSnippet": "/**\n * 思路和模板相同, 对收集答案的方式做了优化, 最后不需要反转\n */\nclass Solution {\n    public List<List<Integer>> levelOrderBottom(TreeNode root) {\n        // 利用链表可以进行 O(1) 头部插入, 这样最后答案不需要再反转\n        LinkedList<List<Integer>> ans = new LinkedList<>();\n\n        Queue<TreeNode> q = new LinkedList<>();\n\n        if (root != null) q.offer(root);\n\n        while (!q.isEmpty()) {\n            int size = q.size();\n\n            List<Integer> temp = new ArrayList<>();\n\n            for (int i = 0; i < size; i ++) {\n                TreeNode node = q.poll();\n\n                temp.add(node.val);\n\n                if (node.left != null) q.offer(node.left);\n\n                if (node.right != null) q.offer(node.right);\n            }\n\n            // 新遍历到的层插到头部, 这样就满足按照层次反序的要求\n            ans.addFirst(temp);\n        }\n\n        return ans;\n    }"
     },
     "keywords": [
@@ -93,5 +93,25 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[3,9,20,null,null,15,7]"
+      ],
+      "expected": "[[3],[9,20],[15,7]]"
+    },
+    {
+      "input": [
+        "[1]"
+      ],
+      "expected": "[[1]]"
+    },
+    {
+      "input": [
+        "[]"
+      ],
+      "expected": "[]"
+    }
+  ]
 }

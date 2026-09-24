@@ -42,14 +42,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：递推",
-      "approach": "到达第 n 阶的最后一步只能是爬 1 阶或 2 阶，因此方案数满足 f(n) = f(n-1) + f(n-2)。若直接按此递归，n <= 45 时同一子问题会被反复展开，时间无法接受。\n这与斐波那契数列相同，自底向上递推即可避免重复计算。f[i] 只依赖于前两项，用两个变量滚动维护，即可在 O(n) 时间、O(1) 额外空间内得到答案。\n我们定义 f[i] 表示爬到第 i 阶楼梯的方法数，那么 f[i] 可以由 f[i - 1] 和 f[i - 2] 转移而来，即：\nf[i] = f[i - 1] + f[i - 2]\n初始条件为 f[0] = 1，f[1] = 1，即爬到第 0 阶楼梯的方法数为 1，爬到第 1 阶楼梯的方法数也为 1。\n答案即为 f[n]。\n由于 f[i] 只与 f[i - 1] 和 f[i - 2] 有关，因此我们可以只用两个变量 a 和 b 来维护当前的方法数，空间复杂度降低为 O(1)。\npython\nclass Solution:\ndef climbStairs(self, n: int) -> int:\na, b = 0, 1\nfor _ in range(n):\na, b = b, a + b\nreturn b\njava\nclass Solution {\npublic int climbStairs(int n) {\nint a = 0, b = 1;\nfor (int i = 0; i < n; ++i) {\nint c = a + b;\na = b;\nb = c;\n}\nreturn b;\n}\n}\ncpp\nclass Solution {\np",
-      "complexity": "时间复杂度 $O(n)$空间复杂度 $O(1)$ / 空间复杂度 降低为 $O(1)$",
+      "approach": "到达第 n 阶的最后一步只能是爬 1 阶或 2 阶，因此方案数满足 f(n) = f(n-1) + f(n-2)。若直接按此递归，n\n这与斐波那契数列相同，自底向上递推即可避免重复计算。f[i] 只依赖于前两项，用两个变量滚动维护，即可在 O(n) 时间、O(1) 额外空间内得到答案。\n我们定义 f[i] 表示爬到第 i 阶楼梯的方法数，那么 f[i] 可以由 f[i - 1] 和 f[i - 2] 转移而来，即：\nf[i] = f[i - 1] + f[i - 2]\n初始条件为 f[0] = 1，f[1] = 1，即爬到第 0 阶楼梯的方法数为 1，爬到第 1 阶楼梯的方法数也为 1。\n答案即为 f[n]。\n由于 f[i] 只与 f[i - 1] 和 f[i - 2] 有关，因此我们可以只用两个变量 a 和 b 来维护当前的方法数，空间复杂度降低为 O(1)。",
+      "complexity": "空间复杂度 降低为 O(1)",
       "javaSnippet": "class Solution {\n    public int climbStairs(int n) {\n        int a = 0, b = 1;\n        for (int i = 0; i < n; ++i) {\n            int c = a + b;\n            a = b;\n            b = c;\n        }\n        return b;\n    }\n}"
     },
     "memory": {
       "title": "方法二：矩阵快速幂加速递推",
-      "approach": "方法一已经是 O(n)，对本题 n <= 45 足够，但线性递推在 n 更大时仍偏慢。\n线性齐次递推可以写成矩阵乘法：F_n 由 F_{n-1} 乘上固定的 2 x 2 转移矩阵得到。矩阵快速幂把 n 次转移压到 O(\\log n)，常数略大，适合需要加速同一递推的场景。\n我们设 Fib(n) 表示一个 1 x 2 的矩阵 \\begin{bmatrix} F_n & F_{n - 1} \\end{bmatrix}，其中 F_n 和 F_{n - 1} 分别是第 n 个和第 n - 1 个斐波那契数。\n我们希望根据 Fib(n-1) = \\begin{bmatrix} F_{n - 1} & F_{n - 2} \\end{bmatrix} 推出 Fib(n)。也即是说，我们需要一个矩阵 base，使得 Fib(n - 1) x base = Fib(n)，即：\n\\begin{bmatrix}\nF_{n - 1} & F_{n - 2}\n\\end{bmatrix} x base = \\begin{bmatrix} F_n & F_{n - 1} \\end{bmatrix}\n由于 F_n = F_{n - 1} + F_{n - 2}，所以矩阵 base 的第一列为：\n\\begin{bmatrix}\n1 \\\\\n1\n\\end{bmatrix}\n第二列为：\n\\begin{bmatrix}\n1 \\\\\n0\n\\end{bmatrix}\n因此有：\n\\begin{bmatrix} F_{n - 1} & F_{n - 2} \\end{bmatrix} x \\begin{bmatrix}1 & 1 ",
-      "complexity": "时间复杂度 $O(\\log n)$空间复杂度 $O(1)$ / 空间复杂度 $O(1)$",
+      "approach": "方法一已经是 O(n)，对本题 n\n线性齐次递推可以写成矩阵乘法：F_n 由 F_{n-1} 乘上固定的 2 x 2 转移矩阵得到。矩阵快速幂把 n 次转移压到 O(\\log n)，常数略大，适合需要加速同一递推的场景。\n我们设 Fib(n) 表示一个 1 x 2 的矩阵 ，其中 F_n 和 F_{n - 1} 分别是第 n 个和第 n - 1 个斐波那契数。\n我们希望根据 Fib(n-1) =  推出 Fib(n)。也即是说，我们需要一个矩阵 base，使得 Fib(n - 1) x base = Fib(n)，即：\nx base =\n由于 F_n = F_{n - 1} + F_{n - 2}，所以矩阵 base 的第一列为：\n第二列为：\n因此有：\nx  =\n我们定义初始矩阵 res = ，那么 F_n 等于 res 乘以 base^{n - 1} 的结果矩阵中第一行的第一个元素。使用矩阵快速幂求解即可。",
+      "complexity": "时间复杂度 O(\\log n) / 空间复杂度 O(1)",
       "javaSnippet": "class Solution {\n    private final int[][] a = {{1, 1}, {1, 0}};\n\n    public int climbStairs(int n) {\n        return pow(a, n - 1)[0][0];\n    }\n\n    private int[][] mul(int[][] a, int[][] b) {\n        int m = a.length, n = b[0].length;\n        int[][] c = new int[m][n];\n        for (int i = 0; i < m; ++i) {\n            for (int j = 0; j < n; ++j) {\n                for (int k = 0; k < a[0].length; ++k) {\n                    c[i][j] += a[i][k] * b[k][j];\n                }\n            }\n        }\n        return c;\n    }\n\n    private int[][] pow(int[][] a, int n) {\n        int[][] res = {{1, 1}, {0, 0}};\n        while (n > 0) {\n            if ((n & 1) == 1) {\n                res = mul(res, a);\n            }\n            n >>= 1;\n            a = mul(a, a);\n        }\n        return res;\n    }\n}"
     },
     "keywords": [
@@ -96,5 +96,19 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "2"
+      ],
+      "expected": "2"
+    },
+    {
+      "input": [
+        "3"
+      ],
+      "expected": "3"
+    }
+  ]
 }

@@ -56,14 +56,14 @@
   "hints": {
     "optimal": {
       "title": "方法一：动态规划(完全背包)",
-      "approach": "每种硬币可用任意多次，求凑出 amount 的最少枚数。完全背包：物品为硬币、容量为金额。若 DFS 搜索组合，金额较大时重复子问题多。\n定义 f[i][j] 为用前 i 种硬币凑 j 的最少枚数。不选第 i 种则继承 f[i-1][j]；若 j>= x 则可从 f[i][j-x] 再加一枚。f[0][0]=0，其余为无穷，无法凑出返回 -1。\n我们定义 f[i][j] 表示使用前 i 种硬币，凑出金额 j 的最少硬币数。初始时 f[0][0] = 0，其余位置的值均为正无穷。\n我们可以枚举使用的最后一枚硬币的数量 k，那么有：\nf[i][j] = \\min(f[i - 1][j], f[i - 1][j - x] + 1, \\cdots, f[i - 1][j - k x x] + k)\n其中 x 表示第 i 种硬币的面值。\n不妨令 j = j - x，那么有：\nf[i][j - x] = \\min(f[i - 1][j - x], f[i - 1][j - 2 x x] + 1, \\cdots, f[i - 1][j - k x x] + k - 1)\n将二式代入一式，我们可以得到以下状态转移方程：\nf[i][j] = \\min(f[i - 1][j], f[i][j - x] + 1)\n最后答案即为 f[m][n]。\npython\nclass Solution:\ndef coinChange(self, coins: List[int], amount: int) -> int:\nm, n = len(coins), amount\nf = [[inf] * (n + 1)",
-      "complexity": "时间复杂度 $O(m \\times n)$空间复杂度 $O(m \\times n)$其中 $m$ 和 $n$ 分别为硬币的种类数和总金额 / 空间复杂度 $O(m \\times n)$其中 $m$ 和 $n$ 分别为硬币的种类数和总金额",
+      "approach": "每种硬币可用任意多次，求凑出 amount 的最少枚数。完全背包：物品为硬币、容量为金额。若 DFS 搜索组合，金额较大时重复子问题多。\n定义 f[i][j] 为用前 i 种硬币凑 j 的最少枚数。不选第 i 种则继承 f[i-1][j]；若 j>= x 则可从 f[i][j-x] 再加一枚。f[0][0]=0，其余为无穷，无法凑出返回 -1。\n我们定义 f[i][j] 表示使用前 i 种硬币，凑出金额 j 的最少硬币数。初始时 f[0][0] = 0，其余位置的值均为正无穷。\n我们可以枚举使用的最后一枚硬币的数量 k，那么有：\nf[i][j] = min(f[i - 1][j], f[i - 1][j - x] + 1, \\cdots, f[i - 1][j - k x x] + k)\n其中 x 表示第 i 种硬币的面值。\n不妨令 j = j - x，那么有：\nf[i][j - x] = min(f[i - 1][j - x], f[i - 1][j - 2 x x] + 1, \\cdots, f[i - 1][j - k x x] + k - 1)\n将二式代入一式，我们可以得到以下状态转移方程：\nf[i][j] = min(f[i - 1][j], f[i][j - x] + 1)\n最后答案即为 f[m][n]。",
+      "complexity": "时间复杂度 O(m x n) / 空间复杂度 O(m x n)其中 m 和 n 分别为硬币的种类数和总金额",
       "javaSnippet": "class Solution {\n    public int coinChange(int[] coins, int amount) {\n        final int inf = 1 << 30;\n        int m = coins.length;\n        int n = amount;\n        int[][] f = new int[m + 1][n + 1];\n        for (var g : f) {\n            Arrays.fill(g, inf);\n        }\n        f[0][0] = 0;\n        for (int i = 1; i <= m; ++i) {\n            for (int j = 0; j <= n; ++j) {\n                f[i][j] = f[i - 1][j];\n                if (j >= coins[i - 1]) {\n                    f[i][j] = Math.min(f[i][j], f[i][j - coins[i - 1]] + 1);\n                }\n            }\n        }\n        return f[m][n] >= inf ? -1 : f[m][n];\n    }\n}"
     },
     "memory": {
       "title": "方法二：动态规划优化",
-      "approach": "方法一中 f[i][j] 只读 f[i-1][j] 与 f[i][j-x]。压成一维后内层对金额递增，使 f[j-x] 已含本枚硬币。空间降为 O(amount)，转移不变。\n我们注意到 f[i][j] 只与 f[i - 1][j] 和 f[i][j - x] 有关，因此我们可以将二维数组优化为一维数组，空间复杂度降为 O(n)。时间复杂度仍为 O(m x n)。\n相似题目：\n- 279. 完全平方数\npython\nclass Solution:\ndef coinChange(self, coins: List[int], amount: int) -> int:\nn = amount\nf = [0] + [inf] * n\nfor x in coins:\nfor j in range(x, n + 1):\nf[j] = min(f[j], f[j - x] + 1)\nreturn -1 if f[n] >= inf else f[n]\njava\nclass Solution {\npublic int coinChange(int[] coins, int amount) {\nfinal int inf = 1 << 30;\nint n = amount;\nint[] f = new int[n + 1];\nArrays.fill(f, inf);\nf[0] = 0;\nfor (int x : coins) {\nfor (int j = x; j <= n; ++j) {\nf[j] = Math.min(f[j], f[j - x] + 1);\n}\n}\nreturn f[n] ",
-      "complexity": "时间复杂度 仍为 $O(m \\times n)$ / 空间复杂度 降为 $O(n)$时间复杂度仍为 $O(m \\times n)$",
+      "approach": "方法一中 f[i][j] 只读 f[i-1][j] 与 f[i][j-x]。压成一维后内层对金额递增，使 f[j-x] 已含本枚硬币。空间降为 O(amount)，转移不变。\n我们注意到 f[i][j] 只与 f[i - 1][j] 和 f[i][j - x] 有关，因此我们可以将二维数组优化为一维数组，空间复杂度降为 O(n)。时间复杂度仍为 O(m x n)。\n相似题目：\n- 279. 完全平方数",
+      "complexity": "时间复杂度 仍为 O(m x n) / 空间复杂度 降为 O(n)时间复杂度仍为 O(m x n)",
       "javaSnippet": "class Solution {\n    public int coinChange(int[] coins, int amount) {\n        final int inf = 1 << 30;\n        int n = amount;\n        int[] f = new int[n + 1];\n        Arrays.fill(f, inf);\n        f[0] = 0;\n        for (int x : coins) {\n            for (int j = x; j <= n; ++j) {\n                f[j] = Math.min(f[j], f[j - x] + 1);\n            }\n        }\n        return f[n] >= inf ? -1 : f[n];\n    }\n}"
     },
     "keywords": [
@@ -115,5 +115,28 @@
         "url": "https://github.com/youngyangyang04/leetcode-master"
       }
     ]
-  }
+  },
+  "tests": [
+    {
+      "input": [
+        "[1,2,5]",
+        "11"
+      ],
+      "expected": "3"
+    },
+    {
+      "input": [
+        "[2]",
+        "3"
+      ],
+      "expected": "-1"
+    },
+    {
+      "input": [
+        "[1]",
+        "0"
+      ],
+      "expected": "0"
+    }
+  ]
 }
