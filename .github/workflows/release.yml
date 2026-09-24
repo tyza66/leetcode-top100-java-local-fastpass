@@ -118,7 +118,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           MATRIX_ID="${{ matrix.platform }}-${{ matrix.target }}"
-          gh release upload ${{ github.ref_name }} \
+          gh release upload ${{ github.ref_name }} --repo ${{ github.repository }} \
             "${MATRIX_ID}-checksums-md5.txt" \
             "${MATRIX_ID}-checksums-sha1.txt" \
             --clobber
@@ -153,7 +153,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd /tmp/checksums
-          gh release upload ${{ github.ref_name }} \
+          gh release upload ${{ github.ref_name }} --repo ${{ github.repository }} \
             checksums-md5.txt \
             checksums-sha1.txt \
             --clobber
