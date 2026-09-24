@@ -26,6 +26,24 @@
 | Linux | `.deb` / `.AppImage` / `.rpm` |
 
 每次发布附带 `checksums-md5.txt` 与 `checksums-sha1.txt`，可校验完整性。
+Windows MSI 内部版本使用 `1.0.0`，这是 MSI 对版本字段的最大值限制；Release 标签和应用版本仍使用日期版本号。
+
+### macOS 首次打开
+
+macOS 版使用 ad-hoc 签名，但没有 Apple Developer ID 签名和公证。通过浏览器下载后，macOS 会给应用加隔离属性，可能提示“已损坏，无法打开”。先校验 DMG 的 checksum，安装到“应用程序”后，在终端执行：
+
+```bash
+xattr -dr com.apple.quarantine "/Applications/LeetCode Top100 Java.app"
+```
+
+也可以检查签名是否完整：
+
+```bash
+codesign --verify --deep --strict --verbose=4 "/Applications/LeetCode Top100 Java.app"
+codesign -dv --verbose=4 "/Applications/LeetCode Top100 Java.app"
+```
+
+`codesign -dv` 输出 `Signature=adhoc` 且 `codesign --verify` 通过即表示包内签名完整；`spctl` 拒绝是未公证分发的预期行为。
 
 ## 开发
 

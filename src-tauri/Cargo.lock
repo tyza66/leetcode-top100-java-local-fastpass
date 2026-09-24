@@ -1760,7 +1760,7 @@ dependencies = [
 
 [[package]]
 name = "leetcode-top100-java-local"
-version = "1.0.0"
+version = "1.0.20260924"
 dependencies = [
  "anyhow",
  "include_dir",

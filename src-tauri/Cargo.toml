@@ -1,6 +1,6 @@
 [package]
 name = "leetcode-top100-java-local"
-version = "1.0.0"
+version = "1.0.20260924"
 description = "力扣 Top100 本地 Java 训练场"
 authors = ["tyza66"]
 license = "MIT"

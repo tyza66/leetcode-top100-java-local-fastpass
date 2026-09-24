@@ -72,6 +72,22 @@ jobs:
           prerelease: false
           args: ${{ matrix.args }}
 
+      - name: Verify macOS ad-hoc signature
+        if: startsWith(matrix.platform, 'macos')
+        shell: bash
+        run: |
+          BUNDLE_DIR="src-tauri/target/${{ matrix.target }}/release/bundle/macos"
+          APP=$(find "$BUNDLE_DIR" -maxdepth 1 -type d -name '*.app' -print -quit)
+          if [ -z "$APP" ]; then
+            echo "No .app bundle found in $BUNDLE_DIR" >&2
+            exit 1
+          fi
+
+          echo "Signing $APP"
+          codesign -dv --verbose=4 "$APP" 2>&1 | tee /tmp/codesign-info.txt
+          grep -q 'Signature=adhoc' /tmp/codesign-info.txt
+          codesign --verify --deep --strict --verbose=4 "$APP"
+
       - name: Collect bundle artifacts
         id: bundles
         shell: bash
