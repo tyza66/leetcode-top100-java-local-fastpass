@@ -1,0 +1,24 @@
+{
+  "name": "leetcode-top100-java-local",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k -n api,web -c blue,green \"node server/index.mjs\" \"vite\"",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "scrape": "node scripts/scrape.mjs"
+  },
+  "dependencies": {
+    "@vitejs/plugin-vue": "^5.1.4",
+    "concurrently": "^9.0.1",
+    "express": "^4.21.0",
+    "monaco-editor": "^0.52.0",
+    "vite": "^5.4.8",
+    "vue": "^3.5.12"
+  },
+  "devDependencies": {
+    "vitest": "^2.1.3"
+  }
+}
