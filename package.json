@@ -9,9 +9,13 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "scrape": "node scripts/scrape.mjs"
+    "scrape": "node scripts/scrape.mjs",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
   },
   "dependencies": {
+    "@tauri-apps/api": "^2.8.0",
     "@vitejs/plugin-vue": "^5.1.4",
     "concurrently": "^9.0.1",
     "express": "^4.21.0",
@@ -21,6 +25,7 @@
     "vue": "^3.5.12"
   },
   "devDependencies": {
+    "@tauri-apps/cli": "^2.8.0",
     "vitest": "^2.1.3"
   }
 }

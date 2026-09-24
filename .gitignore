@@ -5,3 +5,11 @@ dist/
 npm-debug.log*
 .playwright-cli/
 output/
+src-tauri/target/
+*.tar.gz
+*.app/
+*.dmg
+*.msi
+*.exe
+*.deb
+*.AppImage
