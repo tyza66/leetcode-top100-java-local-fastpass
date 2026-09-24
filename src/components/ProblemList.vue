@@ -1,7 +1,13 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { Code2, Search } from 'lucide-vue-next'
-import { selectProblem, store } from '../lib/store.mjs'
+import { CheckCircle2, Code2, PanelLeftClose, PanelLeftOpen, Search } from 'lucide-vue-next'
+import { isPassed, selectProblem, store } from '../lib/store.mjs'
+
+defineProps({
+  collapsed: { type: Boolean, default: false }
+})
+
+const emit = defineEmits(['toggle-collapse'])
 
 const query = ref('')
 const difficulty = ref('ALL')
@@ -27,11 +33,22 @@ function difficultyClass(value) {
 <template>
   <div class="problem-sidebar">
     <div class="sidebar-head">
-      <div class="brand">
-        <Code2 :size="17" />
-        <span>Top100 Java</span>
+      <div class="sidebar-head-inner">
+        <div class="brand">
+          <Code2 :size="17" />
+          <span>Top100 Java</span>
+        </div>
+        <span class="problem-count">{{ store.problems.length }} 题</span>
       </div>
-      <span class="problem-count">{{ store.problems.length }} 题</span>
+      <div class="collapsed-brand">Top100</div>
+      <button
+        class="collapse-button"
+        :title="collapsed ? '展开题目栏' : '收起题目栏'"
+        @click="emit('toggle-collapse')"
+      >
+        <PanelLeftClose v-if="!collapsed" :size="16" />
+        <PanelLeftOpen v-else :size="16" />
+      </button>
     </div>
 
     <div class="sidebar-filters">
@@ -63,10 +80,13 @@ function difficultyClass(value) {
         v-for="problem in filtered"
         :key="problem.slug"
         class="problem-item"
-        :class="{ active: store.currentSlug === problem.slug }"
+        :class="{ active: store.currentSlug === problem.slug, passed: isPassed(problem.slug) }"
         @click="selectProblem(problem.slug)"
       >
         <span class="difficulty-dot" :class="difficultyClass(problem.difficulty)"></span>
+        <span v-if="isPassed(problem.slug)" class="passed-mark" title="已通过">
+          <CheckCircle2 :size="15" />
+        </span>
         <span class="problem-id">{{ problem.frontendId }}</span>
         <span class="problem-titles">
           <strong>{{ problem.titleCn }}</strong>

@@ -71,6 +71,14 @@ code {
   border-bottom: 1px solid var(--border);
 }
 
+.sidebar-head-inner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
 .brand {
   display: flex;
   align-items: center;
@@ -89,6 +97,56 @@ code {
   font-size: 12px;
   color: var(--muted);
   white-space: nowrap;
+}
+
+.collapse-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  margin-left: auto;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.collapse-button:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.collapsed-brand {
+  display: none;
+  writing-mode: vertical-rl;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--muted);
+}
+
+.app-shell.sidebar-collapsed .problem-sidebar {
+  width: 48px;
+  flex-basis: 48px;
+}
+
+.app-shell.sidebar-collapsed .sidebar-head {
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 7px;
+}
+
+.app-shell.sidebar-collapsed .sidebar-head-inner,
+.app-shell.sidebar-collapsed .sidebar-filters,
+.app-shell.sidebar-collapsed .problem-scroll {
+  display: none;
+}
+
+.app-shell.sidebar-collapsed .collapsed-brand {
+  display: block;
 }
 
 .sidebar-filters {
@@ -159,7 +217,7 @@ code {
 .problem-item {
   position: relative;
   display: grid;
-  grid-template-columns: 8px 34px minmax(0, 1fr) auto;
+  grid-template-columns: 8px 18px 34px minmax(0, 1fr) auto;
   align-items: center;
   gap: 8px;
   width: 100%;
@@ -188,6 +246,17 @@ code {
   bottom: 0;
   width: 3px;
   background: var(--accent);
+}
+
+.passed-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--easy);
+}
+
+.problem-item.passed .problem-titles strong {
+  color: #0e8a68;
 }
 
 .difficulty-dot {
@@ -373,11 +442,212 @@ code {
 }
 
 .problem-panel,
-.hint-panel {
+.hint-panel,
+.ai-panel {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
   padding: 18px 22px 40px;
+}
+
+.ai-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.ai-config,
+.ai-ask {
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fafbfc;
+}
+
+.ai-config h2 {
+  margin: 0 0 10px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.ai-config-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+}
+
+.ai-field,
+.ai-question-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.ai-field span,
+.ai-question-field span {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.ai-field input,
+.ai-question-field textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  outline: none;
+}
+
+.ai-field input {
+  height: 34px;
+  padding: 0 10px;
+}
+
+.ai-question-field textarea {
+  padding: 9px 10px;
+  resize: vertical;
+  min-height: 110px;
+  line-height: 1.6;
+}
+
+.ai-field input:focus,
+.ai-question-field textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+}
+
+.ai-note {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.ai-ask {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ai-send-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  gap: 6px;
+  height: 32px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--accent);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ai-send-button:hover {
+  background: #1d4fd7;
+}
+
+.ai-send-button:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+
+.ai-loading,
+.ai-idle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 90px;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.ai-error {
+  padding: 10px 12px;
+  border: 1px solid #f3c1c3;
+  border-radius: 6px;
+  background: #fdf0f0;
+  color: #b4232a;
+  font-size: 13px;
+  white-space: pre-wrap;
+}
+
+.ai-response {
+  min-height: 90px;
+  padding: 4px 2px;
+  font-size: 14px;
+  line-height: 1.75;
+  color: #33363c;
+  overflow-wrap: anywhere;
+}
+
+.ai-response h2,
+.ai-response h3,
+.ai-response h4 {
+  margin: 18px 0 8px;
+  font-weight: 700;
+}
+
+.ai-response h2 {
+  font-size: 17px;
+}
+
+.ai-response h3 {
+  font-size: 15px;
+}
+
+.ai-response h4 {
+  font-size: 14px;
+}
+
+.ai-response p {
+  margin: 0 0 12px;
+}
+
+.ai-response ul,
+.ai-response ol {
+  margin: 0 0 12px;
+  padding-left: 22px;
+}
+
+.ai-response code {
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: #f0f2f5;
+  color: #39424e;
+  font-size: 13px;
+}
+
+.ai-response pre.ai-code {
+  margin: 12px 0;
+  padding: 12px 14px;
+  border-radius: 6px;
+  background: var(--code-bg);
+  color: #d8e1ec;
+  font-size: 12.5px;
+  line-height: 1.6;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.ai-response pre.ai-code code {
+  padding: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.ai-response a {
+  color: var(--accent);
 }
 
 .topic-row {
@@ -838,6 +1108,35 @@ code {
     flex-direction: column;
   }
 
+  .app-shell.sidebar-collapsed .problem-sidebar {
+    width: 100%;
+    flex: none;
+    height: 212px;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .app-shell.sidebar-collapsed .sidebar-head {
+    flex-direction: row;
+    gap: 8px;
+    padding: 13px 14px;
+  }
+
+  .app-shell.sidebar-collapsed .sidebar-head-inner,
+  .app-shell.sidebar-collapsed .sidebar-filters,
+  .app-shell.sidebar-collapsed .problem-scroll {
+    display: flex;
+  }
+
+  .app-shell.sidebar-collapsed .problem-scroll {
+    display: flex;
+  }
+
+  .app-shell.sidebar-collapsed .collapsed-brand,
+  .collapse-button {
+    display: none;
+  }
+
   .problem-sidebar {
     width: 100%;
     flex: none;
@@ -899,8 +1198,13 @@ code {
   }
 
   .problem-panel,
-  .hint-panel {
+  .hint-panel,
+  .ai-panel {
     padding: 14px 14px 28px;
+  }
+
+  .ai-config-grid {
+    grid-template-columns: 1fr;
   }
 
   .editor-title h2 {

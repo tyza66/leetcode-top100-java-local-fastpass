@@ -2,7 +2,7 @@
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { Play, RotateCcw, Terminal, Timer } from 'lucide-vue-next'
 import { editorTemplate, runJava } from '../lib/api.mjs'
-import { store } from '../lib/store.mjs'
+import { markPassed, store } from '../lib/store.mjs'
 import { createEditor, setCompletionEnabled } from '../lib/editor.js'
 
 const editorRef = ref(null)
@@ -43,6 +43,9 @@ async function run() {
       code: editor?.getValue() ?? '',
       timeoutMs: timeoutEnabled.value ? timeoutMs.value : null
     })
+    if (result.value.pass === result.value.total && result.value.total > 0) {
+      markPassed(activeSlug)
+    }
   } catch (runError) {
     error.value = runError.message
   } finally {

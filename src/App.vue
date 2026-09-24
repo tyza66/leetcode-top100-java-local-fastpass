@@ -1,6 +1,7 @@
 <script setup>
-import { onMounted, ref } from 'vue'
-import { FileText, Lightbulb } from 'lucide-vue-next'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { FileText, Lightbulb, Sparkles } from 'lucide-vue-next'
+import AskAIPanel from './components/AskAIPanel.vue'
 import EditorPanel from './components/EditorPanel.vue'
 import HintPanel from './components/HintPanel.vue'
 import ProblemList from './components/ProblemList.vue'
@@ -8,8 +9,18 @@ import ProblemPanel from './components/ProblemPanel.vue'
 import { loadProblems, store } from './lib/store.mjs'
 
 const activeTab = ref('problem')
+const sidebarCollapsed = ref(false)
 
-onMounted(() => loadProblems())
+function handleResize() {
+  if (window.innerWidth <= 700) sidebarCollapsed.value = false
+}
+
+onMounted(() => {
+  loadProblems()
+  window.addEventListener('resize', handleResize)
+})
+
+onBeforeUnmount(() => window.removeEventListener('resize', handleResize))
 
 function difficultyClass(value) {
   const key = String(value || '').toUpperCase()
@@ -18,8 +29,8 @@ function difficultyClass(value) {
 </script>
 
 <template>
-  <div class="app-shell">
-    <ProblemList />
+  <div class="app-shell" :class="{ 'sidebar-collapsed': sidebarCollapsed }">
+    <ProblemList :collapsed="sidebarCollapsed" @toggle-collapse="sidebarCollapsed = !sidebarCollapsed" />
     <main class="workspace">
       <section class="content-pane">
         <header class="workspace-topbar">
@@ -31,6 +42,10 @@ function difficultyClass(value) {
             <button :class="{ active: activeTab === 'hint' }" role="tab" @click="activeTab = 'hint'">
               <Lightbulb :size="14" />
               <span>提示</span>
+            </button>
+            <button :class="{ active: activeTab === 'ai' }" role="tab" @click="activeTab = 'ai'">
+              <Sparkles :size="14" />
+              <span>问AI</span>
             </button>
           </div>
           <div v-if="store.current" class="workspace-title">
@@ -44,6 +59,7 @@ function difficultyClass(value) {
         </header>
         <ProblemPanel v-show="activeTab === 'problem'" />
         <HintPanel v-show="activeTab === 'hint'" />
+        <AskAIPanel v-show="activeTab === 'ai'" />
       </section>
       <EditorPanel />
     </main>

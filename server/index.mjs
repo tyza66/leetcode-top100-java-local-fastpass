@@ -41,6 +41,62 @@ app.post('/api/run', async (req, res, next) => {
   }
 })
 
+app.post('/api/ai/chat', async (req, res, next) => {
+  try {
+    const { apiBase, apiKey, model, messages } = req.body || {}
+    if (
+      typeof apiBase !== 'string' ||
+      !apiBase.trim() ||
+      typeof apiKey !== 'string' ||
+      !apiKey.trim() ||
+      typeof model !== 'string' ||
+      !model.trim() ||
+      !Array.isArray(messages) ||
+      messages.length === 0
+    ) {
+      res.status(400).json({ error: 'apiBase, apiKey, model and messages are required' })
+      return
+    }
+    const endpoint = apiBase.trim()
+    if (!/^https?:\/\//i.test(endpoint)) {
+      res.status(400).json({ error: 'apiBase must be an http(s) URL' })
+      return
+    }
+
+    const upstream = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        authorization: `Bearer ${apiKey.trim()}`
+      },
+      body: JSON.stringify({ model: model.trim(), messages }),
+      signal: AbortSignal.timeout(60_000)
+    })
+
+    if (!upstream.ok) {
+      const body = await upstream.text().catch(() => '')
+      let message = `AI 接口返回 ${upstream.status}`
+      try {
+        message = JSON.parse(body)?.error?.message || message
+      } catch {
+        // keep the generic status message
+      }
+      res.status(502).json({ error: message })
+      return
+    }
+
+    const data = await upstream.json()
+    const content = data?.choices?.[0]?.message?.content
+    if (typeof content !== 'string') {
+      res.status(502).json({ error: 'AI 接口返回格式不正确' })
+      return
+    }
+    res.json({ content })
+  } catch (error) {
+    next(error)
+  }
+})
+
 app.use((error, _req, res, _next) => {
   res.status(500).json({ error: error.message })
 })

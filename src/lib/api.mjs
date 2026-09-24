@@ -18,6 +18,13 @@ export const runJava = (payload) =>
     body: JSON.stringify(payload)
   })
 
+export const askAI = (payload) =>
+  request('/api/ai/chat', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+
 const JAVA_TYPES = {
   integer: 'int',
   'integer[]': 'int[]',
