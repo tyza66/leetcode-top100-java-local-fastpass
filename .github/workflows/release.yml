@@ -71,3 +71,98 @@ jobs:
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
+
+      - name: Collect bundle artifacts
+        id: bundles
+        shell: bash
+        run: |
+          BUNDLE_DIR="src-tauri/target/${{ matrix.target }}/release/bundle"
+          if [ -d "$BUNDLE_DIR" ]; then
+            FILES=$(find "$BUNDLE_DIR" -type f \( \
+              -name '*.dmg' -o \
+              -name '*.msi' -o \
+              -name '*.exe' -o \
+              -name '*.deb' -o \
+              -name '*.AppImage' -o \
+              -name '*.tar.gz' -o \
+              -name '*.zip' \
+            \) | sort)
+            echo "files<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$FILES" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+            COUNT=$(echo "$FILES" | grep -c . || true)
+            echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+            echo "Found $COUNT artifacts:"
+            echo "$FILES"
+          else
+            echo "count=0" >> "$GITHUB_OUTPUT"
+            echo "No bundle dir at $BUNDLE_DIR"
+          fi
+
+      - name: Generate platform checksums
+        if: steps.bundles.outputs.count != '0'
+        shell: bash
+        run: |
+          MATRIX_ID="${{ matrix.platform }}-${{ matrix.target }}"
+          : > "${MATRIX_ID}-checksums-md5.txt"
+          : > "${MATRIX_ID}-checksums-sha1.txt"
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            if [ "${{ runner.os }}" = "Windows" ]; then
+              MD5=$(certutil -hashfile "$f" MD5 | findstr /v "CertUtil" | findstr /v "MD5" | tr -d ' \r\n')
+              SHA1=$(certutil -hashfile "$f" SHA1 | findstr /v "CertUtil" | findstr /v "SHA1" | tr -d ' \r\n')
+              BN=$(basename "$f")
+              echo "$MD5  $BN" >> "${MATRIX_ID}-checksums-md5.txt"
+              echo "$SHA1  $BN" >> "${MATRIX_ID}-checksums-sha1.txt"
+            else
+              md5sum "$f" >> "${MATRIX_ID}-checksums-md5.txt"
+              sha1sum "$f" >> "${MATRIX_ID}-checksums-sha1.txt"
+            fi
+          done <<< "${{ steps.bundles.outputs.files }}"
+
+      - name: Upload platform checksums to release
+        if: steps.bundles.outputs.count != '0'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          MATRIX_ID="${{ matrix.platform }}-${{ matrix.target }}"
+          gh release upload ${{ github.ref_name }} \
+            "${MATRIX_ID}-checksums-md5.txt" \
+            "${MATRIX_ID}-checksums-sha1.txt" \
+            --clobber
+
+  aggregate-checksums:
+    needs: build-tauri
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all release assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release download ${{ github.ref_name }} \
+            --pattern '*-checksums-*.txt' \
+            --dir /tmp/checksums \
+            --clobber
+
+      - name: Merge checksums
+        run: |
+          cd /tmp/checksums
+          cat *-checksums-md5.txt > checksums-md5.txt
+          cat *-checksums-sha1.txt > checksums-sha1.txt
+          echo "--- checksums-md5.txt ---"
+          cat checksums-md5.txt
+          echo "--- checksums-sha1.txt ---"
+          cat checksums-sha1.txt
+
+      - name: Upload merged checksums
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd /tmp/checksums
+          gh release upload ${{ github.ref_name }} \
+            checksums-md5.txt \
+            checksums-sha1.txt \
+            --clobber
