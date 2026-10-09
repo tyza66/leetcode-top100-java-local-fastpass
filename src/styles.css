@@ -230,6 +230,14 @@ code {
   cursor: pointer;
 }
 
+/* Pin each cell to its column so a conditionally hidden passed-mark
+   (v-if) cannot shift the other cells left into the narrow id column. */
+.problem-item > .difficulty-dot { grid-column: 1; }
+.problem-item > .passed-mark { grid-column: 2; }
+.problem-item > .problem-id { grid-column: 3; }
+.problem-item > .problem-titles { grid-column: 4; }
+.problem-item > .problem-rate { grid-column: 5; }
+
 .problem-item:hover {
   background: #f3f6fb;
 }
